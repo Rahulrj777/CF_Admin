@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { api } from "../../api.js"
+import { api } from "../../api.js";
 
 const ActingBanner = () => {
   const [banners, setBanners] = useState([]);
@@ -40,9 +40,9 @@ const ActingBanner = () => {
   };
 
   // Delete banner
-  const handleDelete = async (public_id) => {
+  const handleDelete = async (id) => {
     try {
-      await api.delete(`/actingbanner/${public_id}`);
+      await api.delete(`/actingbanner/${id}`); // backend expects MongoDB _id
       fetchBanners();
     } catch (err) {
       console.error("Error deleting banner:", err);
@@ -82,7 +82,7 @@ const ActingBanner = () => {
               className="w-full h-40 object-cover"
             />
             <button
-              onClick={() => handleDelete(banner.public_id)}
+              onClick={() => handleDelete(banner._id)} // use _id here
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
