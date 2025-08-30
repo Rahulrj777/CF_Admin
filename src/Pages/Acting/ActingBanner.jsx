@@ -20,12 +20,18 @@ const ActingBanner = () => {
   }, []);
 
   // Upload banner
-const handleUpload = async () => {
-  const url = prompt("Enter image URL");
-  if (!url) return;
+const handleUpload = async (e) => {
+  e.preventDefault();
+  if (!image) return;
+
+  const formData = new FormData();
+  formData.append("image", image);
 
   try {
-    await api.post("/actingbanner/upload", { url });
+    await api.post("/actingbanner/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    setImage(null);
     fetchBanners();
   } catch (err) {
     console.error("Error uploading banner:", err);
