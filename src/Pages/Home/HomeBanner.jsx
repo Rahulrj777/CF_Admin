@@ -39,10 +39,10 @@ const HomeBanner = () => {
     }
   };
 
-  // Delete banner by Mongo ID
-  const handleDelete = async (id) => {
+  // Delete banner
+  const handleDelete = async (fileName) => {
     try {
-      await axios.delete(`http://localhost:5000/homebanner/${id}`);
+      await axios.delete(`http://localhost:5000/homebanner/${fileName}`);
       fetchBanners();
     } catch (err) {
       console.error("Error deleting banner:", err);
@@ -73,16 +73,16 @@ const HomeBanner = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {banners.map((banner) => (
           <div
-            key={banner._id}
+            key={banner.id}
             className="relative border rounded-lg overflow-hidden"
           >
             <img
-              src={banner.image}   // ✅ use "image" field from DB
+              src={banner.url}
               alt="banner"
               className="w-full h-40 object-cover"
             />
             <button
-              onClick={() => handleDelete(banner._id)} // ✅ delete by id
+              onClick={() => handleDelete(banner.fileName)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
