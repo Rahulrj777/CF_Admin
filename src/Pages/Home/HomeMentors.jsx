@@ -7,10 +7,8 @@ const HomeMentors = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [message, setMessage] = useState("");
-  const [name, setName] = useState("");
-  const [mentors, setMentors] = useState([]); // <-- store fetched mentors
+  const [mentors, setMentors] = useState([]);
 
-  // 📌 Fetch mentors on load
   useEffect(() => {
     fetchMentors();
   }, []);
@@ -31,14 +29,13 @@ const HomeMentors = () => {
   };
 
   const handleUpload = async () => {
-    if (!file || !name.trim()) {
-      setMessage("⚠️ Please provide both name and image.");
+    if (!file) {
+      setMessage("⚠️ Please select an image.");
       return;
     }
 
     const formData = new FormData();
     formData.append("image", file);
-    formData.append("name", name);
 
     try {
       const res = await axios.post(`${API_URL}/upload`, formData, {
@@ -48,8 +45,7 @@ const HomeMentors = () => {
       setMessage("✅ Upload successful!");
       setFile(null);
       setPreview(null);
-      setName("");
-      setMentors((prev) => [...prev, res.data]); // <-- update UI immediately
+      setMentors((prev) => [...prev, res.data]);
     } catch (err) {
       console.error(err.response?.data || err.message);
       setMessage("❌ Upload failed. Try again.");
@@ -59,7 +55,7 @@ const HomeMentors = () => {
   const handleDelete = async (filename) => {
     try {
       await axios.delete(`${API_URL}/${filename}`);
-      setMentors((prev) => prev.filter((m) => m.fileName !== filename)); // update UI
+      setMentors((prev) => prev.filter((m) => m.fileName !== filename));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
       console.error("Delete failed:", err);
@@ -69,11 +65,9 @@ const HomeMentors = () => {
 
   return (
     <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-xl font-bold mb-4 text-center">Upload Mentor</h2>
+      <h2 className="text-xl font-bold mb-4 text-center">Upload Mentor Image</h2>
 
-      {/* Upload Form */}
       <div className="mb-8">
-
         <input
           type="file"
           accept="image/*"
@@ -101,7 +95,6 @@ const HomeMentors = () => {
 
       {message && <p className="mb-6 text-center text-sm">{message}</p>}
 
-      {/* Mentors List */}
       <h3 className="text-lg font-semibold mb-4">Mentors List</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {mentors.map((mentor) => (
@@ -111,10 +104,9 @@ const HomeMentors = () => {
           >
             <img
               src={mentor.url}
-              alt={mentor.name}
+              alt="Mentor"
               className="w-32 h-32 object-cover mx-auto rounded-full"
             />
-            <p className="mt-2 font-medium">{mentor.name}</p>
             <button
               onClick={() => handleDelete(mentor.fileName)}
               className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
