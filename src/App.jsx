@@ -78,11 +78,15 @@ import ActingDiploma from "./Pages/Acting/ActingDiploma";
 
 // stage-unreal
 import VideoBanner from "./Pages/StageUnreal/StageUnrealBanner"
+import StageUnrealDiploma from './Pages/StageUnreal/StageUnrealDiploma'
+import StageUnrealMentor from "./Pages/StageUnreal/StageUnrealMentor";
+import StageUnrealFilmography from "./Pages/StageUnreal/StageUnrealFilmography";
 
 // cfa
 import CfaBanner from "./Pages/Cfa/CfaBanner";
-
-
+import CfaDiploma from "./Pages/Cfa/CfaDiploma";
+import CfaMentor from "./Pages/Cfa/CfaMentor";
+import CfaFilmography from "./Pages/Cfa/CfaFilmography";
 
 const menu = [
   {
@@ -475,10 +479,15 @@ function App() {
 
             {/* CFA */}
             <Route path="/cfa/banner" element={<CfaBanner />} />
+            <Route path="/cfa/diploma" element={<CfaDiploma />} />
+            <Route path="/cfa/filmmaker" element={<CfaMentor />} />
+            <Route path="/cfa/filmography" element={<CfaFilmography />} />
 
             {/* Stage Unreal */}
             <Route path="/stage-unreal/banner" element={<VideoBanner />} />
-
+            <Route path="/stage-unreal/diploma" element={<StageUnrealDiploma />} />
+            <Route path="/stage-unreal/filmmaker" element={<StageUnrealMentor />} />
+            <Route path="/stage-unreal/filmography" element={<StageUnrealFilmography />} />
 
             {/* Dynamic Routes for all child pages */}
             {menu.flatMap((section) =>

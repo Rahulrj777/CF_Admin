@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { api } from "../../api.js";
+import axios from "axios";
 
 const ActingBanner = () => {
   const [banners, setBanners] = useState([]);
@@ -8,7 +8,7 @@ const ActingBanner = () => {
   // Fetch banners
   const fetchBanners = async () => {
     try {
-      const res = await api.get("/actingbanner");
+      const res = await axios.get("http://localhost:5000/actingbanner/");
       setBanners(res.data);
     } catch (err) {
       console.error("Error fetching banners:", err);
@@ -19,28 +19,30 @@ const ActingBanner = () => {
     fetchBanners();
   }, []);
 
-const handleUpload = async (e) => {
-  e.preventDefault();
-  if (!image) return;
+  // Upload banner
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!image) return;
 
-  const formData = new FormData();
-  formData.append("image", image);
+    const formData = new FormData();
+    formData.append("image", image);
 
-  try {
-    await api.post("/actingbanner/upload", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    setImage(null);
-    fetchBanners(); // reload banners
-  } catch (err) {
-    console.error("Error uploading banner:", err);
-  }
-};
+    try {
+      await axios.post("http://localhost:5000/actingbanner/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setImage(null);
+      fetchBanners();
+    } catch (err) {
+      console.error("Error uploading banner:", err);
+    }
+  };
 
   // Delete banner
-  const handleDelete = async (id) => {
+  const handleDelete = async (fileName) => {
     try {
-      await api.delete(`/actingbanner/${id}`); // backend expects MongoDB _id
+      await axios.delete(`http://localhost:5000/actingbanner/${fileName}`);
       fetchBanners();
     } catch (err) {
       console.error("Error deleting banner:", err);
@@ -71,16 +73,16 @@ const handleUpload = async (e) => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {banners.map((banner) => (
           <div
-            key={banner._id}
+            key={banner.id}
             className="relative border rounded-lg overflow-hidden"
           >
             <img
               src={banner.url}
-              alt={banner.title || "banner"}
+              alt="banner"
               className="w-full h-40 object-cover"
             />
             <button
-              onClick={() => handleDelete(banner._id)} // use _id here
+              onClick={() => handleDelete(banner.fileName)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
