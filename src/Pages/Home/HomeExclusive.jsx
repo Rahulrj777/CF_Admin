@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../../Utils/Api.js"; // Import API_BASE
 
 export default function HomeExclusive() {
   const [titleLine, setTitleLine] = useState("");
@@ -8,7 +9,7 @@ export default function HomeExclusive() {
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/exclusive");
+      const res = await axios.get(`${API_BASE}/exclusive`);
       setItems(res.data);
     } catch (err) {
       console.error("Error fetching items:", err);
@@ -28,7 +29,7 @@ export default function HomeExclusive() {
     formData.append("titleLine", titleLine);
 
     try {
-      await axios.post("http://localhost:5000/exclusive", formData);
+      await axios.post(`${API_BASE}/exclusive`, formData);
       setImage(null);
       setTitleLine("");
       fetchItems();
@@ -37,9 +38,9 @@ export default function HomeExclusive() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (_id) => {
     try {
-      await axios.delete(`http://localhost:5000/exclusive/${id}`);
+      await axios.delete(`${API_BASE}/exclusive/${_id}`);
       fetchItems();
     } catch (err) {
       console.error("Delete failed:", err);
@@ -93,15 +94,15 @@ export default function HomeExclusive() {
       <h3 className="text-xl font-semibold mb-4">Existing Exclusive</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {items.map((item) => (
-          <div key={item.id} className="border rounded-lg p-3 flex flex-col items-center shadow-sm">
+          <div key={item._id} className="border rounded-lg p-3 flex flex-col items-center shadow-sm">
             <img
-              src={`http://localhost:5000${item.image}`}
+              src={item.imageUrl} // Updated for Cloudinary
               alt="Exclusive"
               className="w-40 h-28 object-cover rounded-md mb-2"
             />
             <p className="text-sm text-center mb-2">{item.titleLine}</p>
             <button
-              onClick={() => handleDelete(item.id)}
+              onClick={() => handleDelete(item._id)}
               className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
             >
               Delete

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { API_BASE } from "../../Utils/Api.js"; // use API_BASE
 
 const VideoGallery = () => {
   const [videos, setVideos] = useState([]);
@@ -10,7 +11,7 @@ const VideoGallery = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/videos");
+      const res = await axios.get(`${API_BASE}/videos`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -31,16 +32,14 @@ const VideoGallery = () => {
     formData.append("title", title);
 
     try {
-      await axios.post("http://localhost:5000/videos/upload", formData, {
+      await axios.post(`${API_BASE}/videos/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       await fetchVideos();
       setFile(null);
       setTitle("");
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
       alert("Video uploaded successfully!");
     } catch (err) {
       console.error("Upload failed:", err);
@@ -50,15 +49,11 @@ const VideoGallery = () => {
     }
   };
 
-  const handleDelete = async (filename) => {
-    if (!filename) {
-      alert("Cannot delete video: filename is missing");
-      return;
-    }
+  const handleDelete = async (_id) => {
     if (!confirm("Are you sure you want to delete this video?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/videos/${filename}`);
+      await axios.delete(`${API_BASE}/videos/${_id}`);
       await fetchVideos();
       alert("Video deleted successfully!");
     } catch (err) {
@@ -74,16 +69,12 @@ const VideoGallery = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             🎬 Admin Video Management
           </h1>
-          <p className="text-gray-600">
-            Upload and manage videos for your gallery
-          </p>
+          <p className="text-gray-600">Upload and manage videos for your gallery</p>
         </div>
 
         {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            📤 Upload New Video
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">📤 Upload New Video</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="file"
@@ -126,9 +117,9 @@ const VideoGallery = () => {
             </div>
           ) : (
             <div className="grid gap-6">
-              {videos.map((video, index) => (
+              {videos.map((video) => (
                 <div
-                  key={video.fileName || `video-${index}`}
+                  key={video._id}
                   className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-200"
                 >
                   <div className="flex flex-col lg:flex-row gap-6">
@@ -138,7 +129,7 @@ const VideoGallery = () => {
                         className="w-full rounded-lg shadow-md"
                         preload="metadata"
                       >
-                        <source src={video.url} type="video/mp4" />
+                        <source src={video.videoUrl} type="video/mp4" />
                       </video>
                     </div>
                     <div className="flex-1 flex flex-col justify-between">
@@ -149,9 +140,8 @@ const VideoGallery = () => {
                       </div>
                       <div className="flex gap-3">
                         <button
-                          onClick={() => handleDelete(video.fileName)}
-                          disabled={!video.fileName}
-                          className="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                          onClick={() => handleDelete(video._id)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
                         >
                           🗑️ Delete
                         </button>

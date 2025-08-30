@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../../Utils/Api.js"
 
 const HomeBanner = () => {
   const [banners, setBanners] = useState([]);
@@ -8,7 +9,7 @@ const HomeBanner = () => {
   // Fetch banners
   const fetchBanners = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/homebanner");
+      const res = await axios.get(`${API_BASE}/homebanner`);
       setBanners(res.data);
     } catch (err) {
       console.error("Error fetching banners:", err);
@@ -28,7 +29,7 @@ const HomeBanner = () => {
     formData.append("image", image);
 
     try {
-      await axios.post("http://localhost:5000/homebanner/upload", formData, {
+      await axios.post(`${API_BASE}/homebanner/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -40,9 +41,9 @@ const HomeBanner = () => {
   };
 
   // Delete banner
-  const handleDelete = async (fileName) => {
+  const handleDelete = async (_id) => {
     try {
-      await axios.delete(`http://localhost:5000/homebanner/${fileName}`);
+      await axios.delete(`${API_BASE}/homebanner/${_id}`);
       fetchBanners();
     } catch (err) {
       console.error("Error deleting banner:", err);
@@ -73,16 +74,16 @@ const HomeBanner = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {banners.map((banner) => (
           <div
-            key={banner.id}
+            key={banner._id}
             className="relative border rounded-lg overflow-hidden"
           >
             <img
-              src={banner.url}
+              src={banner.imageUrl}
               alt="banner"
               className="w-full h-40 object-cover"
             />
             <button
-              onClick={() => handleDelete(banner.fileName)}
+              onClick={() => handleDelete(banner._id)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete

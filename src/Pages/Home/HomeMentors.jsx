@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_URL = "http://localhost:5000/mentors";
+import { API_BASE } from "../../Utils/Api.js"; 
 
 const HomeMentors = () => {
   const [file, setFile] = useState(null);
@@ -9,18 +8,19 @@ const HomeMentors = () => {
   const [message, setMessage] = useState("");
   const [mentors, setMentors] = useState([]);
 
-  useEffect(() => {
-    fetchMentors();
-  }, []);
-
+  // Fetch mentors
   const fetchMentors = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(`${API_BASE}/mentors`);
       setMentors(res.data);
     } catch (err) {
       console.error("Error fetching mentors:", err);
     }
   };
+
+  useEffect(() => {
+    fetchMentors();
+  }, []);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -38,7 +38,7 @@ const HomeMentors = () => {
     formData.append("image", file);
 
     try {
-      const res = await axios.post(`${API_URL}/upload`, formData, {
+      const res = await axios.post(`${API_BASE}/mentors/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -52,10 +52,10 @@ const HomeMentors = () => {
     }
   };
 
-  const handleDelete = async (filename) => {
+  const handleDelete = async (_id) => {
     try {
-      await axios.delete(`${API_URL}/${filename}`);
-      setMentors((prev) => prev.filter((m) => m.fileName !== filename));
+      await axios.delete(`${API_BASE}/mentors/${_id}`);
+      setMentors((prev) => prev.filter((m) => m._id !== _id));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
       console.error("Delete failed:", err);
@@ -99,16 +99,16 @@ const HomeMentors = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {mentors.map((mentor) => (
           <div
-            key={mentor.id}
+            key={mentor._id}
             className="border rounded-lg p-3 text-center shadow-sm"
           >
             <img
-              src={mentor.url}
+              src={mentor.imageUrl} // Cloudinary URL
               alt="Mentor"
               className="w-32 h-32 object-cover mx-auto rounded-full"
             />
             <button
-              onClick={() => handleDelete(mentor.fileName)}
+              onClick={() => handleDelete(mentor._id)}
               className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
             >
               Delete
