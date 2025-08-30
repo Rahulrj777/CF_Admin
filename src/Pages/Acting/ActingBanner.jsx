@@ -19,7 +19,6 @@ const ActingBanner = () => {
     fetchBanners();
   }, []);
 
-  // Upload banner
 const handleUpload = async (e) => {
   e.preventDefault();
   if (!image) return;
@@ -32,7 +31,7 @@ const handleUpload = async (e) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
     setImage(null);
-    fetchBanners();
+    fetchBanners(); // reload banners
   } catch (err) {
     console.error("Error uploading banner:", err);
   }
