@@ -73,13 +73,6 @@ const HomeMentors = () => {
 
       {/* Upload Form */}
       <div className="mb-8">
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter mentor name"
-          className="border p-2 w-full mb-4 rounded"
-        />
 
         <input
           type="file"
