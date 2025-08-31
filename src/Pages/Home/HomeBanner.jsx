@@ -28,6 +28,8 @@ const handleUpload = async (e) => {
     });
 
     const data = await res.json();
+    console.log("Uploaded image:", data);
+
     if (data.error) {
       console.error("Upload error:", data.error);
       setError(data.error);
