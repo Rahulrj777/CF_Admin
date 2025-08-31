@@ -45,9 +45,9 @@ const handleUpload = async (e) => {
   }
 };
 
-  const handleDelete = (public_id) => {
+  const handleDelete = (publicId) => {
     // Just remove from local state (optional: send to backend to delete from DB)
-    setBanners(banners.filter((b) => b.public_id !== public_id));
+    setBanners(banners.filter((b) => b.publicId !== publicId));
   };
 
   return (
@@ -75,7 +75,7 @@ const handleUpload = async (e) => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {banners.map((banner) => (
           <div
-            key={banner.public_id}
+            key={banner.publicId}
             className="relative border rounded-lg overflow-hidden"
           >
             <img
@@ -84,7 +84,7 @@ const handleUpload = async (e) => {
               className="w-full h-40 object-cover"
             />
             <button
-              onClick={() => handleDelete(banner.public_id)}
+              onClick={() => handleDelete(banner.publicId)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
