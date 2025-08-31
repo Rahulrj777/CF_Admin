@@ -9,16 +9,20 @@ const HomeBanner = () => {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
-
+  
 const handleUpload = async (e) => {
   e.preventDefault();
   if (!image) return;
 
+  setUploading(true); // ✅ 4th point: start uploading
+
   const formData = new FormData();
-  formData.append("image", image); // "image" must match your multer field name
+  formData.append("image", image); // must match multer field name
 
   try {
-    const res = await fetch("https://cf-server-tr24.onrender.com/homebanner/upload", {
+    // ✅ 3rd point: use dynamic backend URL
+    const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+    const res = await fetch(`${API_BASE}/homebanner/upload`, {
       method: "POST",
       body: formData,
     });
@@ -26,14 +30,16 @@ const handleUpload = async (e) => {
     const data = await res.json();
     if (data.error) {
       console.error("Upload error:", data.error);
-      return;
+      setError(data.error);
+    } else {
+      console.log("Uploaded image:", data);
+      setBanners((prev) => [...prev, data]);
     }
-
-    console.log("Uploaded image:", data);
-    // Optionally update local state to show banner
-    setBanners((prev) => [...prev, data]);
   } catch (err) {
     console.error("Frontend upload error:", err);
+    setError(err.message);
+  } finally {
+    setUploading(false); // ✅ 4th point: finish uploading
   }
 };
 
