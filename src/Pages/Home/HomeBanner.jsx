@@ -10,44 +10,32 @@ const HomeBanner = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!image) return;
+const handleUpload = async (e) => {
+  e.preventDefault();
+  if (!image) return;
 
-    setUploading(true);
-    setError(null);
+  const formData = new FormData();
+  formData.append("image", image); // "image" must match your multer field name
 
-    try {
-      const formData = new FormData();
-      formData.append("file", image);
-      formData.append("upload_preset", UPLOAD_PRESET);
-      formData.append("cloud_name", CLOUD_NAME);
+  try {
+    const res = await fetch("https://cf-server-tr24.onrender.com/homebanner/upload", {
+      method: "POST",
+      body: formData,
+    });
 
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-      console.log("Uploaded image:", data);
-
-      // Save the returned URL in your state
-      setBanners((prev) => [
-        ...prev,
-        { imageUrl: data.secure_url, public_id: data.public_id },
-      ]);
-
-      setImage(null);
-    } catch (err) {
-      console.error("Upload error:", err);
-      setError("Upload failed. Try again.");
-    } finally {
-      setUploading(false);
+    const data = await res.json();
+    if (data.error) {
+      console.error("Upload error:", data.error);
+      return;
     }
-  };
+
+    console.log("Uploaded image:", data);
+    // Optionally update local state to show banner
+    setBanners((prev) => [...prev, data]);
+  } catch (err) {
+    console.error("Frontend upload error:", err);
+  }
+};
 
   const handleDelete = (public_id) => {
     // Just remove from local state (optional: send to backend to delete from DB)
