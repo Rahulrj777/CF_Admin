@@ -35,7 +35,7 @@ export default function DirectionHighlights() {
 
     try {
       setLoading(true);
-      await axios.post(`${API_BASE}/directionhighlights`, formData, {
+      await axios.post(`${API_BASE}/directionhighlights/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setImage(null);
