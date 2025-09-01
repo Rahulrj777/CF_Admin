@@ -6,16 +6,14 @@ const DirectionBanner = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
-  const API_BASE =
-    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
 
-  // ✅ Fetch existing banners on mount
+  // Fetch banners on mount
   useEffect(() => {
     const fetchBanners = async () => {
       try {
         const res = await fetch(`${API_BASE}/directionbanner`);
         const data = await res.json();
-        console.log("Fetched banners:", data);
         setBanners(data);
       } catch (err) {
         console.error("Error fetching banners:", err);
@@ -25,7 +23,7 @@ const DirectionBanner = () => {
     fetchBanners();
   }, [API_BASE]);
 
-  // ✅ Upload new banner
+  // Upload new banner
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!image) return;
@@ -42,35 +40,28 @@ const DirectionBanner = () => {
       });
       const data = await res.json();
 
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setBanners((prev) => [...prev, data]);
-      }
+      if (data.error) setError(data.error);
+      else setBanners((prev) => [...prev, data]);
     } catch (err) {
-      console.error("Frontend upload error:", err);
+      console.error("Upload error:", err);
       setError(err.message);
     } finally {
       setUploading(false);
     }
   };
 
-  // ✅ Delete banner (from backend + state)
-const handleDelete = async (id) => {
-  try {
-    const res = await fetch(`${API_BASE}/directionbanner/${id}`, { method: "DELETE" });
-    const data = await res.json();
-
-    if (data.success) {
-      setBanners((prev) => prev.filter((b) => b._id !== id));
-    } else {
-      setError(data.error || "Failed to delete banner");
+  // Delete banner
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/directionbanner/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) setBanners((prev) => prev.filter((b) => b._id !== id));
+      else setError(data.error || "Failed to delete banner");
+    } catch (err) {
+      console.error("Delete error:", err);
+      setError("Error deleting banner");
     }
-  } catch (err) {
-    console.error("Delete error:", err);
-    setError("Error deleting banner");
-  }
-};
+  };
 
   return (
     <div className="p-6">
@@ -98,15 +89,8 @@ const handleDelete = async (id) => {
       {/* Banner grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {banners.map((banner) => (
-          <div
-            key={banner._id}
-            className="relative border rounded-lg overflow-hidden"
-          >
-            <img
-              src={banner.imageUrl}
-              alt="banner"
-              className="w-full h-40 object-cover"
-            />
+          <div key={banner._id} className="relative border rounded-lg overflow-hidden">
+            <img src={banner.imageUrl} alt="banner" className="w-full h-40 object-cover" />
             <button
               onClick={() => handleDelete(banner._id)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
