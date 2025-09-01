@@ -110,7 +110,7 @@ const handleDelete = async (publicId) => {
               className="w-full h-40 object-cover"
             />
             <button
-              onClick={() => handleDelete(banner.publicId)}
+              onClick={() => handleDelete(banner.id)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
