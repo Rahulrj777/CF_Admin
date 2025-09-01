@@ -12,7 +12,7 @@ const HomeMentors = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/homementors`);
+        const res = await axios.get(`${API_BASE}/homementor`);
         setMentors(res.data);
       } catch (err) {
         console.error("Error fetching mentors:", err);
@@ -37,7 +37,7 @@ const HomeMentors = () => {
     formData.append("image", image);
 
     try {
-      const res = await axios.post(`${API_BASE}/homementors/upload`, formData, {
+      const res = await axios.post(`${API_BASE}/homementor/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -55,7 +55,7 @@ const HomeMentors = () => {
   // ✅ Delete mentor
   const handleDelete = async (_id) => {
     try {
-      const res = await axios.delete(`${API_BASE}/homementors/${_id}`);
+      const res = await axios.delete(`${API_BASE}/homementor/${_id}`);
       if (res.data.success) {
         setMentors((prev) => prev.filter((m) => m._id !== _id));
       }
