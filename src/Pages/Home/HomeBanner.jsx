@@ -1,53 +1,77 @@
-import { useState } from "react";
-
-// Replace these with your Cloudinary details
-const CLOUD_NAME = "dshnmht7c";
-const UPLOAD_PRESET = "CF_Frontend";
+import { useState, useEffect } from "react";
 
 const HomeBanner = () => {
   const [banners, setBanners] = useState([]);
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
-  
-const handleUpload = async (e) => {
-  e.preventDefault();
-  if (!image) return;
 
-  setUploading(true); // ✅ 4th point: start uploading
+  const API_BASE =
+    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
 
-  const formData = new FormData();
-  formData.append("image", image); // must match multer field name
+  // ✅ Fetch existing banners on mount
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/homebanner`);
+        const data = await res.json();
+        console.log("Fetched banners:", data);
+        setBanners(data);
+      } catch (err) {
+        console.error("Error fetching banners:", err);
+        setError("Failed to load banners");
+      }
+    };
+    fetchBanners();
+  }, [API_BASE]);
 
-  try {
-    // ✅ 3rd point: use dynamic backend URL
-    const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
-    const res = await fetch(`${API_BASE}/homebanner/upload`, {
-      method: "POST",
-      body: formData,
-    });
+  // ✅ Upload new banner
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!image) return;
 
-    const data = await res.json();
-    console.log("Uploaded image:", data);
+    setUploading(true);
 
-    if (data.error) {
-      console.error("Upload error:", data.error);
-      setError(data.error);
-    } else {
-      console.log("Uploaded image:", data);
-      setBanners((prev) => [...prev, data]);
+    const formData = new FormData();
+    formData.append("image", image);
+
+    try {
+      const res = await fetch(`${API_BASE}/homebanner/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setBanners((prev) => [...prev, data]);
+      }
+    } catch (err) {
+      console.error("Frontend upload error:", err);
+      setError(err.message);
+    } finally {
+      setUploading(false);
     }
-  } catch (err) {
-    console.error("Frontend upload error:", err);
-    setError(err.message);
-  } finally {
-    setUploading(false); // ✅ 4th point: finish uploading
-  }
-};
+  };
 
-  const handleDelete = (publicId) => {
-    // Just remove from local state (optional: send to backend to delete from DB)
-    setBanners(banners.filter((b) => b.publicId !== publicId));
+  // ✅ Delete banner (from backend + state)
+  const handleDelete = async (publicId) => {
+    try {
+      const res = await fetch(`${API_BASE}/homebanner/${publicId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setBanners((prev) => prev.filter((b) => b.publicId !== publicId));
+      } else {
+        setError("Failed to delete banner");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      setError("Error deleting banner");
+    }
   };
 
   return (
@@ -56,6 +80,7 @@ const handleUpload = async (e) => {
 
       {error && <div className="text-red-600 mb-4">{error}</div>}
 
+      {/* Upload form */}
       <form onSubmit={handleUpload} className="mb-6 flex gap-4 items-center">
         <input
           type="file"
@@ -72,14 +97,15 @@ const handleUpload = async (e) => {
         </button>
       </form>
 
+      {/* Banner grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {banners.map((banner) => (
           <div
-            key={banner.publicId}
+            key={banner._id}
             className="relative border rounded-lg overflow-hidden"
           >
             <img
-              src={banner.imageUrl || "/placeholder.svg"}
+              src={banner.imageUrl}
               alt="banner"
               className="w-full h-40 object-cover"
             />
