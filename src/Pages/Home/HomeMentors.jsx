@@ -1,115 +1,108 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_BASE } from "../../Utils/Api.js"; 
+import { API_BASE } from "../../Utils/Api.js";
 
 const HomeMentors = () => {
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [message, setMessage] = useState("");
   const [mentors, setMentors] = useState([]);
+  const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Fetch mentors
-  const fetchMentors = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/mentors`);
-      setMentors(res.data);
-    } catch (err) {
-      console.error("Error fetching mentors:", err);
-    }
-  };
-
+  // ✅ Fetch mentors on mount
   useEffect(() => {
+    const fetchMentors = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/mentors`);
+        setMentors(res.data);
+      } catch (err) {
+        console.error("Error fetching mentors:", err);
+        setError("Failed to load mentors");
+      }
+    };
     fetchMentors();
   }, []);
 
+  // ✅ Handle file select
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    setPreview(URL.createObjectURL(selectedFile));
+    setImage(e.target.files[0]);
   };
 
-  const handleUpload = async () => {
-    if (!file) {
-      setMessage("⚠️ Please select an image.");
-      return;
-    }
+  // ✅ Upload new mentor
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!image) return;
 
+    setUploading(true);
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", image);
 
     try {
       const res = await axios.post(`${API_BASE}/mentors/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setMessage("✅ Upload successful!");
-      setFile(null);
-      setPreview(null);
       setMentors((prev) => [...prev, res.data]);
+      setImage(null);
+      setError(null);
     } catch (err) {
-      console.error(err.response?.data || err.message);
-      setMessage("❌ Upload failed. Try again.");
+      console.error("Upload error:", err);
+      setError("Failed to upload mentor image");
+    } finally {
+      setUploading(false);
     }
   };
 
+  // ✅ Delete mentor
   const handleDelete = async (_id) => {
     try {
-      await axios.delete(`${API_BASE}/mentors/${_id}`);
-      setMentors((prev) => prev.filter((m) => m._id !== _id));
-      setMessage("🗑️ Mentor deleted successfully");
+      const res = await axios.delete(`${API_BASE}/mentors/${_id}`);
+      if (res.data.success) {
+        setMentors((prev) => prev.filter((m) => m._id !== _id));
+      }
     } catch (err) {
-      console.error("Delete failed:", err);
-      setMessage("❌ Delete failed. Try again.");
+      console.error("Delete error:", err);
+      setError("Failed to delete mentor");
     }
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-xl font-bold mb-4 text-center">Upload Mentor Image</h2>
+    <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md">
+      <h2 className="text-xl font-semibold mb-4">Manage Mentors</h2>
 
-      <div className="mb-8">
+      {error && <div className="text-red-600 mb-4">{error}</div>}
+
+      {/* Upload form */}
+      <form onSubmit={handleUpload} className="mb-6 flex gap-4 items-center">
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="mb-4"
+          className="border p-2"
         />
-
-        {preview && (
-          <div className="mb-4">
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-40 h-40 object-cover mx-auto rounded-lg shadow"
-            />
-          </div>
-        )}
-
         <button
-          onClick={handleUpload}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-60"
+          disabled={!image || uploading}
         >
-          Upload
+          {uploading ? "Uploading..." : "Upload"}
         </button>
-      </div>
+      </form>
 
-      {message && <p className="mb-6 text-center text-sm">{message}</p>}
-
-      <h3 className="text-lg font-semibold mb-4">Mentors List</h3>
+      {/* Mentor grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {mentors.map((mentor) => (
           <div
             key={mentor._id}
-            className="border rounded-lg p-3 text-center shadow-sm"
+            className="relative border rounded-lg p-3 text-center shadow-sm"
           >
             <img
-              src={mentor.imageUrl} // Cloudinary URL
+              src={mentor.imageUrl}
               alt="Mentor"
               className="w-32 h-32 object-cover mx-auto rounded-full"
             />
             <button
               onClick={() => handleDelete(mentor._id)}
-              className="mt-2 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+              className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
             </button>
