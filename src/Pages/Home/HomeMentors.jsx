@@ -1,31 +1,29 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { API_BASE } from "../../Utils/Api.js";
 
-const HomeMentors = () => {
+const HomeMentor = () => {
   const [mentors, setMentors] = useState([]);
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ✅ Fetch mentors on mount
+  const API_BASE =
+    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+
+  // ✅ Fetch existing mentors on mount
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/homementor`);
-        setMentors(res.data);
+        const res = await fetch(`${API_BASE}/mentors`);
+        const data = await res.json();
+        console.log("Fetched mentors:", data);
+        setMentors(data);
       } catch (err) {
         console.error("Error fetching mentors:", err);
         setError("Failed to load mentors");
       }
     };
     fetchMentors();
-  }, []);
-
-  // ✅ Handle file select
-  const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
-  };
+  }, [API_BASE]);
 
   // ✅ Upload new mentor
   const handleUpload = async (e) => {
@@ -33,41 +31,50 @@ const HomeMentors = () => {
     if (!image) return;
 
     setUploading(true);
+
     const formData = new FormData();
     formData.append("image", image);
 
     try {
-      const res = await axios.post(`${API_BASE}/homementor/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await fetch(`${API_BASE}/mentors/upload`, {
+        method: "POST",
+        body: formData,
       });
+      const data = await res.json();
 
-      setMentors((prev) => [...prev, res.data]);
-      setImage(null);
-      setError(null);
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setMentors((prev) => [...prev, data]);
+      }
     } catch (err) {
-      console.error("Upload error:", err);
-      setError("Failed to upload mentor image");
+      console.error("Frontend upload error:", err);
+      setError(err.message);
     } finally {
       setUploading(false);
     }
   };
 
-  // ✅ Delete mentor
-  const handleDelete = async (_id) => {
-    try {
-      const res = await axios.delete(`${API_BASE}/homementor/${_id}`);
-      if (res.data.success) {
-        setMentors((prev) => prev.filter((m) => m._id !== _id));
-      }
-    } catch (err) {
-      console.error("Delete error:", err);
-      setError("Failed to delete mentor");
+  // ✅ Delete mentor (from backend + state)
+const handleDelete = async (id) => {
+  try {
+    const res = await fetch(`${API_BASE}/mentors/${id}`, { method: "DELETE" });
+    const data = await res.json();
+
+    if (data.success) {
+      setMentors((prev) => prev.filter((b) => b._id !== id));
+    } else {
+      setError(data.error || "Failed to delete mentor");
     }
-  };
+  } catch (err) {
+    console.error("Delete error:", err);
+    setError("Error deleting mentor");
+  }
+};
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Manage Mentors</h2>
+    <div className="p-6">
+      <h2 className="text-xl font-semibold mb-4">Manage Home Mentors</h2>
 
       {error && <div className="text-red-600 mb-4">{error}</div>}
 
@@ -76,7 +83,7 @@ const HomeMentors = () => {
         <input
           type="file"
           accept="image/*"
-          onChange={handleFileChange}
+          onChange={(e) => setImage(e.target.files[0])}
           className="border p-2"
         />
         <button
@@ -88,17 +95,17 @@ const HomeMentors = () => {
         </button>
       </form>
 
-      {/* Mentor grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      {/* mentor grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {mentors.map((mentor) => (
           <div
             key={mentor._id}
-            className="relative border rounded-lg p-3 text-center shadow-sm"
+            className="relative border rounded-lg overflow-hidden"
           >
             <img
               src={mentor.imageUrl}
-              alt="Mentor"
-              className="w-32 h-32 object-cover mx-auto rounded-full"
+              alt="mentor"
+              className="w-full h-40 object-cover"
             />
             <button
               onClick={() => handleDelete(mentor._id)}
@@ -113,4 +120,4 @@ const HomeMentors = () => {
   );
 };
 
-export default HomeMentors;
+export default HomeMentor;
