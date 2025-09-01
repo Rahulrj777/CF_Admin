@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { API_BASE } from "../../Utils/Api.js"; // use API_BASE
+import { API_BASE } from "../../Utils/Api.js"; // keep your API_BASE import
 
 const VideoGallery = () => {
   const [videos, setVideos] = useState([]);
