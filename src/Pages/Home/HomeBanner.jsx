@@ -64,7 +64,7 @@ const handleDelete = async (id) => {
     const data = await res.json();
 
     if (data.success) {
-      setBanners((prev) => prev.filter((b) => b.publicId !== publicId));
+      setBanners((prev) => prev.filter((b) => b.id !== id));
     } else {
       setError(data.error || "Failed to delete banner");
     }
