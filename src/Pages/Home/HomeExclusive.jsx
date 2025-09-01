@@ -33,9 +33,7 @@ export default function HomeExclusive() {
 
     try {
       setLoading(true);
-      await axios.post(`${API_BASE}/exclusive/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.post(`${API_BASE}/exclusive/upload`, formData, { headers: { "Content-Type": "multipart/form-data" } });
       setImage(null);
       setTitleLine("");
       fetchItems();
