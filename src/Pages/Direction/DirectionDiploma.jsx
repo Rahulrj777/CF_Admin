@@ -1,136 +1,66 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const DirectionDiplomaAdmin = () => {
-  const [semester1, setSemester1] = useState([""]);
-  const [semester2, setSemester2] = useState([""]);
-  const [pdf, setPdf] = useState(null);
-  const [savedData, setSavedData] = useState(null);
-  const [data, setData] = useState([]);
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
-  // Fetch saved data on load
+const DirectionDiplomaAdmin = () => {
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [pdf, setPdf] = useState(null);
+  const [diplomas, setDiplomas] = useState([]);
+
+  // Fetch saved diplomas
   useEffect(() => {
     axios
-      .get("http://localhost:5000/directiondiploma")
+      .get(`${API_BASE}/directiondiploma`)
       .then((res) => {
-        const diplomaData = Array.isArray(res.data) ? res.data : [res.data];
-        const first = diplomaData[0];
-
-        setData(diplomaData);
-
-        if (first) {
-          setSavedData({
-            ...first,
-            // Normalize pdf: always array
-            pdf: first?.pdf
-              ? Array.isArray(first.pdf)
-                ? first.pdf
-                : [first.pdf]
-              : [],
-          });
-        }
-
-        // Always reset inputs for new data
-        setSemester1([""]);
-        setSemester2([""]);
+        setDiplomas(res.data || []);
       })
       .catch((err) => console.error(err));
   }, []);
 
-  const handleAddSemester1 = () => setSemester1([...semester1, ""]);
-  const handleAddSemester2 = () => setSemester2([...semester2, ""]);
-
-  const handleChangeSemester1 = (index, value) => {
-    const updated = [...semester1];
-    updated[index] = value;
-    setSemester1(updated);
-  };
-
-  const handleChangeSemester2 = (index, value) => {
-    const updated = [...semester2];
-    updated[index] = value;
-    setSemester2(updated);
-  };
-
-  const handleDeleteSemester1 = (index) => {
-    const temp = [...savedData.semester1];
-    temp.splice(index, 1);
-    const newData = { ...savedData, semester1: temp };
-    fsWriteData(newData);
-  };
-
-  const handleDeleteSemester2 = (index) => {
-    const temp = [...savedData.semester2];
-    temp.splice(index, 1);
-    const newData = { ...savedData, semester2: temp };
-    fsWriteData(newData);
-  };
-
-  // Helper: write JSON data update
-  const fsWriteData = async (data) => {
-    try {
-      await axios.post("http://localhost:5000/directiondiploma/update", data);
-      setSavedData(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // Save new data
+  // Add new diploma
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!title || !pdf) return alert("Title and PDF are required");
+
     const formData = new FormData();
-
-    // Only add non-empty values
-    semester1.filter((s) => s.trim() !== "").forEach((s) => formData.append("semester1", s));
-    semester2.filter((s) => s.trim() !== "").forEach((s) => formData.append("semester2", s));
-
-    if (pdf) formData.append("pdf", pdf);
+    formData.append("title", title);
+    formData.append("subtitle", subtitle);
+    formData.append("pdf", pdf);
 
     try {
-      const res = await axios.post("http://localhost:5000/directiondiploma", formData, {
+      const res = await axios.post(`${API_BASE}/directiondiploma`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      // Normalize saved pdf
-      const updated = {
-        ...res.data.data,
-        pdf: res.data.data?.pdf
-          ? Array.isArray(res.data.data.pdf)
-            ? res.data.data.pdf
-            : [res.data.data.pdf]
-          : [],
-      };
-
-      setSavedData(updated);
-
-      // Reset form
-      setSemester1([""]);
-      setSemester2([""]);
+      setDiplomas([...diplomas, res.data.data]);
+      setTitle("");
+      setSubtitle("");
       setPdf(null);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
-  const handleDeletePdf = async (file) => {
+  // Delete PDF
+  const handleDeletePdf = async (id) => {
     try {
-      const res = await axios.delete("http://localhost:5000/directiondiploma/pdf", {
-        data: { file },
-      });
-
-      const updated = {
-        ...res.data.data,
-        pdf: res.data.data?.pdf
-          ? Array.isArray(res.data.data.pdf)
-            ? res.data.data.pdf
-            : [res.data.data.pdf]
-          : [],
-      };
-
-      setSavedData(updated);
+      const res = await axios.delete(`${API_BASE}/directiondiploma/pdf`, { data: { _id: id } });
+      setDiplomas((prev) =>
+        prev.map((d) => (d._id === id ? { ...d, pdfUrl: null, publicId: null } : d))
+      );
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    }
+  };
+
+  // Delete entire diploma item
+  const handleDeleteDiploma = async (id) => {
+    try {
+      await axios.delete(`${API_BASE}/directiondiploma/${id}`);
+      setDiplomas((prev) => prev.filter((d) => d._id !== id));
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -138,134 +68,67 @@ const DirectionDiplomaAdmin = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4 text-black">Direction Diploma Admin</h2>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-y-4 text-black">
-        {/* Semester 1 */}
         <div>
-          <h3>Semester 1</h3>
-          {semester1.map((s, i) => (
-            <input
-              key={i}
-              value={s}
-              onChange={(e) => handleChangeSemester1(i, e.target.value)}
-              className="border p-2 w-full my-1 text-black"
-              placeholder="Enter subject"
-            />
-          ))}
-          <button
-            type="button"
-            onClick={handleAddSemester1}
-            className="bg-blue-500 px-2 py-1 mt-1 text-white"
-          >
-            Add +
-          </button>
+          <label className="block">Title (required)</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border p-2 w-full my-1"
+          />
         </div>
-
-        {/* Semester 2 */}
         <div>
-          <h3>Semester 2</h3>
-          {semester2.map((s, i) => (
-            <input
-              key={i}
-              value={s}
-              onChange={(e) => handleChangeSemester2(i, e.target.value)}
-              className="border p-2 w-full my-1 text-black"
-              placeholder="Enter subject"
-            />
-          ))}
-          <button
-            type="button"
-            onClick={handleAddSemester2}
-            className="bg-blue-500 px-2 py-1 mt-1 text-white"
-          >
-            Add +
-          </button>
+          <label className="block">Subtitle (optional)</label>
+          <input
+            type="text"
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            className="border p-2 w-full my-1"
+          />
         </div>
-
-        {/* PDF */}
         <div>
-          <h3>Upload PDF</h3>
-          {savedData?.pdf?.length > 0 ? (
-            <p className="text-red-500">
-              A PDF is already uploaded. Delete it before uploading a new one.
-            </p>
-          ) : (
-            <input type="file" onChange={(e) => setPdf(e.target.files[0])} />
-          )}
+          <label className="block">Upload PDF (required)</label>
+          <input type="file" onChange={(e) => setPdf(e.target.files[0])} />
         </div>
-
-        <button
-          type="submit"
-          className="bg-green-500 px-4 py-2 mt-2 text-white"
-        >
-          Save
+        <button type="submit" className="bg-green-500 px-4 py-2 mt-2 text-white">
+          Add Diploma
         </button>
       </form>
 
-      {/* Saved data */}
-      {savedData && (
-        <div className="mt-10 text-black">
-          <h3>Saved Data</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            {/* Semester 1 */}
-            <div>
-              <h4>Semester 1</h4>
-              {savedData?.semester1?.map((s, i) => (
-                <div key={i} className="flex items-center gap-x-2">
-                  <span>{s}</span>
-                  <button
-                    type="button"
-                    className="text-red-500"
-                    onClick={() => handleDeleteSemester1(i)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Semester 2 */}
-            <div>
-              <h4>Semester 2</h4>
-              {savedData?.semester2?.map((s, i) => (
-                <div key={i} className="flex items-center gap-x-2">
-                  <span>{s}</span>
-                  <button
-                    type="button"
-                    className="text-red-500"
-                    onClick={() => handleDeleteSemester2(i)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* PDFs */}
-            <div>
-              <h4>PDFs</h4>
-              {savedData?.pdf?.map((file, i) => (
-                <div key={i} className="flex items-center gap-x-2">
-                  <a
-                    href={`http://localhost:5000${file}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {file.split("/").pop()}
+      {/* Saved diplomas */}
+      <div className="mt-10 text-black">
+        <h3 className="text-xl mb-2">Saved Diplomas</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {diplomas.map((d) => (
+            <div key={d._id} className="border p-4 rounded shadow">
+              <h4 className="font-bold">{d.title}</h4>
+              {d.subtitle && <p>{d.subtitle}</p>}
+              {d.pdfUrl ? (
+                <div className="flex items-center gap-x-2 mt-2">
+                  <a href={d.pdfUrl} target="_blank" rel="noopener noreferrer">
+                    View PDF
                   </a>
                   <button
-                    type="button"
                     className="text-red-500"
-                    onClick={() => handleDeletePdf(file)}
+                    onClick={() => handleDeletePdf(d._id)}
                   >
-                    x
+                    Delete PDF
                   </button>
                 </div>
-              ))}
+              ) : (
+                <p className="text-red-500 mt-1">No PDF uploaded</p>
+              )}
+              <button
+                className="text-red-600 mt-2"
+                onClick={() => handleDeleteDiploma(d._id)}
+              >
+                Delete Diploma
+              </button>
             </div>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };
