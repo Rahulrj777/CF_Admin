@@ -56,7 +56,7 @@ const HomeBanner = () => {
   };
 
   // ✅ Delete banner (from backend + state)
-const handleDelete = async (publicId) => {
+const handleDelete = async (id) => {
   try {
     const res = await fetch(`${API_BASE}/homebanner/${id}`, {
       method: "DELETE",
