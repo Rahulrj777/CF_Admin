@@ -56,15 +56,15 @@ const HomeBanner = () => {
   };
 
   // ✅ Delete banner (from backend + state)
-const handleDelete = async (id) => {
+const handleDelete = async (publicId) => {
   try {
-    const res = await fetch(`${API_BASE}/homebanner/${id}`, {
+    const res = await fetch(`${API_BASE}/homebanner/${publicId}`, {
       method: "DELETE",
     });
     const data = await res.json();
 
     if (data.success) {
-      setBanners((prev) => prev.filter((b) => b.id !== id));
+      setBanners((prev) => prev.filter((b) => b.publicId !== publicId));
     } else {
       setError(data.error || "Failed to delete banner");
     }
@@ -110,7 +110,7 @@ const handleDelete = async (id) => {
               className="w-full h-40 object-cover"
             />
             <button
-              onClick={() => handleDelete(banner.id)}
+              onClick={() => handleDelete(banner.publicIdid)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
