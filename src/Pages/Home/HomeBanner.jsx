@@ -56,23 +56,23 @@ const HomeBanner = () => {
   };
 
   // ✅ Delete banner (from backend + state)
-  const handleDelete = async (publicId) => {
-    try {
-      const res = await fetch(`${API_BASE}/homebanner/${publicId}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
+const handleDelete = async (publicId) => {
+  try {
+    const res = await fetch(`${API_BASE}/homebanner/${publicId}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
 
-      if (data.success) {
-        setBanners((prev) => prev.filter((b) => b.publicId !== publicId));
-      } else {
-        setError("Failed to delete banner");
-      }
-    } catch (err) {
-      console.error("Delete error:", err);
-      setError("Error deleting banner");
+    if (data.success) {
+      setBanners((prev) => prev.filter((b) => b.publicId !== publicId));
+    } else {
+      setError(data.error || "Failed to delete banner");
     }
-  };
+  } catch (err) {
+    console.error("Delete error:", err);
+    setError("Error deleting banner");
+  }
+};
 
   return (
     <div className="p-6">
