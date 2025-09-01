@@ -282,7 +282,7 @@ const AdminDiploma = () => {
     onChange={(e) => setPdf(e.target.files?.[0] || null)}
     className="bg-gray-700 px-2 py-1 rounded w-full mb-4"
   />
-)}w
+)}
       {/* Actions */}
       <div className="flex gap-4 mt-6">
         {!editMode && (
