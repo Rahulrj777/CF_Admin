@@ -59,10 +59,10 @@ const DirectorMentor = () => {
   };
 
   // Delete mentor
-  const handleDelete = async (filename) => {
+  const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_URL}/${filename}`);
-      setMentors((prev) => prev.filter((m) => m.fileName !== filename));
+      await axios.delete(`${API_URL}/${publicId}`);
+      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
       console.error("Delete failed:", err);
@@ -125,7 +125,7 @@ const DirectorMentor = () => {
             />
             <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
             <button
-              onClick={() => handleDelete(mentor.fileName)}
+              onClick={() => handleDelete(mentor.publicId)}
               className="mt-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
             >
               Delete
