@@ -54,17 +54,21 @@ const DirectionDiplomaAdmin = () => {
       });
 
       // Upload PDF if selected
-      if (pdf) {
-        const formData = new FormData();
-        formData.append("pdf", pdf);
-        await axios.post(`${API_BASE}/directiondiploma/pdf`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      }
+if (pdf) {
+  const formData = new FormData();
+  formData.append("pdf", pdf);
+
+  const uploadRes = await axios.post(`${API_BASE}/directiondiploma/pdf`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  console.log("PDF Upload Response:", uploadRes.data); // 👈 add this
+}
 
       // Refresh data
       const res = await axios.get(`${API_BASE}/directiondiploma`);
       const data = res.data.direction.diploma[0] || { semester1: [], semester2: [], pdfUrl: "" };
+      console.log("Fetched diploma data:", res.data); // 👈 add this
       setSavedData(data);
       setPdf(null);
     } catch (err) {
