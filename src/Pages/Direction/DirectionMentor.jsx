@@ -43,7 +43,7 @@ const DirectorMentor = () => {
     formData.append("description", description);
 
     try {
-      const res = await axios.post(`${API_BASE}/upload`, formData, {
+      const res = await axios.post(`${API_BASE}/directionmentor/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -61,7 +61,7 @@ const DirectorMentor = () => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_BASE}/${publicId}`);
+      await axios.delete(`${API_BASE}/directionmentor/${publicId}`);
       setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
