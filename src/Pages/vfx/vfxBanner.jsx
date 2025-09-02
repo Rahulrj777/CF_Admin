@@ -1,59 +1,75 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 const VfxBanner = () => {
   const [banners, setBanners] = useState([]);
   const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Fetch banners
-  const fetchBanners = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/vfxbanner/");
-      setBanners(res.data);
-    } catch (err) {
-      console.error("Error fetching banners:", err);
-    }
-  };
+  const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
 
+  // Fetch banners on mount
   useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/vfxbanner`);
+        const data = await res.json();
+        setBanners(data);
+      } catch (err) {
+        console.error("Error fetching banners:", err);
+        setError("Failed to load banners");
+      }
+    };
     fetchBanners();
-  }, []);
+  }, [API_BASE]);
 
-  // Upload banner
+  // Upload new banner
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!image) return;
+
+    setUploading(true);
 
     const formData = new FormData();
     formData.append("image", image);
 
     try {
-      await axios.post("http://localhost:5000/vfxbanner/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await fetch(`${API_BASE}/vfxbanner/upload`, {
+        method: "POST",
+        body: formData,
       });
+      const data = await res.json();
 
-      setImage(null);
-      fetchBanners();
+      if (data.error) setError(data.error);
+      else setBanners((prev) => [...prev, data]);
     } catch (err) {
-      console.error("Error uploading banner:", err);
+      console.error("Upload error:", err);
+      setError(err.message);
+    } finally {
+      setUploading(false);
     }
   };
 
   // Delete banner
-  const handleDelete = async (fileName) => {
+  const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/vfxbanner/${fileName}`);
-      fetchBanners();
+      const res = await fetch(`${API_BASE}/vfxbanner/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) setBanners((prev) => prev.filter((b) => b._id !== id));
+      else setError(data.error || "Failed to delete banner");
     } catch (err) {
-      console.error("Error deleting banner:", err);
+      console.error("Delete error:", err);
+      setError("Error deleting banner");
     }
   };
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Manage Home Banners</h2>
+      <h2 className="text-xl font-semibold mb-4">Manage Vfx Banners</h2>
 
-      {/* Upload Form */}
+      {error && <div className="text-red-600 mb-4">{error}</div>}
+
+      {/* Upload form */}
       <form onSubmit={handleUpload} className="mb-6 flex gap-4 items-center">
         <input
           type="file"
@@ -63,26 +79,20 @@ const VfxBanner = () => {
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-60"
+          disabled={!image || uploading}
         >
-          Upload
+          {uploading ? "Uploading..." : "Upload"}
         </button>
       </form>
 
-      {/* Banner List */}
+      {/* Banner grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {banners.map((banner) => (
-          <div
-            key={banner.id}
-            className="relative border rounded-lg overflow-hidden"
-          >
-            <img
-              src={banner.url}
-              alt="banner"
-              className="w-full h-40 object-cover"
-            />
+          <div key={banner._id} className="relative border rounded-lg overflow-hidden">
+            <img src={banner.imageUrl} alt="banner" className="w-full h-40 object-cover" />
             <button
-              onClick={() => handleDelete(banner.fileName)}
+              onClick={() => handleDelete(banner._id)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
               Delete
