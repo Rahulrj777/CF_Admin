@@ -128,7 +128,7 @@ const DirectionDiplomaAdmin = () => {
       {savedData && (
         <div className="mt-10 text-black">
           <h3>Saved Data</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div className="gap-4 mt-4">
             <div>
               <h4>Semester 1</h4>
               {savedData.semester1?.map((item, i) => (
