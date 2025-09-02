@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/directionmentor";
+const API_BASE = import.meta.env.VITE_API_BASE
 
 const DirectorMentor = () => {
   const [file, setFile] = useState(null);
@@ -17,7 +17,7 @@ const DirectorMentor = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await axios.get(API_URL);
+      const res = await axios.get(API_BASE);
       setMentors(res.data);
     } catch (err) {
       console.error("Error fetching mentors:", err);
@@ -43,7 +43,7 @@ const DirectorMentor = () => {
     formData.append("description", description);
 
     try {
-      const res = await axios.post(`${API_URL}/upload`, formData, {
+      const res = await axios.post(`${API_BASE}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -61,7 +61,7 @@ const DirectorMentor = () => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_URL}/${publicId}`);
+      await axios.delete(`${API_BASE}/${publicId}`);
       setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
