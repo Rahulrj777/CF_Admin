@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const DirectionFilmography = () => {
   const [file, setFile] = useState(null);
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/directionfilmography")
+    axios.get(`${API_BASE}/directionfilmography`)
       .then(res => setItems(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -19,7 +21,7 @@ const DirectionFilmography = () => {
     formData.append("image", file);
 
     try {
-      const res = await axios.post("http://localhost:5000/directionfilmography/upload", formData, {
+      const res = await axios.post(`${API_BASE}/directionfilmography/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setItems([...items, res.data.item]);
@@ -29,10 +31,10 @@ const DirectionFilmography = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`http://localhost:5000/directionfilmography/${id}`);
-      setItems(items.filter(item => item.id !== id));
+      await axios.delete(`${API_BASE}/directionfilmography/${publicId}`);
+      setItems(items.filter(item => item.publicId !== publicId));
     } catch (err) {
       console.error("Delete failed", err);
     }
@@ -51,10 +53,10 @@ const DirectionFilmography = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {items.map((item) => (
-          <div key={item.id} className="relative">
-            <img src={`http://localhost:5000${item.image}`} alt="" className="w-full h-40 object-cover" />
+          <div key={item.publicId} className="relative">
+            <img src={item.imageUrl} alt="" className="w-full h-40 object-cover" />
             <button
-              onClick={() => handleDelete(item.id)}
+              onClick={() => handleDelete(item.publicId)}
               className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded"
             >
               X
