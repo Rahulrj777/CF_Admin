@@ -7,11 +7,17 @@ const DirectionFilmography = () => {
   const [file, setFile] = useState(null);
   const [items, setItems] = useState([]);
 
-  useEffect(() => {
-    axios.get(`${API_BASE}/directionfilmography`)
-      .then(res => setItems(res.data))
-      .catch(err => console.error(err));
-  }, []);
+useEffect(() => {
+  axios.get(`${API_BASE}/directionfilmography`)
+    .then(res => {
+      // If backend sends array → use directly, else fallback to []
+      setItems(Array.isArray(res.data) ? res.data : []);
+    })
+    .catch(err => {
+      console.error(err);
+      setItems([]); // fallback
+    });
+}, []);
 
   const handleUpload = async (e) => {
     e.preventDefault();
