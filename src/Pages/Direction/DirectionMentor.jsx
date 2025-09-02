@@ -15,14 +15,16 @@ const DirectorMentor = () => {
     fetchMentors();
   }, []);
 
-  const fetchMentors = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/directionmentor`);
-      setMentors(res.data);
-    } catch (err) {
-      console.error("Error fetching mentors:", err);
-    }
-  };
+const fetchMentors = async () => {
+  try {
+    const res = await axios.get(`${API_BASE}/directionmentor`);
+    const mentorData = res.data?.direction?.mentor || [];
+    setMentors(Array.isArray(mentorData) ? mentorData : []);
+  } catch (err) {
+    console.error("Error fetching mentors:", err);
+    setMentors([]);
+  }
+};
 
   // Handle image select
   const handleFileChange = (e) => {
