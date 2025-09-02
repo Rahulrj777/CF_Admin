@@ -47,8 +47,7 @@ const DirectorMentor = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setMentors((prev) => [...prev, res.data]);
-      setFile(null);
+      fetchMentors();      setFile(null);
       setPreview(null);
       setDescription("");
       setMessage("✅ Mentor uploaded successfully!");
@@ -115,7 +114,7 @@ const DirectorMentor = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {mentors.map((mentor) => (
           <div
-            key={mentor.id}
+            key={mentor.publicId}
             className="border rounded-lg p-4 text-center shadow-sm"
           >
             <img
