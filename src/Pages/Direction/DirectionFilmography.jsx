@@ -37,12 +37,18 @@ useEffect(() => {
     }
   };
 
+  // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_BASE}/directionfilmography/${publicId}`);
-      setItems(items.filter(item => item.publicId !== publicId));
+      const url = `${API_BASE}/directionfilmography/${encodeURIComponent(publicId)}`;
+      console.log("Deleting mentor at:", url);
+
+      await axios.delete(url);
+      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+      setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
-      console.error("Delete failed", err);
+      console.error("Delete failed:", err.response?.data || err.message);
+      setMessage("❌ Delete failed. Try again.");
     }
   };
 
