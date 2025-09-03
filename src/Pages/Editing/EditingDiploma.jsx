@@ -18,8 +18,8 @@ const AdminDiploma = () => {
   const fetchDiplomaData = async () => {
     try {
       const res = await axios.get(`${API_BASE}/editingdiploma`);
-      setSavedMonths(res.data.diploma || []); // ✅ correct field
-      setSavedPdf(res.data.pdf || ""); // ✅ also load PDF if present
+      setSavedMonths(res.data.diploma || []);
+      setSavedPdf(res.data.diplomaPdf?.url || ""); // ✅ load Cloudinary URL
     } catch (err) {
       console.error("Error fetching diploma data:", err);
     }
@@ -179,7 +179,7 @@ const AdminDiploma = () => {
 
       const formData = new FormData();
       formData.append("diploma", JSON.stringify(updatedMonths));
-      if (pdf) formData.append("pdf_global", pdf);
+      if (pdf) formData.append("diploma_pdf", pdf); // ✅ correct fieldname
 
       const res = await axios.post(
         `${API_BASE}/editingdiploma/save`,
@@ -190,9 +190,7 @@ const AdminDiploma = () => {
       );
 
       setSavedMonths(res.data.diploma || []);
-      setSavedPdf(res.data.pdf || "");
-      setMonths([]);
-      setPdf(null);
+      setSavedPdf(res.data.diplomaPdf?.url || ""); // ✅ update with uploaded
       setFileKey((k) => k + 1);
       setEditMode(false);
       setEditingIndex(-1);
