@@ -58,7 +58,7 @@ const EditingFilmography = () => {
       console.error("Delete failed:", err.response?.data || err.message);
       setMessage("❌ Delete failed. Try again.");
     }
-  };
+  }; 
 
   return (
     <div className="p-4">
