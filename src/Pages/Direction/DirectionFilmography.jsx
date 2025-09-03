@@ -8,7 +8,6 @@ const DirectionFilmography = () => {
   const [items, setItems] = useState([]);
   const [message, setMessage] = useState(""); // add this at the top
 
-
   useEffect(() => {
     axios
       .get(`${API_BASE}/directionfilmography`)
