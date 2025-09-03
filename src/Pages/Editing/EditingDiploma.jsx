@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000"
+
 const AdminDiploma = () => {
-  const [months, setMonths] = useState([]) // draft
-  const [pdf, setPdf] = useState(null) // selected file
-  const [fileKey, setFileKey] = useState(0) // to clear file input
-  const [savedMonths, setSavedMonths] = useState([]) // last saved
-  const [savedPdf, setSavedPdf] = useState("") // last saved PDF path
+  const [months, setMonths] = useState([])
+  const [pdf, setPdf] = useState(null)
+  const [fileKey, setFileKey] = useState(0)
+  const [savedMonths, setSavedMonths] = useState([])
+  const [savedPdf, setSavedPdf] = useState("")
   const [saving, setSaving] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editingIndex, setEditingIndex] = useState(-1)
 
+  // -------- Fetch Saved Data --------
   const fetchDiplomaData = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/editingdiploma")
+      const res = await axios.get(`${API_BASE}/editingdiploma`)
       setSavedMonths(res.data.months || [])
       setSavedPdf(res.data.pdf || "")
     } catch (err) {
@@ -25,10 +28,11 @@ const AdminDiploma = () => {
     fetchDiplomaData()
   }, [])
 
+  // -------- Editing --------
   const startEditingMonth = (index) => {
     setEditMode(true)
     setEditingIndex(index)
-    setMonths([{ ...savedMonths[index] }]) // Copy the month to edit
+    setMonths([{ ...savedMonths[index] }])
     setPdf(null)
     setFileKey((k) => k + 1)
   }
@@ -41,18 +45,16 @@ const AdminDiploma = () => {
     setFileKey((k) => k + 1)
   }
 
+  // -------- Delete Month --------
   const deleteSavedMonth = async (index) => {
     if (!confirm("Are you sure you want to delete this month?")) return
-
     try {
       const updatedMonths = savedMonths.filter((_, i) => i !== index)
       const formData = new FormData()
       formData.append("months", JSON.stringify(updatedMonths))
-
-      const res = await axios.post("http://localhost:5000/editingdiploma/save", formData, {
+      const res = await axios.post(`${API_BASE}/editingdiploma/save`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-
       setSavedMonths(res.data.data.months || [])
       alert("Month deleted successfully ✅")
     } catch (err) {
@@ -61,61 +63,59 @@ const AdminDiploma = () => {
     }
   }
 
-  // ---------- IMMUTABLE EDIT HELPERS ----------
-  const addMonth = () => {
-    setMonths((prev) => [...prev, { month: "", sections: [] }])
-  }
+  // -------- CRUD Helpers --------
+  const addMonth = () => setMonths((prev) => [...prev, { month: "", sections: [] }])
+  const updateMonthTitle = (mi, value) =>
+    setMonths((prev) => prev.map((m, i) => (i === mi ? { ...m, month: value } : m)))
 
-  const updateMonthTitle = (mi, value) => {
-    setMonths((prev) => prev.map((m, idx) => (idx === mi ? { ...m, month: value } : m)))
-  }
-
-  const addSection = (mi) => {
+  const addSection = (mi) =>
     setMonths((prev) =>
-      prev.map((m, idx) => (idx === mi ? { ...m, sections: [...m.sections, { name: "New Section", items: [] }] } : m)),
-    )
-  }
-
-  const updateSectionName = (mi, si, value) => {
-    setMonths((prev) =>
-      prev.map((m, idx) =>
-        idx === mi ? { ...m, sections: m.sections.map((s, sidx) => (sidx === si ? { ...s, name: value } : s)) } : m,
+      prev.map((m, i) =>
+        i === mi ? { ...m, sections: [...m.sections, { name: "New Section", items: [] }] } : m,
       ),
     )
-  }
 
-  const deleteSection = (mi, si) => {
+  const updateSectionName = (mi, si, value) =>
     setMonths((prev) =>
-      prev.map((m, idx) => (idx === mi ? { ...m, sections: m.sections.filter((_, sidx) => sidx !== si) } : m)),
+      prev.map((m, i) =>
+        i === mi
+          ? { ...m, sections: m.sections.map((s, j) => (j === si ? { ...s, name: value } : s)) }
+          : m,
+      ),
     )
-  }
 
-  const addItem = (mi, si) => {
+  const deleteSection = (mi, si) =>
     setMonths((prev) =>
-      prev.map((m, idx) =>
-        idx === mi
+      prev.map((m, i) =>
+        i === mi ? { ...m, sections: m.sections.filter((_, j) => j !== si) } : m,
+      ),
+    )
+
+  const addItem = (mi, si) =>
+    setMonths((prev) =>
+      prev.map((m, i) =>
+        i === mi
           ? {
               ...m,
-              sections: m.sections.map((s, sidx) =>
-                sidx === si ? { ...s, items: [...s.items, { title: "New Item" }] } : s,
+              sections: m.sections.map((s, j) =>
+                j === si ? { ...s, items: [...s.items, { title: "New Item" }] } : s,
               ),
             }
           : m,
       ),
     )
-  }
 
-  const updateItemTitle = (mi, si, ii, value) => {
+  const updateItemTitle = (mi, si, ii, value) =>
     setMonths((prev) =>
-      prev.map((m, idx) =>
-        idx === mi
+      prev.map((m, i) =>
+        i === mi
           ? {
               ...m,
-              sections: m.sections.map((s, sidx) =>
-                sidx === si
+              sections: m.sections.map((s, j) =>
+                j === si
                   ? {
                       ...s,
-                      items: s.items.map((it, iidx) => (iidx === ii ? { ...it, title: value } : it)),
+                      items: s.items.map((it, k) => (k === ii ? { ...it, title: value } : it)),
                     }
                   : s,
               ),
@@ -123,29 +123,26 @@ const AdminDiploma = () => {
           : m,
       ),
     )
-  }
 
-  const deleteItem = (mi, si, ii) => {
+  const deleteItem = (mi, si, ii) =>
     setMonths((prev) =>
-      prev.map((m, idx) =>
-        idx === mi
+      prev.map((m, i) =>
+        i === mi
           ? {
               ...m,
-              sections: m.sections.map((s, sidx) =>
-                sidx === si ? { ...s, items: s.items.filter((_, iidx) => iidx !== ii) } : s,
+              sections: m.sections.map((s, j) =>
+                j === si ? { ...s, items: s.items.filter((_, k) => k !== ii) } : s,
               ),
             }
           : m,
       ),
     )
-  }
 
-  // ---------- SAVE ----------
+  // -------- Save --------
   const saveData = async () => {
     setSaving(true)
     try {
       let updatedMonths
-
       if (editMode && editingIndex >= 0) {
         updatedMonths = [...savedMonths]
         updatedMonths[editingIndex] = months[0]
@@ -155,18 +152,14 @@ const AdminDiploma = () => {
 
       const formData = new FormData()
       formData.append("months", JSON.stringify(updatedMonths))
-      if (pdf) {
-        formData.append("pdf_global", pdf)
-      }
+      if (pdf) formData.append("pdf_global", pdf)
 
-      const res = await axios.post("http://localhost:5000/editingdiploma/save", formData, {
+      const res = await axios.post(`${API_BASE}/editingdiploma/save`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
-      // Update preview from canonical server data
       setSavedMonths(res.data.data.months || [])
       setSavedPdf(res.data.data.pdf || "")
-
       setMonths([])
       setPdf(null)
       setFileKey((k) => k + 1)
@@ -181,12 +174,10 @@ const AdminDiploma = () => {
     }
   }
 
-  // ---------- DELETE PDF (unlock upload) ----------
+  // -------- Delete Global PDF --------
   const deleteSavedPdf = async () => {
     try {
-      await axios.delete("http://localhost:5000/editingdiploma/pdf", {
-        data: { file: savedPdf },
-      })
+      await axios.delete(`${API_BASE}/editingdiploma/pdf`)
       setSavedPdf("")
       setPdf(null)
       setFileKey((k) => k + 1)
@@ -199,16 +190,19 @@ const AdminDiploma = () => {
     <div className="p-6 text-white bg-gray-900 min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Diploma Admin</h2>
 
+      {/* Editing Banner */}
       {editMode && (
         <div className="mb-4 p-3 bg-blue-800 rounded-md">
-          <p className="font-semibold">Editing Mode: {savedMonths[editingIndex]?.month || "Month"}</p>
+          <p className="font-semibold">
+            Editing Month: {savedMonths[editingIndex]?.month || "New"}
+          </p>
           <button onClick={cancelEdit} className="mt-2 px-3 py-1 bg-gray-600 rounded">
             Cancel Edit
           </button>
         </div>
       )}
 
-      {/* Editable Months & Sections (DRAFT) */}
+      {/* Draft Months */}
       {months.map((month, mi) => (
         <div key={mi} className="border p-4 mb-6 rounded-md bg-gray-800">
           <div className="flex justify-between items-center mb-2">
@@ -258,31 +252,32 @@ const AdminDiploma = () => {
         </div>
       ))}
 
-{pdf && (
-  <div className="mb-4 p-3 bg-gray-800 rounded flex justify-between items-center">
-    <p>Selected PDF: {pdf.name}</p>
-    <button
-      onClick={() => {
-        setPdf(null)
-        setFileKey((k) => k + 1) // reset input
-      }}
-      className="px-3 py-1 bg-red-600 rounded"
-    >
-      ❌ Remove
-    </button>
-  </div>
-)}
+      {/* File Upload */}
+      {pdf && (
+        <div className="mb-4 p-3 bg-gray-800 rounded flex justify-between items-center">
+          <p>Selected PDF: {pdf.name}</p>
+          <button
+            onClick={() => {
+              setPdf(null)
+              setFileKey((k) => k + 1)
+            }}
+            className="px-3 py-1 bg-red-600 rounded"
+          >
+            ❌ Remove
+          </button>
+        </div>
+      )}
 
-{/* File input only if no selected file */}
-{!pdf && !savedPdf && (
-  <input
-    key={fileKey}
-    type="file"
-    accept="application/pdf"
-    onChange={(e) => setPdf(e.target.files?.[0] || null)}
-    className="bg-gray-700 px-2 py-1 rounded w-full mb-4"
-  />
-)}
+      {!pdf && !savedPdf && (
+        <input
+          key={fileKey}
+          type="file"
+          accept="application/pdf"
+          onChange={(e) => setPdf(e.target.files?.[0] || null)}
+          className="bg-gray-700 px-2 py-1 rounded w-full mb-4"
+        />
+      )}
+
       {/* Actions */}
       <div className="flex gap-4 mt-6">
         {!editMode && (
@@ -295,72 +290,58 @@ const AdminDiploma = () => {
         </button>
       </div>
 
-{/* ================= PREVIEW SECTION ================= */}
-<div className="mt-12 border-t border-gray-700 pt-6">
-  <h2 className="text-2xl font-bold mb-4">📌 Saved Data</h2>
+      {/* Preview Section */}
+      <div className="mt-12 border-t border-gray-700 pt-6">
+        <h2 className="text-2xl font-bold mb-4">📌 Saved Data</h2>
+        {savedMonths.length === 0 && <p className="text-gray-400">No saved months yet.</p>}
 
-  {savedMonths.length === 0 && <p className="text-gray-400">No saved months yet.</p>}
-
-  {savedMonths.map((month, mi) => (
-    <div key={mi} className="mb-6 p-4 border rounded-md bg-gray-800 shadow">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-xl font-semibold">{month.month}</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={() => startEditingMonth(mi)}
-            className="px-3 py-1 bg-blue-600 rounded"
-            disabled={editMode}
-          >
-            ✏️ Edit
-          </button>
-          <button
-            onClick={() => deleteSavedMonth(mi)}
-            className="px-3 py-1 bg-red-600 rounded"
-            disabled={editMode}
-          >
-            🗑️ Delete
-          </button>
-        </div>
-      </div>
-
-      {month.sections.map((section, si) => (
-        <div key={si} className="ml-4 mb-4 p-3 border-l border-gray-600">
-          <h4 className="text-lg font-semibold">{section.name}</h4>
-          <ul className="ml-6 list-disc text-gray-300">
-            {section.items.map((item, ii) => (
-              <li key={ii}>{item.title}</li>
+        {savedMonths.map((month, mi) => (
+          <div key={mi} className="mb-6 p-4 border rounded-md bg-gray-800 shadow">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-xl font-semibold">{month.month}</h3>
+              <div className="flex gap-2">
+                <button onClick={() => startEditingMonth(mi)} className="px-3 py-1 bg-blue-600 rounded" disabled={editMode}>
+                  ✏️ Edit
+                </button>
+                <button onClick={() => deleteSavedMonth(mi)} className="px-3 py-1 bg-red-600 rounded" disabled={editMode}>
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+            {month.sections.map((section, si) => (
+              <div key={si} className="ml-4 mb-4 p-3 border-l border-gray-600">
+                <h4 className="text-lg font-semibold">{section.name}</h4>
+                <ul className="ml-6 list-disc text-gray-300">
+                  {section.items.map((item, ii) => (
+                    <li key={ii}>{item.title}</li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  ))}
+          </div>
+        ))}
 
-  {/* PDF Preview at the bottom */}
-  {(savedPdf || pdf) && (
-    <div className="mt-6">
-      <h3 className="text-lg font-semibold">Attached PDF</h3>
-      <div className="flex items-center gap-4 mt-2">
-        <a
-          href={pdf ? URL.createObjectURL(pdf) : `http://localhost:5000${savedPdf}`}
-          target="_blank"
-          rel="noreferrer"
-          className="text-blue-400 underline"
-        >
-          View PDF
-        </a>
-        {savedPdf && (
-          <button
-            onClick={deleteSavedPdf}
-            className="px-3 py-1 bg-red-600 rounded"
-          >
-            Delete PDF
-          </button>
+        {(savedPdf || pdf) && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold">Attached PDF</h3>
+            <div className="flex items-center gap-4 mt-2">
+              <a
+                href={pdf ? URL.createObjectURL(pdf) : savedPdf}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-400 underline"
+              >
+                View PDF
+              </a>
+              {savedPdf && (
+                <button onClick={deleteSavedPdf} className="px-3 py-1 bg-red-600 rounded">
+                  Delete PDF
+                </button>
+              )}
+            </div>
+          </div>
         )}
       </div>
-    </div>
-  )}
-</div>
     </div>
   )
 }
