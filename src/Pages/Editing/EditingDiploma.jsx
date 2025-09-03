@@ -50,7 +50,8 @@ const AdminDiploma = () => {
     try {
       const updatedDiploma = savedMonths.filter((_, i) => i !== index);
       const formData = new FormData();
-      formData.append("diploma", JSON.stringify(updatedDiploma));
+      formData.append("months", JSON.stringify(updatedMonths)); // ✅ correct
+      if (pdf) formData.append("pdf_global", pdf);
 
       const res = await axios.post(
         `${API_BASE}/editingdiploma/save`,
@@ -174,7 +175,7 @@ const AdminDiploma = () => {
       }
 
       const formData = new FormData();
-      formData.append("diploma", JSON.stringify(updatedDiploma));
+      formData.append("months", JSON.stringify(updatedMonths)); // ✅ match backend
       if (pdf) formData.append("pdf_global", pdf);
 
       const res = await axios.post(
