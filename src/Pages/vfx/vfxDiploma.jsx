@@ -1,179 +1,100 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-const VfxDiplomaAdmin = () => {
-  const [file, setFile] = useState(null);
-  const [pdf, setPdf] = useState(null);
-  const [images, setImages] = useState([]);
-  const [savedPdf, setSavedPdf] = useState(null);
+const API_BASE = import.meta.env.VITE_API_BASE;
 
-  // 🔹 Fetch images & PDF on mount
+const VfxDiplomaAdmin = () => {
+  const [images, setImages] = useState([]);
+  const [pdf, setPdf] = useState(null);
+  const [savedPdf, setSavedPdf] = useState(null);
+  const [fileImage, setFileImage] = useState(null);
+
+  const fetchDiploma = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/vfxdiploma`);
+      setImages(res.data.images || []);
+      setSavedPdf(res.data.pdf || null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    fetchImages();
-    fetchPdf();
+    fetchDiploma();
   }, []);
 
-  const fetchImages = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/vfxdiploma");
-      setImages(res.data);
-    } catch (err) {
-      console.error("Error fetching images", err);
-    }
-  };
-
-  const fetchPdf = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/vfxdiploma/pdf");
-      setSavedPdf(res.data); // { pdf: "/uploads/vfx/diploma/xxx.pdf" }
-    } catch (err) {
-      console.error("Error fetching PDF", err);
-    }
-  };
-
-  // 🔹 Upload image
-  const handleUpload = async () => {
-    if (!file) return;
+  // ---------------- Image ----------------
+  const uploadImage = async () => {
+    if (!fileImage) return;
     const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      await axios.post("http://localhost:5000/vfxdiploma/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setFile(null);
-      fetchImages(); // refresh list
-    } catch (err) {
-      console.error("Upload failed", err);
-    }
+    formData.append("image", fileImage);
+    await axios.post(`${API_BASE}/vfxdiploma/images`, formData);
+    setFileImage(null);
+    fetchDiploma();
   };
 
-  // 🔹 Delete image
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/vfxdiploma/${id}`);
-      fetchImages(); // refresh list
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
+  const deleteImage = async (publicId) => {
+    await axios.delete(`${API_BASE}/vfxdiploma/images/${publicId}`);
+    fetchDiploma();
   };
 
-  // 🔹 Upload PDF
-  const handlePdfUpload = async () => {
+  // ---------------- PDF ----------------
+  const uploadPdf = async () => {
     if (!pdf) return;
     const formData = new FormData();
     formData.append("pdf", pdf);
-
-    try {
-      const res = await axios.post("http://localhost:5000/vfxdiploma/upload-pdf", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setSavedPdf(res.data);
-      setPdf(null);
-    } catch (err) {
-      console.error("PDF upload failed", err);
-    }
+    await axios.post(`${API_BASE}/vfxdiploma/pdf`, formData);
+    setPdf(null);
+    fetchDiploma();
   };
 
-  const handlePdfDelete = async () => {
-  try {
-    await axios.delete("http://localhost:5000/vfxdiploma/pdf");
-    setSavedPdf(null);
-  } catch (err) {
-    console.error("PDF delete failed", err);
-  }
-};
-
+  const deletePdf = async () => {
+    await axios.delete(`${API_BASE}/vfxdiploma/pdf`);
+    fetchDiploma();
+  };
 
   return (
-    <div className="p-6 bg-white min-h-screen text-black">
-      <h2 className="text-2xl font-bold mb-6">🎨 VFX Diploma – Manage Content</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">🎨 VFX Diploma Admin</h2>
 
-      {/* ---------------- IMAGE SECTION ---------------- */}
-      <h3 className="text-xl font-semibold mb-4">🖼 Manage Software Images</h3>
-      <div className="flex items-center gap-4 mb-6">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="text-sm text-black"
-        />
-        <button
-          onClick={handleUpload}
-          className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm"
-        >
-          Upload Image
+      <div className="mb-6">
+        <h3 className="font-semibold mb-2">🖼 Images</h3>
+        <input type="file" onChange={(e) => setFileImage(e.target.files[0])} />
+        <button onClick={uploadImage} className="ml-2 px-3 py-1 bg-blue-600 text-white rounded">
+          Upload
         </button>
-      </div>
-
-      {images.length === 0 ? (
-        <p className="text-gray-400">No images uploaded yet.</p>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-10">
+        <div className="flex gap-4 mt-4 flex-wrap">
           {images.map((img) => (
-            <div key={img.id} className="relative group">
-              <img
-                src={`http://localhost:5000${img.url}`}
-                alt="software"
-                className="w-28 md:w-40 object-contain rounded-lg border border-black p-2"
-              />
+            <div key={img.publicId} className="relative">
+              <img src={img.imageUrl} className="w-24 h-24 object-cover rounded" />
               <button
-                onClick={() => handleDelete(img.id)}
-                className="absolute top-1 right-1 bg-white bg-opacity-70 text-black text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
+                onClick={() => deleteImage(img.publicId)}
+                className="absolute top-0 right-0 bg-red-500 text-white px-1 rounded"
               >
                 ✕
               </button>
             </div>
           ))}
         </div>
-      )}
-
-      {/* ---------------- PDF SECTION ---------------- */}
-      <h3 className="text-xl font-semibold mb-4">📄 Manage Diploma PDF</h3>
-      <div className="flex items-center gap-4 mb-6">
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={(e) => setPdf(e.target.files[0])}
-          className="text-sm text-black"
-        />
-        <button
-          onClick={handlePdfUpload}
-          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm"
-        >
-          Upload PDF
-        </button>
       </div>
 
-     {savedPdf?.pdf ? (
-        <div className="mt-4 relative inline-block group">
-            <a
-            href={`http://localhost:5000${savedPdf.pdf}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-600 hover:bg-green-700 px-4 py-2 pr-11 rounded text-white text-sm"
-            >
-            📥 See Pdf 
+      <div className="mb-6">
+        <h3 className="font-semibold mb-2">📄 PDF</h3>
+        <input type="file" onChange={(e) => setPdf(e.target.files[0])} />
+        <button onClick={uploadPdf} className="ml-2 px-3 py-1 bg-green-600 text-white rounded">
+          Upload PDF
+        </button>
+        {savedPdf?.pdfUrl && (
+          <div className="mt-2 flex items-center gap-2">
+            <a href={savedPdf.pdfUrl} target="_blank" className="text-blue-500 underline">
+              View PDF
             </a>
-
-            {/* Delete button */}
-            <button
-            onClick={async () => {
-                try {
-                await axios.delete("http://localhost:5000/vfxdiploma/pdf");
-                setSavedPdf(null);
-                } catch (err) {
-                console.error("PDF delete failed", err);
-                }
-            }}
-            className="absolute top-0 right-2 bg-red-500 bg-opacity-70 text-black text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
-            >
-            ✕
+            <button onClick={deletePdf} className="px-2 py-1 bg-red-500 text-white rounded">
+              Delete
             </button>
-        </div>
-        ) : (
-        <p className="text-gray-400">No PDF uploaded yet.</p>
+          </div>
         )}
+      </div>
     </div>
   );
 };
