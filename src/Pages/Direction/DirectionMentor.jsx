@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_BASE
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const DirectorMentor = () => {
   const [file, setFile] = useState(null);
@@ -15,16 +15,16 @@ const DirectorMentor = () => {
     fetchMentors();
   }, []);
 
-const fetchMentors = async () => {
-  try {
-    const res = await axios.get(`${API_BASE}/directionmentor`);
-    const mentorData = res.data?.direction?.mentor || [];
-    setMentors(Array.isArray(mentorData) ? mentorData : []);
-  } catch (err) {
-    console.error("Error fetching mentors:", err);
-    setMentors([]);
-  }
-};
+  const fetchMentors = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/directionmentor`);
+      const mentorData = res.data?.direction?.mentor || [];
+      setMentors(Array.isArray(mentorData) ? mentorData : []);
+    } catch (err) {
+      console.error("Error fetching mentors:", err);
+      setMentors([]);
+    }
+  };
 
   // Handle image select
   const handleFileChange = (e) => {
@@ -45,11 +45,16 @@ const fetchMentors = async () => {
     formData.append("description", description);
 
     try {
-      const res = await axios.post(`${API_BASE}/directionmentor/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await axios.post(
+        `${API_BASE}/directionmentor/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-      fetchMentors();      setFile(null);
+      fetchMentors();
+      setFile(null);
       setPreview(null);
       setDescription("");
       setMessage("✅ Mentor uploaded successfully!");
@@ -62,11 +67,14 @@ const fetchMentors = async () => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_BASE}/directionmentor/${publicId}`);
+      const url = `${API_BASE}/directionmentor/${encodeURIComponent(publicId)}`;
+      console.log("Deleting mentor at:", url);
+
+      await axios.delete(url);
       setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
-      console.error("Delete failed:", err);
+      console.error("Delete failed:", err.response?.data || err.message);
       setMessage("❌ Delete failed. Try again.");
     }
   };
