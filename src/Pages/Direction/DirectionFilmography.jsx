@@ -52,7 +52,7 @@ const DirectionFilmography = () => {
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
-      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+      setItems((prev) => prev.filter((item) => item.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
       console.error("Delete failed:", err.response?.data || err.message);
