@@ -68,7 +68,7 @@ export default function CinematographyHighlights() {
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        🎬 Cinema Factory Cinematography Highlights
+        🎬Cinematography Highlights
       </h2>
 
       {/* Upload Form */}
