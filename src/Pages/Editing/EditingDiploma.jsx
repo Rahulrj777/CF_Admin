@@ -179,18 +179,20 @@ const AdminDiploma = () => {
 
       const formData = new FormData();
       formData.append("diploma", JSON.stringify(updatedMonths));
-      if (pdf) formData.append("diploma_pdf", pdf); // ✅ correct fieldname
+      if (pdf) formData.append("diploma_pdf", pdf);
 
       const res = await axios.post(
         `${API_BASE}/editingdiploma/save`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      setSavedMonths(res.data.diploma || []);
-      setSavedPdf(res.data.diplomaPdf?.url || ""); // ✅ update with uploaded
+      // ✅ refresh from backend instead of trusting local state
+      await fetchDiplomaData();
+
+      // ✅ clear draft form
+      setMonths([]);
+      setPdf(null);
       setFileKey((k) => k + 1);
       setEditMode(false);
       setEditingIndex(-1);
