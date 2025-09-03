@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-const DirectorMentor = () => {
+const EditingMentor = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [description, setDescription] = useState("");
@@ -17,8 +17,8 @@ const DirectorMentor = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/directionmentor`);
-      const mentorData = res.data?.direction?.mentor || [];
+      const res = await axios.get(`${API_BASE}/editingmentor`);
+      const mentorData = res.data?.editing?.mentor || [];
       setMentors(Array.isArray(mentorData) ? mentorData : []);
     } catch (err) {
       console.error("Error fetching mentors:", err);
@@ -46,7 +46,7 @@ const DirectorMentor = () => {
 
     try {
       const res = await axios.post(
-        `${API_BASE}/directionmentor/upload`,
+        `${API_BASE}/editingmentor/upload`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -67,7 +67,7 @@ const DirectorMentor = () => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      const url = `${API_BASE}/directionmentor/${encodeURIComponent(publicId)}`;
+      const url = `${API_BASE}/editingmentor/${encodeURIComponent(publicId)}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
@@ -146,4 +146,4 @@ const DirectorMentor = () => {
   );
 };
 
-export default DirectorMentor;
+export default EditingMentor;
