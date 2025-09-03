@@ -14,11 +14,11 @@ const AdminDiploma = () => {
   const [editingIndex, setEditingIndex] = useState(-1);
 
   // -------- Fetch Saved Data --------
-  
+
   const fetchDiplomaData = async () => {
     try {
       const res = await axios.get(`${API_BASE}/editingdiploma`);
-      setSavedMonths(res.data.diploma  || []); // ✅ correct field
+      setSavedMonths(res.data.diploma || []); // ✅ correct field
       setSavedPdf(res.data.pdf || ""); // ✅ also load PDF if present
     } catch (err) {
       console.error("Error fetching diploma data:", err);
@@ -52,7 +52,7 @@ const AdminDiploma = () => {
     try {
       const updatedDiploma = savedMonths.filter((_, i) => i !== index);
       const formData = new FormData();
-      formData.append("diploma", JSON.stringify(updatedMonths));
+      formData.append("diploma", JSON.stringify(updatedDiploma));
       if (pdf) formData.append("pdf_global", pdf);
 
       const res = await axios.post(
@@ -62,7 +62,8 @@ const AdminDiploma = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      setSavedMonths(res.data.data.months || []);
+
+      setSavedMonths(res.data.diploma || []);
       alert("Month deleted successfully ✅");
     } catch (err) {
       console.error("Error deleting month:", err);
@@ -177,7 +178,7 @@ const AdminDiploma = () => {
       }
 
       const formData = new FormData();
-      formData.append("diploma", JSON.stringify(updatedMonths)); 
+      formData.append("diploma", JSON.stringify(updatedMonths));
       if (pdf) formData.append("pdf_global", pdf);
 
       const res = await axios.post(
@@ -188,7 +189,7 @@ const AdminDiploma = () => {
         }
       );
 
-      setSavedMonths(res.data.diploma  || []);
+      setSavedMonths(res.data.diploma || []);
       setSavedPdf(res.data.pdf || "");
       setMonths([]);
       setPdf(null);
