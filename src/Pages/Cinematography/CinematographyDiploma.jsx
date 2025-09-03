@@ -1,271 +1,187 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+
 const CinematographyDiplomaAdmin = () => {
   const [semester1, setSemester1] = useState([""]);
   const [semester2, setSemester2] = useState([""]);
   const [pdf, setPdf] = useState(null);
   const [savedData, setSavedData] = useState(null);
-  const [data, setData] = useState([]);
 
-  // Fetch saved data on load
+  // Fetch saved data
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/cinematographydiploma")
-      .then((res) => {
-        const diplomaData = Array.isArray(res.data) ? res.data : [res.data];
-        const first = diplomaData[0];
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/cinematographydiploma`);
+        const data = res.data.cinematography.diploma[0] || { semester1: [], semester2: [], pdfUrl: "" };
 
-        setData(diplomaData);
-
-        if (first) {
-          setSavedData({
-            ...first,
-            // Normalize pdf: always array
-            pdf: first?.pdf
-              ? Array.isArray(first.pdf)
-                ? first.pdf
-                : [first.pdf]
-              : [],
-          });
-        }
-
-        // Always reset inputs for new data
-        setSemester1([""]);
-        setSemester2([""]);
-      })
-      .catch((err) => console.error(err));
+        setSavedData(data);
+        setSemester1(data.semester1.map(item => item.title));
+        setSemester2(data.semester2.map(item => item.title));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
   }, []);
 
-  const handleAddSemester1 = () => setSemester1([...semester1, ""]);
-  const handleAddSemester2 = () => setSemester2([...semester2, ""]);
+  // Add subtitle input
+  const addSubtitle = (semester, setSemester) => setSemester([...semester, ""]);
 
-  const handleChangeSemester1 = (index, value) => {
-    const updated = [...semester1];
-    updated[index] = value;
-    setSemester1(updated);
+  // Update subtitle
+  const updateSubtitle = (semester, setSemester, idx, value) => {
+    const updated = [...semester];
+    updated[idx] = value;
+    setSemester(updated);
   };
 
-  const handleChangeSemester2 = (index, value) => {
-    const updated = [...semester2];
-    updated[index] = value;
-    setSemester2(updated);
+  // Delete subtitle (local state)
+  const deleteSubtitleLocal = (semester, setSemester, idx) => {
+    const updated = [...semester];
+    updated.splice(idx, 1);
+    setSemester(updated);
   };
 
-  const handleDeleteSemester1 = (index) => {
-    const temp = [...savedData.semester1];
-    temp.splice(index, 1);
-    const newData = { ...savedData, semester1: temp };
-    fsWriteData(newData);
-  };
-
-  const handleDeleteSemester2 = (index) => {
-    const temp = [...savedData.semester2];
-    temp.splice(index, 1);
-    const newData = { ...savedData, semester2: temp };
-    fsWriteData(newData);
-  };
-
-  // Helper: write JSON data update
-  const fsWriteData = async (data) => {
-    try {
-      await axios.post("http://localhost:5000/cinematographydiploma/update", data);
-      setSavedData(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // Save new data
+  // Submit subtitles and PDF
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    // Only add non-empty values
-    semester1.filter((s) => s.trim() !== "").forEach((s) => formData.append("semester1", s));
-    semester2.filter((s) => s.trim() !== "").forEach((s) => formData.append("semester2", s));
-
-    if (pdf) formData.append("pdf", pdf);
-
     try {
-      const res = await axios.post("http://localhost:5000/cinematographydiploma", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      // Update subtitles first
+      await axios.post(`${API_BASE}/cinematographydiploma/text`, {
+        semester1,
+        semester2,
       });
 
-      // Normalize saved pdf
-      const updated = {
-        ...res.data.data,
-        pdf: res.data.data?.pdf
-          ? Array.isArray(res.data.data.pdf)
-            ? res.data.data.pdf
-            : [res.data.data.pdf]
-          : [],
-      };
+      // Upload PDF if selected
+if (pdf) {
+  const formData = new FormData();
+  formData.append("pdf", pdf);
 
-      setSavedData(updated);
+  const uploadRes = await axios.post(`${API_BASE}/cinematographydiploma/pdf`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 
-      // Reset form
-      setSemester1([""]);
-      setSemester2([""]);
+  console.log("PDF Upload Response:", uploadRes.data); // 👈 add this
+}
+
+      // Refresh data
+      const res = await axios.get(`${API_BASE}/cinematographydiploma`);
+      const data = res.data.cinematography.diploma[0] || { semester1: [], semester2: [], pdfUrl: "" };
+      console.log("Fetched diploma data:", res.data); // 👈 add this
+      setSavedData(data);
       setPdf(null);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
-  const handleDeletePdf = async (file) => {
+  // Delete PDF
+  const handleDeletePdf = async () => {
     try {
-      const res = await axios.delete("http://localhost:5000/cinematographydiploma/pdf", {
-        data: { file },
-      });
-
-      const updated = {
-        ...res.data.data,
-        pdf: res.data.data?.pdf
-          ? Array.isArray(res.data.data.pdf)
-            ? res.data.data.pdf
-            : [res.data.data.pdf]
-          : [],
-      };
-
-      setSavedData(updated);
+      await axios.delete(`${API_BASE}/cinematographydiploma/pdf`);
+      const res = await axios.get(`${API_BASE}/cinematographydiploma`);
+      const data = res.data.cinematography.diploma[0] || { semester1: [], semester2: [], pdfUrl: "" };
+      setSavedData(data);
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    }
+  };
+
+  // Delete subtitle from server
+  const handleDeleteSubtitle = async (semester, idx) => {
+    try {
+      await axios.delete(`${API_BASE}/cinematographydiploma/diploma/subtitle`, {
+        data: { semester, index: idx },
+      });
+      const res = await axios.get(`${API_BASE}/cinematographydiploma`);
+      const data = res.data.cinematography.diploma[0] || { semester1: [], semester2: [], pdfUrl: "" };
+      setSavedData(data);
+      // Update local state too
+      if (semester === "semester1") setSemester1(data.semester1.map(item => item.title));
+      if (semester === "semester2") setSemester2(data.semester2.map(item => item.title));
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4 text-black">Cinematography Diploma Admin</h2>
+    <div className="p-6 text-black">
+      <h2 className="text-2xl font-bold mb-4">Cinematography Diploma Admin</h2>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-y-4 text-black">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-y-4">
         {/* Semester 1 */}
         <div>
           <h3>Semester 1</h3>
-          {semester1.map((s, i) => (
-            <input
-              key={i}
-              value={s}
-              onChange={(e) => handleChangeSemester1(i, e.target.value)}
-              className="border p-2 w-full my-1 text-black"
-              placeholder="Enter subject"
-            />
+          {semester1.map((sub, i) => (
+            <div key={i} className="flex gap-2 items-center mb-2">
+              <input
+                value={sub}
+                onChange={(e) => updateSubtitle(semester1, setSemester1, i, e.target.value)}
+                placeholder="Enter subtitle"
+                className="border p-2 w-full"
+              />
+              <button type="button" className="text-red-500" onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}>x</button>
+            </div>
           ))}
-          <button
-            type="button"
-            onClick={handleAddSemester1}
-            className="bg-blue-500 px-2 py-1 mt-1 text-white"
-          >
-            Add +
-          </button>
+          <button type="button" className="bg-blue-500 px-2 py-1 text-white" onClick={() => addSubtitle(semester1, setSemester1)}>Add +</button>
         </div>
 
         {/* Semester 2 */}
         <div>
           <h3>Semester 2</h3>
-          {semester2.map((s, i) => (
-            <input
-              key={i}
-              value={s}
-              onChange={(e) => handleChangeSemester2(i, e.target.value)}
-              className="border p-2 w-full my-1 text-black"
-              placeholder="Enter subject"
-            />
+          {semester2.map((sub, i) => (
+            <div key={i} className="flex gap-2 items-center mb-2">
+              <input
+                value={sub}
+                onChange={(e) => updateSubtitle(semester2, setSemester2, i, e.target.value)}
+                placeholder="Enter subtitle"
+                className="border p-2 w-full"
+              />
+              <button type="button" className="text-red-500" onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}>x</button>
+            </div>
           ))}
-          <button
-            type="button"
-            onClick={handleAddSemester2}
-            className="bg-blue-500 px-2 py-1 mt-1 text-white"
-          >
-            Add +
-          </button>
+          <button type="button" className="bg-blue-500 px-2 py-1 text-white" onClick={() => addSubtitle(semester2, setSemester2)}>Add +</button>
         </div>
 
         {/* PDF */}
         <div>
           <h3>Upload PDF</h3>
-          {savedData?.pdf?.length > 0 ? (
-            <p className="text-red-500">
-              A PDF is already uploaded. Delete it before uploading a new one.
-            </p>
+          {savedData?.pdfUrl ? (
+            <div className="flex items-center gap-2">
+              <a href={savedData.pdfUrl} target="_blank" rel="noopener noreferrer">{savedData.pdfUrl.split("/").pop()}</a>
+              <button type="button" className="text-red-500" onClick={handleDeletePdf}>Delete PDF</button>
+            </div>
           ) : (
             <input type="file" onChange={(e) => setPdf(e.target.files[0])} />
           )}
         </div>
 
-        <button
-          type="submit"
-          className="bg-green-500 px-4 py-2 mt-2 text-white"
-        >
-          Save
-        </button>
+        <button type="submit" className="bg-green-500 px-4 py-2 text-white">Save</button>
       </form>
 
-      {/* Saved data */}
-      {savedData && (
-        <div className="mt-10 text-black">
-          <h3>Saved Data</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            {/* Semester 1 */}
-            <div>
-              <h4>Semester 1</h4>
-              {savedData?.semester1?.map((s, i) => (
-                <div key={i} className="flex items-center gap-x-2">
-                  <span>{s}</span>
-                  <button
-                    type="button"
-                    className="text-red-500"
-                    onClick={() => handleDeleteSemester1(i)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
+      {/* Saved Data Preview */}
+      <div className="mt-10">
+        <h3 className="text-xl font-bold mb-2">Saved Data</h3>
+        <div>
+          <h4>Semester 1</h4>
+          {savedData?.semester1?.map((item, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <span>{item.title}</span>
+              <button className="text-red-500" onClick={() => handleDeleteSubtitle("semester1", i)}>x</button>
             </div>
-
-            {/* Semester 2 */}
-            <div>
-              <h4>Semester 2</h4>
-              {savedData?.semester2?.map((s, i) => (
-                <div key={i} className="flex items-center gap-x-2">
-                  <span>{s}</span>
-                  <button
-                    type="button"
-                    className="text-red-500"
-                    onClick={() => handleDeleteSemester2(i)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* PDFs */}
-            <div>
-              <h4>PDFs</h4>
-              {savedData?.pdf?.map((file, i) => (
-                <div key={i} className="flex items-center gap-x-2">
-                  <a
-                    href={`http://localhost:5000${file}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {file.split("/").pop()}
-                  </a>
-                  <button
-                    type="button"
-                    className="text-red-500"
-                    onClick={() => handleDeletePdf(file)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
-      )}
+        <div>
+          <h4>Semester 2</h4>
+          {savedData?.semester2?.map((item, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <span>{item.title}</span>
+              <button className="text-red-500" onClick={() => handleDeleteSubtitle("semester2", i)}>x</button>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
