@@ -14,10 +14,12 @@ const AdminDiploma = () => {
   const [editingIndex, setEditingIndex] = useState(-1);
 
   // -------- Fetch Saved Data --------
+  
   const fetchDiplomaData = async () => {
     try {
       const res = await axios.get(`${API_BASE}/editingdiploma`);
-      setSavedMonths(res.data.editing?.diploma || []);
+      setSavedMonths(res.data.diploma  || []); // ✅ correct field
+      setSavedPdf(res.data.pdf || ""); // ✅ also load PDF if present
     } catch (err) {
       console.error("Error fetching diploma data:", err);
     }
@@ -50,7 +52,7 @@ const AdminDiploma = () => {
     try {
       const updatedDiploma = savedMonths.filter((_, i) => i !== index);
       const formData = new FormData();
-      formData.append("months", JSON.stringify(updatedMonths)); // ✅ correct
+      formData.append("diploma", JSON.stringify(updatedMonths));
       if (pdf) formData.append("pdf_global", pdf);
 
       const res = await axios.post(
@@ -175,7 +177,7 @@ const AdminDiploma = () => {
       }
 
       const formData = new FormData();
-      formData.append("months", JSON.stringify(updatedMonths)); // ✅ match backend
+      formData.append("diploma", JSON.stringify(updatedMonths)); 
       if (pdf) formData.append("pdf_global", pdf);
 
       const res = await axios.post(
@@ -186,8 +188,8 @@ const AdminDiploma = () => {
         }
       );
 
-      setSavedMonths(res.data.data.months || []);
-      setSavedPdf(res.data.data.pdf || "");
+      setSavedMonths(res.data.diploma  || []);
+      setSavedPdf(res.data.pdf || "");
       setMonths([]);
       setPdf(null);
       setFileKey((k) => k + 1);
