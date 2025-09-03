@@ -60,16 +60,19 @@ const fetchMentors = async () => {
   };
 
   // Delete mentor
-  const handleDelete = async (publicId) => {
-    try {
-      await axios.delete(`${API_BASE}/${publicId}`);
-      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
-      setMessage("🗑️ Mentor deleted successfully");
-    } catch (err) {
-      console.error("Delete failed:", err);
-      setMessage("❌ Delete failed. Try again.");
-    }
-  };
+const handleDelete = async (publicId) => {
+  try {
+    const url = `${API_BASE}/directionmentor/${encodeURIComponent(publicId)}`;
+    console.log("Deleting mentor at:", url);
+
+    await axios.delete(url);
+    setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+    setMessage("🗑️ Mentor deleted successfully");
+  } catch (err) {
+    console.error("Delete failed:", err.response?.data || err.message);
+    setMessage("❌ Delete failed. Try again.");
+  }
+};
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md">
