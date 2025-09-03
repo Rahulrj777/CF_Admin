@@ -62,7 +62,7 @@ const fetchMentors = async () => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_BASE}/directionmentor/${publicId}`);
+      await axios.delete(`${API_BASE}/${publicId}`);
       setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
