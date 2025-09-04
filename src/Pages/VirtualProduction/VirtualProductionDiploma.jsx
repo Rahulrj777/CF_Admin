@@ -55,21 +55,18 @@ export default function VirtualProductionDiploma() {
     try {
       setLoading(true);
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v ?? ""));
+
+      // Map frontend names to backend schema names
+      fd.append("course", form.courseTitle);
+      fd.append("time", form.timeline);
+      fd.append("title", form.detailTitle);
+      fd.append("description", form.description);
+      fd.append("link", form.link);
+
       if (image) fd.append("image", image);
 
       if (editId) await axios.put(`${API}/${editId}`, fd);
       else await axios.post(API, fd);
-      if (
-        !form.courseTitle ||
-        !form.timeline ||
-        !form.detailTitle ||
-        !form.description ||
-        !image ||
-        !form.link
-      ) {
-        return alert("⚠️ All fields and image are required!");
-      }
 
       setForm({
         courseTitle: "",
