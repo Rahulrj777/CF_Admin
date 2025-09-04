@@ -10,24 +10,23 @@ const DiMentor = () => {
   const [message, setMessage] = useState("");
   const [mentors, setMentors] = useState([]);
 
-  // Fetch mentors on load
-  useEffect(() => {
-    fetchMentors();
-  }, []);
-
-useEffect(() => {
+  // ✅ Define fetchMentors at top level
   const fetchMentors = async () => {
     try {
       const res = await axios.get(`${API_BASE}/dimentor`);
-      console.log("Fetched mentors:", res.data); // check console to see array
+      console.log("Fetched mentors:", res.data);
+      // Backend now returns array (doc.di.mentor)
       setMentors(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Error fetching mentors:", err);
       setMentors([]);
     }
   };
-  fetchMentors();
-}, []);
+
+  // Fetch mentors on component load
+  useEffect(() => {
+    fetchMentors();
+  }, []);
 
   // Handle image select
   const handleFileChange = (e) => {
@@ -36,7 +35,7 @@ useEffect(() => {
     setPreview(URL.createObjectURL(selectedFile));
   };
 
-  // Upload image + paragraph
+  // Upload image + description
   const handleUpload = async () => {
     if (!file || !description.trim()) {
       setMessage("⚠️ Please provide both an image and a description.");
@@ -48,11 +47,11 @@ useEffect(() => {
     formData.append("description", description);
 
     try {
-      const res = await axios.post(`${API_BASE}/dimentor/upload`, formData, {
+      await axios.post(`${API_BASE}/dimentor/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      fetchMentors();
+      fetchMentors(); // ✅ Refresh list
       setFile(null);
       setPreview(null);
       setDescription("");
@@ -66,10 +65,7 @@ useEffect(() => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      const url = `${API_BASE}/dimentor/${encodeURIComponent(publicId)}`;
-      console.log("Deleting mentor at:", url);
-
-      await axios.delete(url);
+      await axios.delete(`${API_BASE}/dimentor/${encodeURIComponent(publicId)}`);
       setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
