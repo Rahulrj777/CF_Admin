@@ -17,7 +17,7 @@ export default function VirtualProductionDiploma() {
   const [loading, setLoading] = useState(false);
 
   const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
-  const API = `${API_BASE}/virtualproduction/diploma`;
+  const API = `${API_BASE}/virtualproductiondiploma`;
 
   const links = [
     { label: "Virtual Production CFA", url: "/virtual_production/cfa" },
