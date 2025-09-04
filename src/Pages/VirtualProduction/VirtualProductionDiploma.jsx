@@ -16,12 +16,16 @@ export default function VirtualProductionDiploma() {
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+  const API_BASE =
+    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
   const API = `${API_BASE}/virtualproductiondiploma`;
 
   const links = [
     { label: "Virtual Production CFA", url: "/virtual_production/cfa" },
-    { label: "Virtual Production Stage Unreal", url: "/virtual_production/stage_unreal" },
+    {
+      label: "Virtual Production Stage Unreal",
+      url: "/virtual_production/stage_unreal",
+    },
   ];
 
   const fetchData = async () => {
@@ -39,7 +43,13 @@ export default function VirtualProductionDiploma() {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!form.courseTitle || !form.timeline || !form.detailTitle || !form.description || !form.link)
+    if (
+      !form.courseTitle ||
+      !form.timeline ||
+      !form.detailTitle ||
+      !form.description ||
+      !form.link
+    )
       return alert("⚠️ All fields are required!");
 
     try {
@@ -50,8 +60,24 @@ export default function VirtualProductionDiploma() {
 
       if (editId) await axios.put(`${API}/${editId}`, fd);
       else await axios.post(API, fd);
+      if (
+        !form.courseTitle ||
+        !form.timeline ||
+        !form.detailTitle ||
+        !form.description ||
+        !image ||
+        !form.link
+      ) {
+        return alert("⚠️ All fields and image are required!");
+      }
 
-      setForm({ courseTitle: "", timeline: "", detailTitle: "", description: "", link: "" });
+      setForm({
+        courseTitle: "",
+        timeline: "",
+        detailTitle: "",
+        description: "",
+        link: "",
+      });
       setImage(null);
       setEditId(null);
       fetchData();
@@ -135,13 +161,12 @@ export default function VirtualProductionDiploma() {
           className="w-full border-2 border-indigo-300 rounded-md p-3 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200"
         >
           <option value="">-- Select Link --</option>
-          {links.map(
-            (l) =>
-              !usedLinks.includes(l.url) || form.link === l.url ? (
-                <option key={l.url} value={l.url}>
-                  {l.label}
-                </option>
-              ) : null
+          {links.map((l) =>
+            !usedLinks.includes(l.url) || form.link === l.url ? (
+              <option key={l.url} value={l.url}>
+                {l.label}
+              </option>
+            ) : null
           )}
         </select>
 
@@ -160,7 +185,9 @@ export default function VirtualProductionDiploma() {
                 className="mx-auto w-48 h-32 object-cover rounded-md shadow"
               />
             ) : (
-              <span className="text-indigo-400">📁 Drag & Drop or Click to Upload</span>
+              <span className="text-indigo-400">
+                📁 Drag & Drop or Click to Upload
+              </span>
             )}
           </label>
         </div>
@@ -169,7 +196,9 @@ export default function VirtualProductionDiploma() {
           type="submit"
           disabled={loading}
           className={`w-full py-3 rounded-md text-white font-semibold transition ${
-            loading ? "bg-indigo-300 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
+            loading
+              ? "bg-indigo-300 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700"
           }`}
         >
           {editId ? "✏️ Update Course" : "💾 Add Course"}
@@ -177,7 +206,9 @@ export default function VirtualProductionDiploma() {
       </form>
 
       {/* Course List */}
-      <h3 className="text-2xl font-semibold mt-10 mb-6 text-indigo-600">📌 Existing Courses</h3>
+      <h3 className="text-2xl font-semibold mt-10 mb-6 text-indigo-600">
+        📌 Existing Courses
+      </h3>
       {list.length === 0 ? (
         <p className="text-gray-500">No courses added yet.</p>
       ) : (
@@ -196,7 +227,9 @@ export default function VirtualProductionDiploma() {
                 <h4 className="font-bold text-indigo-600">{c.course}</h4>
                 <p className="text-red-500 font-semibold">{c.time}</p>
                 <p className="text-gray-700 mt-1">{c.title}</p>
-                <p className="text-gray-500 text-sm mt-1 flex-grow">{c.description}</p>
+                <p className="text-gray-500 text-sm mt-1 flex-grow">
+                  {c.description}
+                </p>
                 <Link
                   to={c.link}
                   className="text-blue-500 underline text-sm mt-2"
