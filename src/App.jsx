@@ -84,6 +84,12 @@ import CfaDiploma from "./Pages/Cfa/CfaDiploma"
 import CfaMentor from "./Pages/Cfa/CfaMentor"
 import CfaFilmography from "./Pages/Cfa/CfaFilmography"
 
+// StageUnreal
+import StageUnrealBanner from "./Pages/StageUnreal/StageUnrealBanner"
+import StageUnrealDiploma from "./Pages/StageUnreal/StageUnrealDiploma.jsx"
+import StageUnrealMentor from "./Pages/StageUnreal/StageUnrealMentor.jsx"
+import StageUnrealFilmography from "./Pages/StageUnreal/StageUnrealFilmography.jsx"
+
 // Full menu from app-SPL3L
 const menu = [
   {
@@ -242,7 +248,7 @@ const menu = [
         title: "Banner",
         path: "/stage-unreal/banner",
         icon: "🏳️",
-      },
+      }, 
       {
         title: "1 Year Diploma",
         path: "/stage-unreal/diploma",
@@ -484,6 +490,12 @@ function App() {
               <Route path="/vfx-course/diploma" element={<VfxDiploma />} />
               <Route path="/vfx-course/filmmaker" element={<VfxMentor />} />
               <Route path="/vfx-course/filmography" element={<VfxFilmography />} />
+
+              {/* StageUnreal */}
+              <Route path="/stage-unreal/banner" element={<StageUnrealBanner />} />
+              <Route path="/stage-unreal/diploma" element={<StageUnrealDiploma />} />
+              <Route path="/stage-unreal/filmmaker" element={<StageUnrealMentor />} />
+              <Route path="/stage-unreal/filmography" element={<StageUnrealFilmography />} />
 
               {/* Virtual Production */}
               <Route path="/virtual-production-course/banner" element={<VirtualProductionBanner />} />
