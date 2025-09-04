@@ -18,7 +18,7 @@ const VirtualProductionMentor = () => {
   const fetchMentors = async () => {
     try {
       const res = await axios.get(`${API_BASE}/virtualproductionmentor`);
-      const mentorData = res.data?.virtualproduction?.mentor || [];
+      const mentorData = res.data?.virtualProduction?.mentor || [];
       setMentors(Array.isArray(mentorData) ? mentorData : []);
     } catch (err) {
       console.error("Error fetching mentors:", err);
