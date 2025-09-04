@@ -15,16 +15,19 @@ const DiMentor = () => {
     fetchMentors();
   }, []);
 
+useEffect(() => {
   const fetchMentors = async () => {
     try {
       const res = await axios.get(`${API_BASE}/dimentor`);
-      const mentorData = res.data?.di?.mentor || [];
-      setMentors(Array.isArray(mentorData) ? mentorData : []);
+      console.log("Fetched mentors:", res.data); // check console to see array
+      setMentors(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Error fetching mentors:", err);
       setMentors([]);
     }
   };
+  fetchMentors();
+}, []);
 
   // Handle image select
   const handleFileChange = (e) => {
@@ -45,13 +48,9 @@ const DiMentor = () => {
     formData.append("description", description);
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/dimentor/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const res = await axios.post(`${API_BASE}/dimentor/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       fetchMentors();
       setFile(null);
