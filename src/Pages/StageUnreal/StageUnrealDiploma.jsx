@@ -12,7 +12,8 @@ const StageUnrealDiploma = () => {
   const [isPdfDeleting, setIsPdfDeleting] = useState(false);
   const fileInputRef = useRef(null);
 
-  const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+  const API_BASE =
+    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
   const API = `${API_BASE}/stageunrealdiploma`;
 
   useEffect(() => {
@@ -42,12 +43,15 @@ const StageUnrealDiploma = () => {
   };
 
   const handleSave = async () => {
-    if (!title || children.some((c) => !c.trim())) return alert("Title and children are required");
+    if (!title || children.some((c) => !c.trim()))
+      return alert("Title and children are required");
 
     try {
       if (editingId) {
         const res = await axios.put(`${API}/${editingId}`, { title, children });
-        setContents((prev) => prev.map((c) => (c.id === editingId ? res.data : c)));
+        setContents((prev) =>
+          prev.map((c) => (c.id === editingId ? res.data : c))
+        );
       } else {
         const res = await axios.post(API, { title, children });
         setContents((prev) => [...prev, res.data]);
@@ -78,6 +82,11 @@ const StageUnrealDiploma = () => {
     if (!pdfFile) return alert("Please choose a PDF first.");
     const formData = new FormData();
     formData.append("pdf", pdfFile);
+    formData.append("title", title);
+    formData.append("subtitle", subtitle); // maybe first child or join children
+    axios.post(API, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     try {
       setIsPdfSaving(true);
@@ -138,13 +147,25 @@ const StageUnrealDiploma = () => {
       {/* Global PDF Section */}
       <div className="bg-white shadow-md rounded-xl p-6 mb-8 border border-indigo-200">
         <h3 className="text-xl font-semibold mb-4">Global Diploma PDF</h3>
-        <input ref={fileInputRef} type="file" accept="application/pdf" onChange={handlePdfSelect} className="mb-2" />
-        {pdfFile && <p className="text-gray-700 mb-2">Selected: {pdfFile.name}</p>}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf"
+          onChange={handlePdfSelect}
+          className="mb-2"
+        />
+        {pdfFile && (
+          <p className="text-gray-700 mb-2">Selected: {pdfFile.name}</p>
+        )}
         <div className="flex gap-2 mb-2">
           <button
             onClick={savePdf}
             disabled={!pdfFile || isPdfSaving}
-            className={`px-4 py-2 rounded font-semibold text-white ${!pdfFile || isPdfSaving ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"}`}
+            className={`px-4 py-2 rounded font-semibold text-white ${
+              !pdfFile || isPdfSaving
+                ? "bg-gray-400"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
           >
             {isPdfSaving ? "Saving..." : "Save PDF"}
           </button>
@@ -152,14 +173,21 @@ const StageUnrealDiploma = () => {
             <button
               onClick={deletePdf}
               disabled={isPdfDeleting}
-              className={`px-4 py-2 rounded font-semibold text-white ${isPdfDeleting ? "bg-gray-400" : "bg-red-600 hover:bg-red-700"}`}
+              className={`px-4 py-2 rounded font-semibold text-white ${
+                isPdfDeleting ? "bg-gray-400" : "bg-red-600 hover:bg-red-700"
+              }`}
             >
               {isPdfDeleting ? "Deleting..." : "Delete PDF"}
             </button>
           )}
         </div>
         {globalPdf && (
-          <a href={`${API_BASE}${globalPdf}`} target="_blank" rel="noreferrer" className="text-blue-600 underline">
+          <a
+            href={`${API_BASE}${globalPdf}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 underline"
+          >
             View Global PDF
           </a>
         )}
@@ -183,38 +211,62 @@ const StageUnrealDiploma = () => {
               onChange={(e) => handleChildChange(idx, e.target.value)}
               className="border-2 border-indigo-300 rounded-md p-3 flex-1 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200"
             />
-            <button onClick={() => removeChild(idx)} className="bg-red-500 text-white px-3 py-2 rounded-md font-semibold hover:bg-red-600">
+            <button
+              onClick={() => removeChild(idx)}
+              className="bg-red-500 text-white px-3 py-2 rounded-md font-semibold hover:bg-red-600"
+            >
               Remove
             </button>
           </div>
         ))}
-        <button onClick={addChild} className="bg-blue-500 text-white px-4 py-2 rounded-md font-semibold mb-4 hover:bg-blue-600">
+        <button
+          onClick={addChild}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md font-semibold mb-4 hover:bg-blue-600"
+        >
           + Add Child
         </button>
-        <button onClick={handleSave} className="bg-green-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-700">
+        <button
+          onClick={handleSave}
+          className="bg-green-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-700"
+        >
           {editingId ? "Update" : "Save"}
         </button>
       </div>
 
       {/* List */}
-      <h3 className="text-2xl font-semibold mb-4 text-indigo-600">📌 Existing Entries</h3>
+      <h3 className="text-2xl font-semibold mb-4 text-indigo-600">
+        📌 Existing Entries
+      </h3>
       {contents.length === 0 ? (
         <p className="text-gray-500">No entries added yet.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {contents.map((c) => (
-            <div key={c.id} className="bg-white shadow-md border border-indigo-200 rounded-xl p-4 flex flex-col">
-              <h4 className="font-bold text-indigo-600 text-lg mb-2">{c.title}</h4>
+            <div
+              key={c.id}
+              className="bg-white shadow-md border border-indigo-200 rounded-xl p-4 flex flex-col"
+            >
+              <h4 className="font-bold text-indigo-600 text-lg mb-2">
+                {c.title}
+              </h4>
               <ul className="list-disc pl-6 flex-grow">
                 {c.children?.map((child, idx) => (
-                  <li key={idx} className="text-gray-700">{child}</li>
+                  <li key={idx} className="text-gray-700">
+                    {child}
+                  </li>
                 ))}
               </ul>
               <div className="flex gap-2 mt-4">
-                <button onClick={() => handleEdit(c)} className="flex-1 bg-yellow-400 text-black px-3 py-2 rounded-md font-semibold hover:bg-yellow-500">
+                <button
+                  onClick={() => handleEdit(c)}
+                  className="flex-1 bg-yellow-400 text-black px-3 py-2 rounded-md font-semibold hover:bg-yellow-500"
+                >
                   Edit
                 </button>
-                <button onClick={() => handleDelete(c.id)} className="flex-1 bg-red-500 text-white px-3 py-2 rounded-md font-semibold hover:bg-red-600">
+                <button
+                  onClick={() => handleDelete(c.id)}
+                  className="flex-1 bg-red-500 text-white px-3 py-2 rounded-md font-semibold hover:bg-red-600"
+                >
                   Delete
                 </button>
               </div>
