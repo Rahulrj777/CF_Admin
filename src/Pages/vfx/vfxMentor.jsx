@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/vfxmentor";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const VfxMentor = () => {
   const [file, setFile] = useState(null);
@@ -17,10 +17,12 @@ const VfxMentor = () => {
 
   const fetchMentors = async () => {
     try {
-      const res = await axios.get(API_URL);
-      setMentors(res.data);
+      const res = await axios.get(`${API_BASE}/vfxmentor`);
+      const mentorData = res.data?.vfx?.mentor || [];
+      setMentors(Array.isArray(mentorData) ? mentorData : []);
     } catch (err) {
       console.error("Error fetching mentors:", err);
+      setMentors([]);
     }
   };
 
@@ -43,11 +45,15 @@ const VfxMentor = () => {
     formData.append("description", description);
 
     try {
-      const res = await axios.post(`${API_URL}/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await axios.post(
+        `${API_BASE}/vfxmentor/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-      setMentors((prev) => [...prev, res.data]);
+      fetchMentors();
       setFile(null);
       setPreview(null);
       setDescription("");
@@ -59,13 +65,16 @@ const VfxMentor = () => {
   };
 
   // Delete mentor
-  const handleDelete = async (filename) => {
+  const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_URL}/${filename}`);
-      setMentors((prev) => prev.filter((m) => m.fileName !== filename));
+      const url = `${API_BASE}/vfxmentor/${encodeURIComponent(publicId)}`;
+      console.log("Deleting mentor at:", url);
+
+      await axios.delete(url);
+      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
       setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
-      console.error("Delete failed:", err);
+      console.error("Delete failed:", err.response?.data || err.message);
       setMessage("❌ Delete failed. Try again.");
     }
   };
@@ -115,17 +124,17 @@ const VfxMentor = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {mentors.map((mentor) => (
           <div
-            key={mentor.id}
+            key={mentor.publicId}
             className="border rounded-lg p-4 text-center shadow-sm"
           >
             <img
-              src={mentor.url}
+              src={mentor.imageUrl}
               alt="Mentor"
               className="w-32 h-32 object-cover mx-auto rounded-lg"
             />
-            <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
+            <p className="mt-4 text-sm text-gray-700">{mentor.designation}</p>
             <button
-              onClick={() => handleDelete(mentor.fileName)}
+              onClick={() => handleDelete(mentor.publicId)}
               className="mt-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
             >
               Delete
@@ -136,4 +145,5 @@ const VfxMentor = () => {
     </div>
   );
 };
+
 export default VfxMentor;
