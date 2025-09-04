@@ -92,7 +92,8 @@ const StageUnrealDiploma = () => {
       const res = await axios.post(`${API}/pdf`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setGlobalPdf(res.data.pdf);
+
+      setGlobalPdf(res.data.pdfUrl); // <- Use pdfUrl
       await fetchAll();
       setPdfFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -182,7 +183,7 @@ const StageUnrealDiploma = () => {
         </div>
         {globalPdf && (
           <a
-            href={`${API_BASE}${globalPdf}`}
+            href={globalPdf}
             target="_blank"
             rel="noreferrer"
             className="text-blue-600 underline"
