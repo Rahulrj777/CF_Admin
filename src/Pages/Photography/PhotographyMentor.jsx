@@ -132,7 +132,7 @@ const PhotographyMentor = () => {
               alt="Mentor"
               className="w-32 h-32 object-cover mx-auto rounded-lg"
             />
-            <p className="mt-4 text-sm text-gray-700">{mentor.designation}</p>
+            <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
             <button
               onClick={() => handleDelete(mentor.publicId)}
               className="mt-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
