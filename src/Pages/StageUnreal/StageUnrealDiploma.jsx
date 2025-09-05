@@ -54,7 +54,7 @@ const handleSave = async () => {
     if (editingId) {
       const formData = new FormData();
       formData.append("title", title);
-      children.forEach((c) => formData.append("children[]", c));
+      children.forEach((c) => formData.append("children", c));
       if (pdfFile) formData.append("pdf", pdfFile);
 
       const res = await axios.put(`${API}/${editingId}`, formData, {
