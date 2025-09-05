@@ -185,23 +185,14 @@ const StageUnrealDiploma = () => {
           )}
         </div>
         {globalPdf && (
-          <div className="mt-4">
-            <a
-              href={globalPdf}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-blue-600 text-white rounded"
-            >
-              View PDF
-            </a>
-            <a
-              href={globalPdf}
-              download
-              className="ml-3 px-4 py-2 bg-green-600 text-white rounded"
-            >
-              Download PDF
-            </a>
-          </div>
+          <a
+            href={globalPdf}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 underline"
+          >
+            View Global PDF
+          </a>
         )}
       </div>
 
