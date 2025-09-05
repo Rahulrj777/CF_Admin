@@ -46,41 +46,32 @@ const StageUnrealDiploma = () => {
     setChildren(updated.length ? updated : [""]);
   };
 
-const handleSave = async () => {
-  if (!title || children.some((c) => !c.trim()))
-    return alert("Title and children are required");
+  const handleSave = async () => {
+    if (!title || children.some((c) => !c.trim()))
+      return alert("Title and children are required");
 
-  try {
-    if (editingId) {
-      const formData = new FormData();
-      formData.append("title", title);
-      children.forEach((c) => formData.append("children", c));
-      if (pdfFile) formData.append("pdf", pdfFile);
+    try {
+      if (editingId) {
+        const res = await axios.put(`${API}/${editingId}`, { title, children });
 
-      const res = await axios.put(`${API}/${editingId}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+        setContents((prev) =>
+          prev.map((c) => (c.id === editingId ? res.data : c))
+        );
+      } else {
+        const res = await axios.post(API, { title, children });
+        setContents((prev) => [...prev, { ...res.data, id: res.data._id }]);
+      }
 
-      setContents((prev) =>
-        prev.map((c) => (c.id === editingId ? res.data : c))
-      );
-      setPdfFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    } else {
-      const res = await axios.post(API, { title, children });
-      setContents((prev) => [...prev, { ...res.data, id: res.data._id }]);
+      await fetchAll();
+    } catch (err) {
+      console.error(err);
+      alert("Error saving content");
     }
 
-    await fetchAll();
-  } catch (err) {
-    console.error(err);
-    alert("Error saving content");
-  }
-
-  setTitle("");
-  setChildren([""]);
-  setEditingId(null);
-};
+    setTitle("");
+    setChildren([""]);
+    setEditingId(null);
+  };
 
   const handlePdfSelect = (e) => {
     const file = e.target.files?.[0];
@@ -106,8 +97,6 @@ const handleSave = async () => {
 
       setGlobalPdf(res.data.pdfUrl); // <- Use pdfUrl
       await fetchAll();
-      setPdfFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
       console.error(err);
       alert("Error uploading PDF");
@@ -161,7 +150,7 @@ const handleSave = async () => {
         <input
           ref={fileInputRef}
           type="file"
-          name="pdf" 
+          name="pdf"
           accept="application/pdf"
           onChange={handlePdfSelect}
           className="mb-2"
