@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import axios from "axios"
 
-const StageUnrealDiploma = () => {
+const CfaDiploma = () => {
   const [contents, setContents] = useState([])
   const [globalPdf, setGlobalPdf] = useState(null)
   const [title, setTitle] = useState("")
@@ -13,7 +13,7 @@ const StageUnrealDiploma = () => {
   const fileInputRef = useRef(null)
 
   const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com"
-  const API = `${API_BASE}/stageunrealdiploma`
+  const API = `${API_BASE}/cfadiploma`
 
   useEffect(() => {
     fetchAll()
@@ -274,4 +274,4 @@ const StageUnrealDiploma = () => {
   )
 }
 
-export default StageUnrealDiploma
+export default CfaDiploma
