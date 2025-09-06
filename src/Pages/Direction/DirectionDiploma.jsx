@@ -6,6 +6,8 @@ const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 const DirectionDiplomaAdmin = () => {
   const [semester1, setSemester1] = useState([""]);
   const [semester2, setSemester2] = useState([""]);
+  const [semester1Input, setSemester1Input] = useState([""]);
+  const [semester2Input, setSemester2Input] = useState([""]);
   const [pdf, setPdf] = useState(null);
   const [savedData, setSavedData] = useState(null);
 
@@ -128,31 +130,42 @@ const DirectionDiplomaAdmin = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg text-black">
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        🎬 Direction Diploma
+    <div className="max-w-6xl mx-auto p-6 space-y-10">
+      <h2 className="text-3xl md:text-4xl font-bold text-center text-indigo-600">
+        🎬 Direction Diploma Admin
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      {/* 1️⃣ Form View */}
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+      >
         {/* Semester 1 */}
-        <div className="bg-gray-50 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">
+        <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
+          <h3 className="text-xl font-semibold mb-4 text-indigo-700">
             Semester 1
           </h3>
-          {semester1.map((sub, i) => (
-            <div key={i} className="flex gap-2 items-center mb-3">
+          {semester1Input.map((sub, i) => (
+            <div key={i} className="flex gap-2 mb-2">
               <input
                 value={sub}
                 onChange={(e) =>
-                  updateSubtitle(semester1, setSemester1, i, e.target.value)
+                  updateSubtitle(
+                    semester1Input,
+                    setSemester1Input,
+                    i,
+                    e.target.value
+                  )
                 }
                 placeholder="Enter subtitle"
-                className="border rounded-md p-2 w-full focus:border-blue-500 focus:outline-none"
+                className="border rounded-md p-2 w-full"
               />
               <button
                 type="button"
-                className="px-2 py-1 text-red-500 hover:text-red-700"
-                onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}
+                onClick={() =>
+                  deleteSubtitleLocal(semester1Input, setSemester1Input, i)
+                }
+                className="text-red-500"
               >
                 ✖
               </button>
@@ -160,32 +173,39 @@ const DirectionDiplomaAdmin = () => {
           ))}
           <button
             type="button"
+            onClick={() => addSubtitle(semester1Input, setSemester1Input)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
-            onClick={() => addSubtitle(semester1, setSemester1)}
           >
             ➕ Add Subtitle
           </button>
         </div>
 
         {/* Semester 2 */}
-        <div className="bg-gray-50 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">
+        <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
+          <h3 className="text-xl font-semibold mb-4 text-indigo-700">
             Semester 2
           </h3>
-          {semester2.map((sub, i) => (
-            <div key={i} className="flex gap-2 items-center mb-3">
+          {semester2Input.map((sub, i) => (
+            <div key={i} className="flex gap-2 mb-2">
               <input
                 value={sub}
                 onChange={(e) =>
-                  updateSubtitle(semester2, setSemester2, i, e.target.value)
+                  updateSubtitle(
+                    semester2Input,
+                    setSemester2Input,
+                    i,
+                    e.target.value
+                  )
                 }
                 placeholder="Enter subtitle"
-                className="border rounded-md p-2 w-full focus:border-blue-500 focus:outline-none"
+                className="border rounded-md p-2 w-full"
               />
               <button
                 type="button"
-                className="px-2 py-1 text-red-500 hover:text-red-700"
-                onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}
+                onClick={() =>
+                  deleteSubtitleLocal(semester2Input, setSemester2Input, i)
+                }
+                className="text-red-500"
               >
                 ✖
               </button>
@@ -193,92 +213,85 @@ const DirectionDiplomaAdmin = () => {
           ))}
           <button
             type="button"
+            onClick={() => addSubtitle(semester2Input, setSemester2Input)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
-            onClick={() => addSubtitle(semester2, setSemester2)}
           >
             ➕ Add Subtitle
           </button>
         </div>
-
-        {/* PDF Upload */}
-        <div className="bg-gray-50 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">
-            Upload PDF
-          </h3>
-          {savedData?.pdfUrl ? (
-            <div className="flex items-center gap-4">
-              <a
-                href={savedData.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 underline"
-              >
-                {savedData.pdfUrl.split("/").pop()}
-              </a>
-              <button
-                type="button"
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                onClick={handleDeletePdf}
-              >
-                Delete PDF
-              </button>
-            </div>
-          ) : (
-            <input
-              type="file"
-              onChange={(e) => setPdf(e.target.files[0])}
-              className="border rounded-md p-2 w-full focus:border-blue-500 focus:outline-none"
-            />
-          )}
-        </div>
-
-        {/* Save button */}
-        <div className="text-center">
-          <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 px-6 py-3 text-white rounded-md font-semibold"
-          >
-            💾 Save Changes
-          </button>
-        </div>
       </form>
 
-      {/* Saved Data Preview */}
-      <div className="mt-10">
-        <h3 className="text-2xl font-bold mb-4 text-gray-800 text-center">
-          📌 Saved Data
+      {/* PDF Upload */}
+      <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
+        <h3 className="text-xl font-semibold mb-4 text-indigo-700">
+          Upload PDF
         </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-50 p-4 rounded-lg shadow">
-            <h4 className="font-semibold mb-2 text-gray-700">Semester 1</h4>
-            {savedData?.semester1?.map((item, i) => (
-              <div key={i} className="flex items-center gap-2 mb-1">
-                <span className="text-gray-800">{item.title}</span>
-                <button
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => handleDeleteSubtitle("semester1", i)}
-                >
-                  ✖
-                </button>
-              </div>
-            ))}
+        {savedData?.pdfUrl ? (
+          <div className="flex items-center gap-4">
+            <a
+              href={savedData.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
+              {savedData.pdfUrl.split("/").pop()}
+            </a>
+            <button
+              type="button"
+              onClick={handleDeletePdf}
+              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+            >
+              Delete PDF
+            </button>
           </div>
+        ) : (
+          <input
+            type="file"
+            onChange={(e) => setPdf(e.target.files[0])}
+            className="border rounded-md p-2 w-full"
+          />
+        )}
+      </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg shadow">
-            <h4 className="font-semibold mb-2 text-gray-700">Semester 2</h4>
-            {savedData?.semester2?.map((item, i) => (
-              <div key={i} className="flex items-center gap-2 mb-1">
-                <span className="text-gray-800">{item.title}</span>
-                <button
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => handleDeleteSubtitle("semester2", i)}
-                >
-                  ✖
-                </button>
-              </div>
-            ))}
-          </div>
+      {/* Save */}
+      <div className="text-center">
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700 px-6 py-3 text-white rounded-md font-semibold"
+        >
+          💾 Save Changes
+        </button>
+      </div>
+
+      {/* 3️⃣ Saved Preview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white p-4 rounded-xl shadow">
+          <h4 className="font-semibold mb-2 text-indigo-700">Semester 1</h4>
+          {savedData?.semester1?.map((item, i) => (
+            <div key={i} className="flex justify-between items-center mb-1">
+              <span className="text-gray-800">{item.title}</span>
+              <button
+                className="text-red-500"
+                onClick={() => handleDeleteSubtitle("semester1", i)}
+              >
+                ✖
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className="bg-white p-4 rounded-xl shadow">
+          <h4 className="font-semibold mb-2 text-indigo-700">Semester 2</h4>
+          {savedData?.semester2?.map((item, i) => (
+            <div key={i} className="flex justify-between items-center mb-1">
+              <span className="text-gray-800">{item.title}</span>
+              <button
+                className="text-red-500"
+                onClick={() => handleDeleteSubtitle("semester2", i)}
+              >
+                ✖
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
