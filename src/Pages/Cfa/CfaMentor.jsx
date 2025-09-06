@@ -80,99 +80,76 @@ const CfaMentor = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        👨‍🏫 Manage Mentors
+    <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        👥 Manage Mentors
       </h2>
 
       {/* Upload Form */}
-      <form
-        onSubmit={handleUpload}
-        className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
-      >
-        {/* Description */}
+      <div className="mb-10 bg-gray-50 p-6 rounded-xl shadow-inner">
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter mentor description"
-          className="border p-3 w-full rounded h-28"
+          placeholder="Enter mentor description..."
+          className="border-2 border-gray-300 p-3 w-full mb-4 rounded-lg h-28 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
-        {/* File input + preview + button */}
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          {/* File box */}
-          <div className="flex-1">
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer text-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-                id="mentor-upload"
-              />
-              <label
-                htmlFor="mentor-upload"
-                className="cursor-pointer text-sm block"
-              >
-                {preview ? (
-                  <img
-                    src={preview}
-                    alt="Preview"
-                    className="mx-auto w-48 h-48 object-cover rounded-lg shadow"
-                  />
-                ) : (
-                  <span className="text-gray-500">
-                    Drag & Drop or Click to Upload
-                  </span>
-                )}
-              </label>
-            </div>
-          </div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="w-full mb-4 border-2 border-dashed border-gray-300 p-3 rounded-lg cursor-pointer"
+        />
 
-          {/* Upload button */}
-          <button
-            type="submit"
-            className="px-6 py-3 rounded-md text-white font-semibold transition 
-          bg-blue-600 hover:bg-blue-700 w-full md:w-auto"
-          >
-            🚀 Upload Mentor
-          </button>
-        </div>
-      </form>
+        {preview && (
+          <div className="mb-4">
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-40 h-40 object-cover mx-auto rounded-lg shadow-md border"
+            />
+          </div>
+        )}
+
+        <button
+          onClick={handleUpload}
+          className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+        >
+          🚀 Upload Mentor
+        </button>
+      </div>
 
       {message && (
-        <p className="mb-6 text-center text-sm text-gray-600">{message}</p>
+        <p className="mb-8 text-center text-sm text-green-600 font-medium">
+          {message}
+        </p>
       )}
 
       {/* Mentors List */}
-      <h3 className="text-2xl font-semibold mb-6 text-gray-800">
-        📌 Current Mentors
+      <h3 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+        📋 Current Mentors
       </h3>
       {mentors.length === 0 ? (
-        <p className="text-gray-500">No mentors uploaded yet.</p>
+        <p className="text-center text-gray-500">No mentors uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-8">
           {mentors.map((mentor) => (
             <div
               key={mentor.publicId}
-              className="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col text-center"
+              className="border rounded-xl p-6 text-center shadow hover:shadow-md transition"
             >
               <img
                 src={mentor.imageUrl}
                 alt="Mentor"
-                className="h-60 w-full object-cover"
+                className="w-32 h-32 object-cover mx-auto rounded-lg border shadow-sm"
               />
-              <div className="p-4 flex flex-col flex-grow">
-                <p className="text-sm text-gray-700 mb-4">
-                  {mentor.description}
-                </p>
-                <button
-                  onClick={() => handleDelete(mentor.publicId)}
-                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full"
-                >
-                  🗑 Delete
-                </button>
-              </div>
+              <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
+              <button
+                onClick={() => handleDelete(mentor.publicId)}
+                className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition"
+              >
+                🗑 Delete
+              </button>
             </div>
           ))}
         </div>
