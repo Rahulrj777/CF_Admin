@@ -53,36 +53,27 @@ const DirectionDiplomaAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Update subtitles first
+      // copy input arrays to real arrays you send
       await axios.post(`${API_BASE}/directiondiploma/text`, {
-        semester1,
-        semester2,
+        semester1: semester1Input,
+        semester2: semester2Input,
       });
 
-      // Upload PDF if selected
       if (pdf) {
         const formData = new FormData();
         formData.append("pdf", pdf);
-
-        const uploadRes = await axios.post(
-          `${API_BASE}/directiondiploma/pdf`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-
-        console.log("PDF Upload Response:", uploadRes.data); // 👈 add this
+        await axios.post(`${API_BASE}/directiondiploma/pdf`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
 
-      // Refresh data
+      // refresh
       const res = await axios.get(`${API_BASE}/directiondiploma`);
       const data = res.data.direction.diploma[0] || {
         semester1: [],
         semester2: [],
         pdfUrl: "",
       };
-      console.log("Fetched diploma data:", res.data); // 👈 add this
       setSavedData(data);
       setPdf(null);
     } catch (err) {
@@ -136,87 +127,128 @@ const DirectionDiplomaAdmin = () => {
       </h2>
 
       {/* 1️⃣ Form View */}
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-      >
-        {/* Semester 1 */}
-        <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
-          <h3 className="text-xl font-semibold mb-4 text-indigo-700">
-            Semester 1
-          </h3>
-          {semester1Input.map((sub, i) => (
-            <div key={i} className="flex gap-2 mb-2">
-              <input
-                value={sub}
-                onChange={(e) =>
-                  updateSubtitle(
-                    semester1Input,
-                    setSemester1Input,
-                    i,
-                    e.target.value
-                  )
-                }
-                placeholder="Enter subtitle"
-                className="border rounded-md p-2 w-full"
-              />
-              <button
-                type="button"
-                onClick={() =>
-                  deleteSubtitleLocal(semester1Input, setSemester1Input, i)
-                }
-                className="text-red-500"
-              >
-                ✖
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addSubtitle(semester1Input, setSemester1Input)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
-          >
-            ➕ Add Subtitle
-          </button>
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Semester 1 */}
+          <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
+            <h3 className="text-xl font-semibold mb-4 text-indigo-700">
+              Semester 1
+            </h3>
+            {semester1Input.map((sub, i) => (
+              <div key={i} className="flex gap-2 mb-2">
+                <input
+                  value={sub}
+                  onChange={(e) =>
+                    updateSubtitle(
+                      semester1Input,
+                      setSemester1Input,
+                      i,
+                      e.target.value
+                    )
+                  }
+                  placeholder="Enter subtitle"
+                  className="border rounded-md p-2 w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    deleteSubtitleLocal(semester1Input, setSemester1Input, i)
+                  }
+                  className="text-red-500"
+                >
+                  ✖
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => addSubtitle(semester1Input, setSemester1Input)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
+            >
+              ➕ Add Subtitle
+            </button>
+          </div>
+
+          {/* Semester 2 */}
+          <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
+            <h3 className="text-xl font-semibold mb-4 text-indigo-700">
+              Semester 2
+            </h3>
+            {semester2Input.map((sub, i) => (
+              <div key={i} className="flex gap-2 mb-2">
+                <input
+                  value={sub}
+                  onChange={(e) =>
+                    updateSubtitle(
+                      semester2Input,
+                      setSemester2Input,
+                      i,
+                      e.target.value
+                    )
+                  }
+                  placeholder="Enter subtitle"
+                  className="border rounded-md p-2 w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    deleteSubtitleLocal(semester2Input, setSemester2Input, i)
+                  }
+                  className="text-red-500"
+                >
+                  ✖
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => addSubtitle(semester2Input, setSemester2Input)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
+            >
+              ➕ Add Subtitle
+            </button>
+          </div>
         </div>
 
-        {/* Semester 2 */}
-        <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
+        {/* PDF Upload */}
+        <div className="bg-white shadow p-5 rounded-xl border border-indigo-100 mt-6">
           <h3 className="text-xl font-semibold mb-4 text-indigo-700">
-            Semester 2
+            Upload PDF
           </h3>
-          {semester2Input.map((sub, i) => (
-            <div key={i} className="flex gap-2 mb-2">
-              <input
-                value={sub}
-                onChange={(e) =>
-                  updateSubtitle(
-                    semester2Input,
-                    setSemester2Input,
-                    i,
-                    e.target.value
-                  )
-                }
-                placeholder="Enter subtitle"
-                className="border rounded-md p-2 w-full"
-              />
+          {savedData?.pdfUrl ? (
+            <div className="flex items-center gap-4">
+              <a
+                href={savedData.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                {savedData.pdfUrl.split("/").pop()}
+              </a>
               <button
                 type="button"
-                onClick={() =>
-                  deleteSubtitleLocal(semester2Input, setSemester2Input, i)
-                }
-                className="text-red-500"
+                onClick={handleDeletePdf}
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
               >
-                ✖
+                Delete PDF
               </button>
             </div>
-          ))}
+          ) : (
+            <input
+              type="file"
+              onChange={(e) => setPdf(e.target.files[0])}
+              className="border rounded-md p-2 w-full"
+            />
+          )}
+        </div>
+
+        {/* Save button INSIDE form */}
+        <div className="text-center mt-4">
           <button
-            type="button"
-            onClick={() => addSubtitle(semester2Input, setSemester2Input)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
+            type="submit"
+            className="bg-green-600 hover:bg-green-700 px-6 py-3 text-white rounded-md font-semibold"
           >
-            ➕ Add Subtitle
+            💾 Save Changes
           </button>
         </div>
       </form>
