@@ -55,8 +55,12 @@ const DirectionDiplomaAdmin = () => {
     try {
       // copy input arrays to real arrays you send
       await axios.post(`${API_BASE}/directiondiploma/text`, {
-        semester1: semester1Input,
-        semester2: semester2Input,
+        semester1: semester1Array.map((s) =>
+          typeof s === "string" ? s : s.title
+        ),
+        semester2: semester2Array.map((s) =>
+          typeof s === "string" ? s : s.title
+        ),
       });
 
       if (pdf) {
