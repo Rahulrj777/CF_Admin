@@ -87,7 +87,7 @@ const HomeBanner = () => {
         onSubmit={handleUpload}
         className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
       >
-        <div className="flex flex-row md:items-start gap-6">
+        <div className="flex flex-col md:flex-row md:items-start gap-6">
           {/* Image Upload */}
           <div className="w-full md:w-2/3">
             <label className="block mb-2 font-medium">Upload Banner:</label>
@@ -119,7 +119,7 @@ const HomeBanner = () => {
           </div>
 
           {/* Upload Button */}
-          <div className="w-full md:w-1/3 flex items-center md:justify-center">
+          <div className="w-full md:w-1/3 flex items-start md:justify-center">
             <button
               type="submit"
               disabled={!image || uploading}
@@ -152,7 +152,7 @@ const HomeBanner = () => {
               <img
                 src={banner.imageUrl}
                 alt="banner"
-                className="h-40 w-full object-cover"
+                className="h-40 w-full object-fill"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <button
