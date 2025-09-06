@@ -106,7 +106,7 @@ const VirtualProductionMentor = () => {
             <img
               src={preview}
               alt="Preview"
-              className="w-40 h-40 object-cover mx-auto rounded-lg shadow-md border"
+              className="w-40 h-40 object-cover object-top mx-auto rounded-lg shadow-md border"
             />
           </div>
         )}
@@ -141,7 +141,7 @@ const VirtualProductionMentor = () => {
               <img
                 src={mentor.imageUrl}
                 alt="Mentor"
-                className="w-32 h-32 object-cover mx-auto rounded-lg border shadow-sm"
+                className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
               <button
