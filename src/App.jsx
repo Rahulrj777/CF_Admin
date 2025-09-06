@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom"
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import {
   Video,
   Users,
@@ -13,82 +13,82 @@ import {
   Palette,
   ChevronDown,
   ChevronRight,
-} from "lucide-react"
-import { useState, useEffect } from "react"
+} from "lucide-react";
+import { useState, useEffect } from "react";
 
 // Login page (expects to call onLogin() on successful auth)
-import HomePage from "./Pages/Home"
+import HomePage from "./Pages/Home";
 
 // Home
-import HomeBanner from "./Pages/Home/HomeBanner"
-import HomeExclusive from "./Pages/Home/HomeExclusive"
-import VideoPage from "./Pages/Home/VideoGallery"
-import MentorPage from "./Pages/Home/HomeMentors"
-import HomeFilmography from "./Pages/Home/HomeFilmography"
+import HomeBanner from "./Pages/Home/HomeBanner";
+import HomeExclusive from "./Pages/Home/HomeExclusive";
+import VideoPage from "./Pages/Home/VideoGallery";
+import MentorPage from "./Pages/Home/HomeMentors";
+import HomeFilmography from "./Pages/Home/HomeFilmography";
 
 // direction-course
-import DirectionBanner from "./Pages/Direction/DirectionBanner"
-import DirectionHighlights from "./Pages/Direction/DirectionHighlights"
-import DirectionDiploma from "./Pages/Direction/DirectionDiploma"
-import DirectionMentor from "./Pages/Direction/DirectionMentor"
-import DirectionFilmography from "./Pages/Direction/DirectionFilmography"
+import DirectionBanner from "./Pages/Direction/DirectionBanner";
+import DirectionHighlights from "./Pages/Direction/DirectionHighlights";
+import DirectionDiploma from "./Pages/Direction/DirectionDiploma";
+import DirectionMentor from "./Pages/Direction/DirectionMentor";
+import DirectionFilmography from "./Pages/Direction/DirectionFilmography";
 
 // cinematography-course
-import CinematographyBanner from "./Pages/Cinematography/CinematographyBanner"
-import CinematographyHighlights from "./Pages/Cinematography/CinematographyHighlights"
-import CinematographyDiploma from "./Pages/Cinematography/CinematographyDiploma"
-import CinematographyMentor from "./Pages/Cinematography/CinematographyMentor"
-import CinematographyFilmography from "./Pages/Cinematography/CinematographyFilmography"
+import CinematographyBanner from "./Pages/Cinematography/CinematographyBanner";
+import CinematographyHighlights from "./Pages/Cinematography/CinematographyHighlights";
+import CinematographyDiploma from "./Pages/Cinematography/CinematographyDiploma";
+import CinematographyMentor from "./Pages/Cinematography/CinematographyMentor";
+import CinematographyFilmography from "./Pages/Cinematography/CinematographyFilmography";
 
 // editing-course
-import EditingBanner from "./Pages/Editing/EditingBanner"
-import EditingHighlights from "./Pages/Editing/EditingHighlights"
-import EditingDiploma from "./Pages/Editing/EditingDiploma"
-import EditingMentor from "./Pages/Editing/EditingMentor"
-import EditingFilmography from "./Pages/Editing/EditingFilmography"
+import EditingBanner from "./Pages/Editing/EditingBanner";
+import EditingHighlights from "./Pages/Editing/EditingHighlights";
+import EditingDiploma from "./Pages/Editing/EditingDiploma";
+import EditingMentor from "./Pages/Editing/EditingMentor";
+import EditingFilmography from "./Pages/Editing/EditingFilmography";
 
 // vfx-course
-import VfxBanner from "./Pages/vfx/vfxBanner"
-import VfxHighlights from "./Pages/vfx/vfxHighlights"
-import VfxDiploma from "./Pages/vfx/vfxDiploma"
-import VfxMentor from "./Pages/vfx/vfxMentor"
-import VfxFilmography from "./Pages/vfx/vfxFilmography"
+import VfxBanner from "./Pages/vfx/vfxBanner";
+import VfxHighlights from "./Pages/vfx/vfxHighlights";
+import VfxDiploma from "./Pages/vfx/vfxDiploma";
+import VfxMentor from "./Pages/vfx/vfxMentor";
+import VfxFilmography from "./Pages/vfx/vfxFilmography";
 
 // virtual-production-course
-import VirtualProductionBanner from "./Pages/VirtualProduction/VirtualProductionBanner"
-import VirtualProductionMentor from "./Pages/VirtualProduction/VirtualProductionMentor"
-import VirtualProductionFilmography from "./Pages/VirtualProduction/VirtualProductionFilmography"
-import VirtualProductionDiploma from "./Pages/VirtualProduction/VirtualProductionDiploma"
+import VirtualProductionBanner from "./Pages/VirtualProduction/VirtualProductionBanner";
+import VirtualProductionMentor from "./Pages/VirtualProduction/VirtualProductionMentor";
+import VirtualProductionFilmography from "./Pages/VirtualProduction/VirtualProductionFilmography";
+import VirtualProductionDiploma from "./Pages/VirtualProduction/VirtualProductionDiploma";
 
 // di-course
-import DiBanner from "./Pages/Di/DiBanner"
-import DiHighlights from "./Pages/Di/DiHighlights"
-import DiMentor from "./Pages/Di/DiMentor"
-import DiFilmography from "./Pages/Di/DiFilmography"
-import DiDiploma from "./Pages/Di/DiDiploma"
+import DiBanner from "./Pages/Di/DiBanner";
+import DiHighlights from "./Pages/Di/DiHighlights";
+import DiMentor from "./Pages/Di/DiMentor";
+import DiFilmography from "./Pages/Di/DiFilmography";
+import DiDiploma from "./Pages/Di/DiDiploma";
 
 // photography-course
-import PhotographyBanner from "./Pages/Photography/PhotographyBanner"
-import Photographymentor from "./Pages/Photography/PhotographyMentor"
-import PhotographyFilmography from "./Pages/Photography/PhotographyFilmography"
-import PhotographyDiploma from "./Pages/Photography/PhotographyDiploma"
+import PhotographyBanner from "./Pages/Photography/PhotographyBanner";
+import Photographymentor from "./Pages/Photography/PhotographyMentor";
+import PhotographyFilmography from "./Pages/Photography/PhotographyFilmography";
+import PhotographyDiploma from "./Pages/Photography/PhotographyDiploma";
 
 // acting-course
-import ActingBanner from "./Pages/Acting/ActingBanner"
-import ActingMentor from "./Pages/Acting/ActingMentor"
-import ActingDiploma from "./Pages/Acting/ActingDiploma"
+import ActingBanner from "./Pages/Acting/ActingBanner";
+import ActingMentor from "./Pages/Acting/ActingMentor";
+import ActingDiploma from "./Pages/Acting/ActingDiploma";
 
 // CFA
-import CfaBanner from "./Pages/Cfa/CfaBanner"
-import CfaDiploma from "./Pages/Cfa/CfaDiploma"
-import CfaMentor from "./Pages/Cfa/CfaMentor"
-import CfaFilmography from "./Pages/Cfa/CfaFilmography"
+import CfaBanner from "./Pages/Cfa/CfaBanner";
+import CfaDiploma from "./Pages/Cfa/CfaDiploma";
+import CfaMentor from "./Pages/Cfa/CfaMentor";
+import CfaFilmography from "./Pages/Cfa/CfaFilmography";
 
 // StageUnreal
-import StageUnrealBanner from "./Pages/StageUnreal/StageUnrealBanner"
-import StageUnrealDiploma from "./Pages/StageUnreal/StageUnrealDiploma.jsx"
-import StageUnrealMentor from "./Pages/StageUnreal/StageUnrealMentor.jsx"
-import StageUnrealFilmography from "./Pages/StageUnreal/StageUnrealFilmography.jsx"
+import StageUnrealBanner from "./Pages/StageUnreal/StageUnrealBanner";
+import StageUnrealDiploma from "./Pages/StageUnreal/StageUnrealDiploma.jsx";
+import StageUnrealMentor from "./Pages/StageUnreal/StageUnrealMentor.jsx";
+import StageUnrealFilmography from "./Pages/StageUnreal/StageUnrealFilmography.jsx";
 
 // Full menu from app-SPL3L
 const menu = [
@@ -248,7 +248,7 @@ const menu = [
         title: "Banner",
         path: "/stage-unreal/banner",
         icon: "🏳️",
-      }, 
+      },
       {
         title: "1 Year Diploma",
         path: "/stage-unreal/diploma",
@@ -350,193 +350,298 @@ const menu = [
       },
     ],
   },
-]
+];
 
 function App() {
-  const [openMenus, setOpenMenus] = useState({})
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [openMenus, setOpenMenus] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Load login state
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn") === "true") {
-      setIsLoggedIn(true)
+      setIsLoggedIn(true);
     }
-  }, [])
+  }, []);
 
   // Load sidebar state
   useEffect(() => {
-    const saved = localStorage.getItem("sidebarState")
-    if (saved) setOpenMenus(JSON.parse(saved))
-  }, [])
+    const saved = localStorage.getItem("sidebarState");
+    if (saved) setOpenMenus(JSON.parse(saved));
+  }, []);
 
   // Persist sidebar state
   useEffect(() => {
-    localStorage.setItem("sidebarState", JSON.stringify(openMenus))
-  }, [openMenus])
+    localStorage.setItem("sidebarState", JSON.stringify(openMenus));
+  }, [openMenus]);
 
   const toggleMenu = (title) => {
-    setOpenMenus((prev) => ({ ...prev, [title]: !prev[title] }))
-  }
+    setOpenMenus((prev) => ({ ...prev, [title]: !prev[title] }));
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn")
-    setIsLoggedIn(false)
-  }
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
+  };
 
-  // Not logged in → show Login page
   if (!isLoggedIn) {
-    // HomePage should call props.onLogin() after validating ADMIN creds
-    // e.g., on success: localStorage.setItem("isLoggedIn", "true"); onLogin();
-    return <HomePage onLogin={() => setIsLoggedIn(true)} />
+    return <HomePage onLogin={() => setIsLoggedIn(true)} />;
   }
 
-  // Logged in → show Sidebar + Routes + top-right Logout
   return (
-    {
-      /* Using a fragment wrapper avoids remounting BrowserRouter on login/logout. */
-    } && (
-      <BrowserRouter>
-        <div className="flex min-h-screen bg-gray-100">
-          {/* Sidebar */}
-          <aside className="w-64 h-screen bg-white shadow-md overflow-y-auto">
-            <div className="p-4 text-xl font-bold border-b">Admin Panel</div>
-            <nav className="flex flex-col p-4 space-y-2">
-              {menu.map((section) => (
-                <div key={section.title}>
-                  <button
-                    onClick={() => toggleMenu(section.title)}
-                    className="flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-100 transition"
-                  >
-                    <span className="flex items-center gap-2">
-                      {section.icon} {section.title}
-                    </span>
-                    {openMenus[section.title] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                  </button>
-
-                  {openMenus[section.title] && (
-                    <div className="ml-6 flex flex-col gap-1">
-                      {section.children.map((child) => (
-                        <NavLink
-                          key={child.path}
-                          to={child.path}
-                          className={({ isActive }) =>
-                            `flex items-center gap-2 p-2 rounded-lg transition ${
-                              isActive ? "bg-blue-100 text-blue-600 font-medium" : "hover:bg-gray-100"
-                            }`
-                          }
-                        >
-                          {child.icon} {child.title}
-                        </NavLink>
-                      ))}
-                    </div>
+    <BrowserRouter>
+      <div className="flex min-h-screen bg-gray-100">
+        {/* Sidebar */}
+        <aside
+          className={`fixed z-40 inset-y-0 left-0 transform 
+                      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+                      w-64 bg-white shadow-md overflow-y-auto transition-transform duration-300 ease-in-out
+                      md:relative md:translate-x-0`}
+        >
+          <div className="p-4 text-xl font-bold border-b">Admin Panel</div>
+          <nav className="flex flex-col p-4 space-y-2">
+            {menu.map((section) => (
+              <div key={section.title}>
+                <button
+                  onClick={() => toggleMenu(section.title)}
+                  className="flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-100 transition"
+                >
+                  <span className="flex items-center gap-2">
+                    {section.icon} {section.title}
+                  </span>
+                  {openMenus[section.title] ? (
+                    <ChevronDown size={16} />
+                  ) : (
+                    <ChevronRight size={16} />
                   )}
-                </div>
-              ))}
-            </nav>
-          </aside>
+                </button>
 
-          {/* Content */}
-          <main className="flex-1 p-6 overflow-y-auto h-screen">
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-              >
-                Logout
-              </button>
-            </div>
+                {openMenus[section.title] && (
+                  <div className="ml-6 flex flex-col gap-1">
+                    {section.children.map((child) => (
+                      <NavLink
+                        key={child.path}
+                        to={child.path}
+                        className={({ isActive }) =>
+                          `flex items-center gap-2 p-2 rounded-lg transition ${
+                            isActive
+                              ? "bg-blue-100 text-blue-600 font-medium"
+                              : "hover:bg-gray-100"
+                          }`
+                        }
+                      >
+                        {child.icon} {child.title}
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+        </aside>
 
-            <Routes>
-              {/* Optional home route - you can point this to a dashboard page if desired */}
-              <Route path="/" element={<HomeBanner />} />
+        {/* Content */}
+        <main className="flex-1 p-6 overflow-y-auto h-screen md:ml-64">
+          {/* Top bar with toggle + logout */}
+          <div className="flex justify-between items-center mb-4 md:hidden">
+            <button
+              onClick={() => setSidebarOpen((prev) => !prev)}
+              className="bg-gray-200 px-3 py-2 rounded-md"
+            >
+              {sidebarOpen ? "Close Menu" : "Open Menu"}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+          </div>
 
-              {/* Home */}
-              <Route path="/home/banner" element={<HomeBanner />} />
-              <Route path="/home/exclusive" element={<HomeExclusive />} />
-              <Route path="/home/video-upload" element={<VideoPage />} />
-              <Route path="/home/mentor" element={<MentorPage />} />
-              <Route path="/home/filmography" element={<HomeFilmography />} />
+          <div className="hidden md:flex justify-end mb-4">
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+          </div>
 
-              {/* Direction */}
-              <Route path="/direction-course/banner" element={<DirectionBanner />} />
-              <Route path="/direction-course/highlights" element={<DirectionHighlights />} />
-              <Route path="/direction-course/diploma" element={<DirectionDiploma />} />
-              <Route path="/direction-course/filmmaker" element={<DirectionMentor />} />
-              <Route path="/direction-course/filmography" element={<DirectionFilmography />} />
+          <Routes>
+            {/* Optional home route - you can point this to a dashboard page if desired */}
+            <Route path="/" element={<HomeBanner />} />
 
-              {/* DI */}
-              <Route path="/di-course/banner" element={<DiBanner />} />
-              <Route path="/di-course/highlights" element={<DiHighlights />} />
-              <Route path="/di-course/filmmaker" element={<DiMentor />} />
-              <Route path="/di-course/filmography" element={<DiFilmography />} />
-              <Route path="/di-course/diploma" element={<DiDiploma />} />
+            {/* Home */}
+            <Route path="/home/banner" element={<HomeBanner />} />
+            <Route path="/home/exclusive" element={<HomeExclusive />} />
+            <Route path="/home/video-upload" element={<VideoPage />} />
+            <Route path="/home/mentor" element={<MentorPage />} />
+            <Route path="/home/filmography" element={<HomeFilmography />} />
 
-              {/* Editing */}
-              <Route path="/editing-course/banner" element={<EditingBanner />} />
-              <Route path="/editing-course/highlights" element={<EditingHighlights />} />
-              <Route path="/editing-course/diploma" element={<EditingDiploma />} />
-              <Route path="/editing-course/filmmaker" element={<EditingMentor />} />
-              <Route path="/editing-course/filmography" element={<EditingFilmography />} />
+            {/* Direction */}
+            <Route
+              path="/direction-course/banner"
+              element={<DirectionBanner />}
+            />
+            <Route
+              path="/direction-course/highlights"
+              element={<DirectionHighlights />}
+            />
+            <Route
+              path="/direction-course/diploma"
+              element={<DirectionDiploma />}
+            />
+            <Route
+              path="/direction-course/filmmaker"
+              element={<DirectionMentor />}
+            />
+            <Route
+              path="/direction-course/filmography"
+              element={<DirectionFilmography />}
+            />
 
-              {/* Photography */}
-              <Route path="/photography-course/banner" element={<PhotographyBanner />} />
-              <Route path="/photography-course/filmmaker" element={<Photographymentor />} />
-              <Route path="/photography-course/filmography" element={<PhotographyFilmography />} />
-              <Route path="/photography-course/diploma" element={<PhotographyDiploma />} />
+            {/* DI */}
+            <Route path="/di-course/banner" element={<DiBanner />} />
+            <Route path="/di-course/highlights" element={<DiHighlights />} />
+            <Route path="/di-course/filmmaker" element={<DiMentor />} />
+            <Route path="/di-course/filmography" element={<DiFilmography />} />
+            <Route path="/di-course/diploma" element={<DiDiploma />} />
 
-              {/* VFX */}
-              <Route path="/vfx-course/banner" element={<VfxBanner />} />
-              <Route path="/vfx-course/highlights" element={<VfxHighlights />} />
-              <Route path="/vfx-course/diploma" element={<VfxDiploma />} />
-              <Route path="/vfx-course/filmmaker" element={<VfxMentor />} />
-              <Route path="/vfx-course/filmography" element={<VfxFilmography />} />
+            {/* Editing */}
+            <Route path="/editing-course/banner" element={<EditingBanner />} />
+            <Route
+              path="/editing-course/highlights"
+              element={<EditingHighlights />}
+            />
+            <Route
+              path="/editing-course/diploma"
+              element={<EditingDiploma />}
+            />
+            <Route
+              path="/editing-course/filmmaker"
+              element={<EditingMentor />}
+            />
+            <Route
+              path="/editing-course/filmography"
+              element={<EditingFilmography />}
+            />
 
-              {/* StageUnreal */}
-              <Route path="/stage-unreal/banner" element={<StageUnrealBanner />} />
-              <Route path="/stage-unreal/diploma" element={<StageUnrealDiploma />} />
-              <Route path="/stage-unreal/filmmaker" element={<StageUnrealMentor />} />
-              <Route path="/stage-unreal/filmography" element={<StageUnrealFilmography />} />
+            {/* Photography */}
+            <Route
+              path="/photography-course/banner"
+              element={<PhotographyBanner />}
+            />
+            <Route
+              path="/photography-course/filmmaker"
+              element={<Photographymentor />}
+            />
+            <Route
+              path="/photography-course/filmography"
+              element={<PhotographyFilmography />}
+            />
+            <Route
+              path="/photography-course/diploma"
+              element={<PhotographyDiploma />}
+            />
 
-              {/* Virtual Production */}
-              <Route path="/virtual-production-course/banner" element={<VirtualProductionBanner />} />
-              <Route path="/virtual-production-course/filmmaker" element={<VirtualProductionMentor />} />
-              <Route path="/virtual-production-course/filmography" element={<VirtualProductionFilmography />} />
-              <Route path="/virtual-production-course/diploma" element={<VirtualProductionDiploma />} />
+            {/* VFX */}
+            <Route path="/vfx-course/banner" element={<VfxBanner />} />
+            <Route path="/vfx-course/highlights" element={<VfxHighlights />} />
+            <Route path="/vfx-course/diploma" element={<VfxDiploma />} />
+            <Route path="/vfx-course/filmmaker" element={<VfxMentor />} />
+            <Route
+              path="/vfx-course/filmography"
+              element={<VfxFilmography />}
+            />
 
-              {/* Cinematography */}
-              <Route path="/cinematography-course/banner" element={<CinematographyBanner />} />
-              <Route path="/cinematography-course/highlights" element={<CinematographyHighlights />} />
-              <Route path="/cinematography-course/diploma" element={<CinematographyDiploma />} />
-              <Route path="/cinematography-course/filmmaker" element={<CinematographyMentor />} />
-              <Route path="/cinematography-course/filmography" element={<CinematographyFilmography />} />
+            {/* StageUnreal */}
+            <Route
+              path="/stage-unreal/banner"
+              element={<StageUnrealBanner />}
+            />
+            <Route
+              path="/stage-unreal/diploma"
+              element={<StageUnrealDiploma />}
+            />
+            <Route
+              path="/stage-unreal/filmmaker"
+              element={<StageUnrealMentor />}
+            />
+            <Route
+              path="/stage-unreal/filmography"
+              element={<StageUnrealFilmography />}
+            />
 
-              {/* Acting */}
-              <Route path="/acting-course/banner" element={<ActingBanner />} />
-              <Route path="/acting-course/filmmaker" element={<ActingMentor />} />
-              <Route path="/acting-course/diploma" element={<ActingDiploma />} />
+            {/* Virtual Production */}
+            <Route
+              path="/virtual-production-course/banner"
+              element={<VirtualProductionBanner />}
+            />
+            <Route
+              path="/virtual-production-course/filmmaker"
+              element={<VirtualProductionMentor />}
+            />
+            <Route
+              path="/virtual-production-course/filmography"
+              element={<VirtualProductionFilmography />}
+            />
+            <Route
+              path="/virtual-production-course/diploma"
+              element={<VirtualProductionDiploma />}
+            />
 
-              {/* CFA */}
-              <Route path="/cfa/banner" element={<CfaBanner />} />
-              <Route path="/cfa/diploma" element={<CfaDiploma />} />
-              <Route path="/cfa/filmmaker" element={<CfaMentor />} />
-              <Route path="/cfa/filmography" element={<CfaFilmography />} />
+            {/* Cinematography */}
+            <Route
+              path="/cinematography-course/banner"
+              element={<CinematographyBanner />}
+            />
+            <Route
+              path="/cinematography-course/highlights"
+              element={<CinematographyHighlights />}
+            />
+            <Route
+              path="/cinematography-course/diploma"
+              element={<CinematographyDiploma />}
+            />
+            <Route
+              path="/cinematography-course/filmmaker"
+              element={<CinematographyMentor />}
+            />
+            <Route
+              path="/cinematography-course/filmography"
+              element={<CinematographyFilmography />}
+            />
 
-              {/* Optionally keep dynamic placeholder routes, or remove if not needed */}
-              {menu.flatMap((section) =>
-                section.children.map((child) => (
-                  <Route
-                    key={child.path}
-                    path={child.path + "/placeholder"}
-                    element={<div className="p-6 text-lg font-semibold">{child.title} Page</div>}
-                  />
-                )),
-              )}
-            </Routes>
-          </main>
-        </div>
-      </BrowserRouter>
-    )
-  )
+            {/* Acting */}
+            <Route path="/acting-course/banner" element={<ActingBanner />} />
+            <Route path="/acting-course/filmmaker" element={<ActingMentor />} />
+            <Route path="/acting-course/diploma" element={<ActingDiploma />} />
+
+            {/* CFA */}
+            <Route path="/cfa/banner" element={<CfaBanner />} />
+            <Route path="/cfa/diploma" element={<CfaDiploma />} />
+            <Route path="/cfa/filmmaker" element={<CfaMentor />} />
+            <Route path="/cfa/filmography" element={<CfaFilmography />} />
+
+            {/* Optionally keep dynamic placeholder routes, or remove if not needed */}
+            {menu.flatMap((section) =>
+              section.children.map((child) => (
+                <Route
+                  key={child.path}
+                  path={child.path + "/placeholder"}
+                  element={
+                    <div className="p-6 text-lg font-semibold">
+                      {child.title} Page
+                    </div>
+                  }
+                />
+              ))
+            )}
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
