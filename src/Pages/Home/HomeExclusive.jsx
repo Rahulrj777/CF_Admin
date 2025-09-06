@@ -131,7 +131,7 @@ export default function HomeExclusive() {
       {items.length === 0 ? (
         <p className="text-gray-500">No exclusive items uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {items.map((item) => (
             <div
               key={item._id}
