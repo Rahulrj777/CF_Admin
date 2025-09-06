@@ -253,49 +253,6 @@ const DirectionDiplomaAdmin = () => {
         </div>
       </form>
 
-      {/* PDF Upload */}
-      <div className="bg-white shadow p-5 rounded-xl border border-indigo-100">
-        <h3 className="text-xl font-semibold mb-4 text-indigo-700">
-          Upload PDF
-        </h3>
-        {savedData?.pdfUrl ? (
-          <div className="flex items-center gap-4">
-            <a
-              href={savedData.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline"
-            >
-              {savedData.pdfUrl.split("/").pop()}
-            </a>
-
-            <button
-              type="button"
-              onClick={handleDeletePdf}
-              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
-            >
-              Delete PDF
-            </button>
-          </div>
-        ) : (
-          <input
-            type="file"
-            onChange={(e) => setPdf(e.target.files[0])}
-            className="border rounded-md p-2 w-full"
-          />
-        )}
-      </div>
-
-      {/* Save */}
-      <div className="text-center">
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-700 px-6 py-3 text-white rounded-md font-semibold"
-        >
-          💾 Save Changes
-        </button>
-      </div>
-
       {/* 3️⃣ Saved Preview */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-4 rounded-xl shadow">
