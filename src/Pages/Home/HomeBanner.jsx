@@ -87,7 +87,7 @@ const HomeBanner = () => {
         onSubmit={handleUpload}
         className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
       >
-        <div className="flex flex-col md:flex-row md:items-start gap-6">
+        <div className="flex flex-col items-center justify-center md:flex-row md:items-start gap-6">
           {/* Image Upload */}
           <div className="w-full md:w-2/3">
             <label className="block mb-2 font-medium">Upload Banner:</label>

@@ -140,7 +140,7 @@ export default function HomeExclusive() {
               <img
                 src={item.imageUrl}
                 alt="Exclusive"
-                className="h-40 w-full object-cover"
+                className="h-40 w-full object-fill"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-center font-medium mb-3">
