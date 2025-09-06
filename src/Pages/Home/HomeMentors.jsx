@@ -145,7 +145,7 @@ const HomeMentor = () => {
       {mentors.length === 0 ? (
         <p className="text-gray-500">No mentors uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {mentors.map((mentor) => (
             <div
               key={mentor._id}
@@ -154,7 +154,7 @@ const HomeMentor = () => {
               <img
                 src={mentor.imageUrl}
                 alt="mentor"
-                className="h-64 w-full object-cover"
+                className="h-180 w-120 object-cover"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <button

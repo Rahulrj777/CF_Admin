@@ -131,7 +131,7 @@ export default function HomeExclusive() {
       {items.length === 0 ? (
         <p className="text-gray-500">No exclusive items uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {items.map((item) => (
             <div
               key={item._id}
@@ -140,7 +140,7 @@ export default function HomeExclusive() {
               <img
                 src={item.imageUrl}
                 alt="Exclusive"
-                className="h-40 w-full object-fill"
+                className="h-60 w-full object-cover"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-center font-medium mb-3">
