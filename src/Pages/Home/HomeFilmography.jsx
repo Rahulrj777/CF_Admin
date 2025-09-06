@@ -154,7 +154,7 @@ const HomeFilmography = () => {
               <img
                 src={filmography.imageUrl}
                 alt="filmography"
-                className="h-64 w-full object-cover" // taller image like banner/mentor style
+                className="h-58 w-full object-cover" // taller image like banner/mentor style
               />
               <div className="p-4 flex flex-col flex-grow">
                 <button
