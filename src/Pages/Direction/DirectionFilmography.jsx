@@ -61,93 +61,67 @@ const DirectionFilmography = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        🎥 Manage Filmographys
+    <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md text-black">
+      <h2 className="text-2xl font-bold mb-6 text-center">
+        🎬 Upload Filmography
       </h2>
 
-      {error && <div className="text-red-600 mb-4">{error}</div>}
-
-      {/* Upload form */}
+      {/* Upload Form */}
       <form
         onSubmit={handleUpload}
-        className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
+        className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-4"
       >
-        <label className="block mb-2 font-medium">Upload Mentor Photo:</label>
-
-        {/* Wrap file box + button together */}
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          {/* Image Upload */}
-          <div className="flex-1">
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer text-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files[0])}
-                className="hidden"
-                id="mentor-upload"
-              />
-              <label
-                htmlFor="mentor-upload"
-                className="cursor-pointer text-sm block"
-              >
-                {image ? (
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt="Preview"
-                    className="mx-auto w-48 h-48 object-cover rounded-lg shadow"
-                  />
-                ) : (
-                  <span className="text-gray-500">
-                    Drag & Drop or Click to Upload
-                  </span>
-                )}
-              </label>
-            </div>
-          </div>
-
-          {/* Upload Button */}
+        <label className="block font-medium mb-2">
+          Select Filmography Image:
+        </label>
+        <div className="flex flex-col md:flex-row items-center gap-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="flex-1 border border-gray-300 rounded p-2"
+          />
           <button
             type="submit"
-            disabled={!image || uploading}
+            disabled={!file || uploading}
             className={`px-6 py-3 rounded-md text-white font-semibold transition
-        ${
-          uploading
-            ? "bg-blue-400 cursor-not-allowed"
-            : "bg-blue-600 hover:bg-blue-700"
-        }`}
+          ${
+            uploading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
           >
-            {uploading ? "Uploading..." : "🚀 Upload Mentor"}
+            {uploading ? "Uploading..." : "🚀 Upload"}
           </button>
         </div>
       </form>
 
-      {/* Filmography grid */}
-      <h3 className="text-2xl font-semibold mb-6 text-gray-800">
-        📌 Existing Filmographys
+      {/* Items Grid */}
+      <h3 className="text-xl font-semibold mb-6 text-gray-800">
+        📂 Existing Filmography
       </h3>
-      {filmographys.length === 0 ? (
-        <p className="text-gray-500">No filmographys uploaded yet.</p>
+      {items.length === 0 ? (
+        <p className="text-gray-500 text-center">
+          No filmography uploaded yet.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {filmographys.map((filmography) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {items.map((item) => (
             <div
-              key={filmography._id}
-              className="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col"
+              key={item.publicId}
+              className="relative border rounded-lg overflow-hidden shadow-md bg-white"
             >
               <img
-                src={filmography.imageUrl}
-                alt="filmography"
-                className="h-58 w-full object-cover" // taller image like banner/mentor style
+                src={item.imageUrl}
+                alt="Filmography"
+                className="w-full h-48 object-cover"
               />
-              <div className="p-4 flex flex-col flex-grow">
-                <button
-                  onClick={() => handleDelete(filmography._id)}
-                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  🗑 Delete
-                </button>
-              </div>
+              <button
+                onClick={() => handleDelete(item.publicId)}
+                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+              >
+                🗑
+              </button>
             </div>
           ))}
         </div>
