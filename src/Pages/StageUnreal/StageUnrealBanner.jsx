@@ -2,20 +2,20 @@ import { useState, useEffect } from "react";
 
 const StageUnrealBanner = () => {
   const [banners, setBanners] = useState([]);
-  const [video, setVideo] = useState(null);
+  const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
   const API_BASE =
     import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
 
-  // ✅ Fetch banners on mount
+  // Fetch banners on mount
   useEffect(() => {
     const fetchBanners = async () => {
       try {
         const res = await fetch(`${API_BASE}/stageunrealbanner`);
         const data = await res.json();
-        setBanners(Array.isArray(data) ? data : []);
+        setBanners(data);
       } catch (err) {
         console.error("Error fetching banners:", err);
         setError("Failed to load banners");
@@ -24,16 +24,15 @@ const StageUnrealBanner = () => {
     fetchBanners();
   }, [API_BASE]);
 
-  // ✅ Upload new banner
+  // Upload new banner
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!video) return;
+    if (!image) return;
 
     setUploading(true);
-    setError(null);
 
     const formData = new FormData();
-    formData.append("video", video);
+    formData.append("image", image);
 
     try {
       const res = await fetch(`${API_BASE}/stageunrealbanner/upload`, {
@@ -42,36 +41,28 @@ const StageUnrealBanner = () => {
       });
       const data = await res.json();
 
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setBanners((prev) => [...prev, data]);
-        setVideo(null);
-      }
+      if (data.error) setError(data.error);
+      else setBanners((prev) => [...prev, data]);
     } catch (err) {
       console.error("Upload error:", err);
-      setError("Error uploading video");
+      setError(err.message);
     } finally {
       setUploading(false);
     }
   };
 
-  // ✅ Delete banner
+  // Delete banner
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/stageunrealbanner/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
-
-      if (data.success) {
-        setBanners((prev) => prev.filter((b) => b._id !== id));
-      } else {
-        setError(data.error || "Failed to delete video");
-      }
+      if (data.success) setBanners((prev) => prev.filter((b) => b._id !== id));
+      else setError(data.error || "Failed to delete banner");
     } catch (err) {
       console.error("Delete error:", err);
-      setError("Error deleting video");
+      setError("Error deleting banner");
     }
   };
 
