@@ -124,7 +124,7 @@ const HomeFilmography = () => {
           <button
             type="submit"
             disabled={!image || uploading}
-            className={`px-6 py-3 rounded-md text-white font-semibold transition
+            className={`w-full md:w-auto px-6 py-3 rounded-md text-white font-semibold transition
         ${
           uploading
             ? "bg-blue-400 cursor-not-allowed"

@@ -90,7 +90,7 @@ const HomeMentor = () => {
         <label className="block mb-2 font-medium">Upload Mentor Photo:</label>
 
         {/* Wrap file box + button together */}
-        <div className="flex flex-col md:flex-row gap-4 items-center">
+        <div className="flex flex-col md:flex-row gap-4">
           {/* Image Upload */}
           <div className="flex-1">
             <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer text-center">
@@ -124,12 +124,11 @@ const HomeMentor = () => {
           <button
             type="submit"
             disabled={!image || uploading}
-            className={`px-6 py-3 rounded-md text-white font-semibold transition
-        ${
-          uploading
-            ? "bg-blue-400 cursor-not-allowed"
-            : "bg-blue-600 hover:bg-blue-700"
-        }`}
+            className={`w-full md:w-auto px-6 py-3 rounded-md text-white font-semibold transition ${
+              uploading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
             {uploading ? "Uploading..." : "🚀 Upload Mentor"}
           </button>

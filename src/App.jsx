@@ -35,6 +35,13 @@ import DirectionDiploma from "./Pages/Direction/DirectionDiploma"
 import DirectionMentor from "./Pages/Direction/DirectionMentor"
 import DirectionFilmography from "./Pages/Direction/DirectionFilmography"
 
+// cinematography-course
+import CinematographyBanner from "./Pages/Cinematography/CinematographyBanner"
+import CinematographyHighlights from "./Pages/Cinematography/CinematographyHighlights"
+import CinematographyDiploma from "./Pages/Cinematography/CinematographyDiploma"
+import CinematographyMentor from "./Pages/Cinematography/CinematographyMentor"
+import CinematographyFilmography from "./Pages/Cinematography/CinematographyFilmography"
+
 // editing-course
 import EditingBanner from "./Pages/Editing/EditingBanner"
 import EditingHighlights from "./Pages/Editing/EditingHighlights"
@@ -67,6 +74,17 @@ import PhotographyBanner from "./Pages/Photography/PhotographyBanner"
 import Photographymentor from "./Pages/Photography/PhotographyMentor"
 import PhotographyFilmography from "./Pages/Photography/PhotographyFilmography"
 import PhotographyDiploma from "./Pages/Photography/PhotographyDiploma"
+
+// acting-course
+import ActingBanner from "./Pages/Acting/ActingBanner"
+import ActingMentor from "./Pages/Acting/ActingMentor"
+import ActingDiploma from "./Pages/Acting/ActingDiploma"
+
+// CFA
+import CfaBanner from "./Pages/Cfa/CfaBanner"
+import CfaDiploma from "./Pages/Cfa/CfaDiploma"
+import CfaMentor from "./Pages/Cfa/CfaMentor"
+import CfaFilmography from "./Pages/Cfa/CfaFilmography"
 
 // StageUnreal
 import StageUnrealBanner from "./Pages/StageUnreal/StageUnrealBanner"
@@ -461,53 +479,82 @@ function App() {
               </button>
             </div>
 
-            <Routes>
+<Routes>
+              {/* Optional home route - you can point this to a dashboard page if desired */}
               <Route path="/" element={<HomeBanner />} />
+
+              {/* Home */}
               <Route path="/home/banner" element={<HomeBanner />} />
               <Route path="/home/exclusive" element={<HomeExclusive />} />
               <Route path="/home/video-upload" element={<VideoPage />} />
               <Route path="/home/mentor" element={<MentorPage />} />
               <Route path="/home/filmography" element={<HomeFilmography />} />
 
+              {/* Direction */}
               <Route path="/direction-course/banner" element={<DirectionBanner />} />
               <Route path="/direction-course/highlights" element={<DirectionHighlights />} />
               <Route path="/direction-course/diploma" element={<DirectionDiploma />} />
               <Route path="/direction-course/filmmaker" element={<DirectionMentor />} />
               <Route path="/direction-course/filmography" element={<DirectionFilmography />} />
 
+              {/* DI */}
               <Route path="/di-course/banner" element={<DiBanner />} />
               <Route path="/di-course/highlights" element={<DiHighlights />} />
               <Route path="/di-course/filmmaker" element={<DiMentor />} />
               <Route path="/di-course/filmography" element={<DiFilmography />} />
               <Route path="/di-course/diploma" element={<DiDiploma />} />
 
+              {/* Editing */}
               <Route path="/editing-course/banner" element={<EditingBanner />} />
               <Route path="/editing-course/highlights" element={<EditingHighlights />} />
               <Route path="/editing-course/diploma" element={<EditingDiploma />} />
               <Route path="/editing-course/filmmaker" element={<EditingMentor />} />
               <Route path="/editing-course/filmography" element={<EditingFilmography />} />
 
+              {/* Photography */}
               <Route path="/photography-course/banner" element={<PhotographyBanner />} />
               <Route path="/photography-course/filmmaker" element={<Photographymentor />} />
               <Route path="/photography-course/filmography" element={<PhotographyFilmography />} />
               <Route path="/photography-course/diploma" element={<PhotographyDiploma />} />
 
+              {/* VFX */}
               <Route path="/vfx-course/banner" element={<VfxBanner />} />
               <Route path="/vfx-course/highlights" element={<VfxHighlights />} />
               <Route path="/vfx-course/diploma" element={<VfxDiploma />} />
               <Route path="/vfx-course/filmmaker" element={<VfxMentor />} />
               <Route path="/vfx-course/filmography" element={<VfxFilmography />} />
 
+              {/* StageUnreal */}
               <Route path="/stage-unreal/banner" element={<StageUnrealBanner />} />
               <Route path="/stage-unreal/diploma" element={<StageUnrealDiploma />} />
               <Route path="/stage-unreal/filmmaker" element={<StageUnrealMentor />} />
               <Route path="/stage-unreal/filmography" element={<StageUnrealFilmography />} />
 
+              {/* Virtual Production */}
               <Route path="/virtual-production-course/banner" element={<VirtualProductionBanner />} />
               <Route path="/virtual-production-course/filmmaker" element={<VirtualProductionMentor />} />
               <Route path="/virtual-production-course/filmography" element={<VirtualProductionFilmography />} />
               <Route path="/virtual-production-course/diploma" element={<VirtualProductionDiploma />} />
 
+              {/* Cinematography */}
+              <Route path="/cinematography-course/banner" element={<CinematographyBanner />} />
+              <Route path="/cinematography-course/highlights" element={<CinematographyHighlights />} />
+              <Route path="/cinematography-course/diploma" element={<CinematographyDiploma />} />
+              <Route path="/cinematography-course/filmmaker" element={<CinematographyMentor />} />
+              <Route path="/cinematography-course/filmography" element={<CinematographyFilmography />} />
+
+              {/* Acting */}
+              <Route path="/acting-course/banner" element={<ActingBanner />} />
+              <Route path="/acting-course/filmmaker" element={<ActingMentor />} />
+              <Route path="/acting-course/diploma" element={<ActingDiploma />} />
+
+              {/* CFA */}
+              <Route path="/cfa/banner" element={<CfaBanner />} />
+              <Route path="/cfa/diploma" element={<CfaDiploma />} />
+              <Route path="/cfa/filmmaker" element={<CfaMentor />} />
+              <Route path="/cfa/filmography" element={<CfaFilmography />} />
+
+              {/* Optionally keep dynamic placeholder routes, or remove if not needed */}
               {menu.flatMap((section) =>
                 section.children.map((child) => (
                   <Route
@@ -518,6 +565,7 @@ function App() {
                 )),
               )}
             </Routes>
+
           </div>
         </main>
       </div>

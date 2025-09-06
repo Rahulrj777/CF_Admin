@@ -97,7 +97,7 @@ const DirectionBanner = () => {
           <button
             type="submit"
             disabled={!image || uploading}
-            className={`px-6 py-3 rounded-md text-white font-semibold transition
+            className={`w-full md:w-auto px-6 py-3 rounded-md text-white font-semibold transition
         ${
           uploading
             ? "bg-blue-400 cursor-not-allowed"
@@ -116,7 +116,7 @@ const DirectionBanner = () => {
       {banners.length === 0 ? (
         <p className="text-gray-500">No banners uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {banners.map((banner) => (
             <div
               key={banner._id}
