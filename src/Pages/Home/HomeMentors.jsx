@@ -87,12 +87,12 @@ const HomeMentor = () => {
         onSubmit={handleUpload}
         className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
       >
-        <div className="flex flex-col md:flex-row md:items-start gap-6">
+        <label className="block mb-2 font-medium">Upload Mentor Photo:</label>
+
+        {/* Wrap file box + button together */}
+        <div className="flex flex-col md:flex-row gap-4 items-center">
           {/* Image Upload */}
-          <div className="w-full md:w-2/3">
-            <label className="block mb-2 font-medium">
-              Upload Mentor Photo:
-            </label>
+          <div className="flex-1">
             <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer text-center">
               <input
                 type="file"
@@ -121,20 +121,18 @@ const HomeMentor = () => {
           </div>
 
           {/* Upload Button */}
-          <div className="w-full md:w-1/3 flex items-start md:justify-center">
-            <button
-              type="submit"
-              disabled={!image || uploading}
-              className={`w-full md:w-auto px-6 py-3 rounded-md text-white font-semibold transition 
-          ${
-            uploading
-              ? "bg-blue-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
-          }`}
-            >
-              {uploading ? "Uploading..." : "🚀 Upload Mentor"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={!image || uploading}
+            className={`px-6 py-3 rounded-md text-white font-semibold transition
+        ${
+          uploading
+            ? "bg-blue-400 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
+          >
+            {uploading ? "Uploading..." : "🚀 Upload Mentor"}
+          </button>
         </div>
       </form>
 
