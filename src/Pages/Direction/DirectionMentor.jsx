@@ -160,7 +160,7 @@ const DirectorMentor = () => {
               <img
                 src={mentor.imageUrl}
                 alt="Mentor"
-                className="h-48 w-full object-cover"
+                className="h-60 w-full object-cover"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-sm text-gray-700 mb-4">
