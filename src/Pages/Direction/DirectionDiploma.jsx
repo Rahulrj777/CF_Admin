@@ -236,6 +236,7 @@ const DirectionDiplomaAdmin = () => {
             >
               {savedData.pdfUrl.split("/").pop()}
             </a>
+
             <button
               type="button"
               onClick={handleDeletePdf}
