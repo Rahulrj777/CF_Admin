@@ -151,7 +151,7 @@ const HomeMentor = () => {
               <img
                 src={mentor.imageUrl}
                 alt="mentor"
-                className="h-50 w-full object-cover"
+                className="h-60 lg:h-50 w-full object-cover"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <button
