@@ -11,7 +11,7 @@ const DirectionDiplomaAdmin = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/directiondiploma")
+        const res = await fetch("/directiondiploma")
         const data = await res.json()
         const diplomaData = data.direction.diploma[0] || {
           semester1: [],
@@ -53,7 +53,7 @@ const DirectionDiplomaAdmin = () => {
 
     try {
       // Update subtitles first
-      await fetch("/api/directiondiploma/text", {
+      await fetch("/directiondiploma/text", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ semester1, semester2 }),
@@ -64,7 +64,7 @@ const DirectionDiplomaAdmin = () => {
         const formData = new FormData()
         formData.append("pdf", pdf)
 
-        const uploadRes = await fetch("/api/directiondiploma/pdf", {
+        const uploadRes = await fetch("/directiondiploma/pdf", {
           method: "POST",
           body: formData,
         })
@@ -74,7 +74,7 @@ const DirectionDiplomaAdmin = () => {
       }
 
       // Refresh data
-      const res = await fetch("/api/directiondiploma")
+      const res = await fetch("/directiondiploma")
       const data = await res.json()
       const diplomaData = data.direction.diploma[0] || {
         semester1: [],
@@ -98,13 +98,13 @@ const DirectionDiplomaAdmin = () => {
   // Delete subtitle from server
   const handleDeleteSubtitle = async (semester, idx) => {
     try {
-      await fetch("/api/directiondiploma/subtitle", {
+      await fetch("/directiondiploma/diploma/subtitle", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ semester, index: idx }),
       })
 
-      const res = await fetch("/api/directiondiploma")
+      const res = await fetch("/directiondiploma")
       const data = await res.json()
       const diplomaData = data.direction.diploma[0] || {
         semester1: [],
@@ -123,11 +123,11 @@ const DirectionDiplomaAdmin = () => {
   // Delete PDF from server
   const handleDeletePdf = async () => {
     try {
-      await fetch("/api/directiondiploma/pdf", {
+      await fetch("/directiondiploma/pdf", {
         method: "DELETE",
       })
 
-      const res = await fetch("/api/directiondiploma")
+      const res = await fetch("/directiondiploma")
       const data = await res.json()
       const diplomaData = data.direction.diploma[0] || {
         semester1: [],
@@ -146,6 +146,76 @@ const DirectionDiplomaAdmin = () => {
       <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">🎬 Direction Diploma</h2>
 
       <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-50 p-4 rounded-lg shadow">
+            <h3 className="text-xl font-semibold mb-4 text-gray-700">Semester 1 Subjects</h3>
+            {semester1.map((subtitle, idx) => (
+              <div key={idx} className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  value={subtitle}
+                  onChange={(e) => updateSubtitle(semester1, setSemester1, idx, e.target.value)}
+                  placeholder="Enter subject name"
+                  className="flex-1 border rounded-md p-2 focus:border-blue-500 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => deleteSubtitleLocal(semester1, setSemester1, idx)}
+                  className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                >
+                  ✖
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => addSubtitle(semester1, setSemester1)}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              + Add Subject
+            </button>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg shadow">
+            <h3 className="text-xl font-semibold mb-4 text-gray-700">Semester 2 Subjects</h3>
+            {semester2.map((subtitle, idx) => (
+              <div key={idx} className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  value={subtitle}
+                  onChange={(e) => updateSubtitle(semester2, setSemester2, idx, e.target.value)}
+                  placeholder="Enter subject name"
+                  className="flex-1 border rounded-md p-2 focus:border-blue-500 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => deleteSubtitleLocal(semester2, setSemester2, idx)}
+                  className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                >
+                  ✖
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => addSubtitle(semester2, setSemester2)}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              + Add Subject
+            </button>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <button
+            type="submit"
+            disabled={isUploading}
+            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+          >
+            {isUploading ? "Saving..." : "💾 Save Changes"}
+          </button>
+        </div>
+
         <div className="bg-gray-50 p-4 rounded-lg shadow">
           <h3 className="text-xl font-semibold mb-4 text-gray-700">Upload PDF</h3>
           {savedData?.pdfUrl ? (
