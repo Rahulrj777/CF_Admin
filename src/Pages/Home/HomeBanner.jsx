@@ -119,7 +119,7 @@ const HomeBanner = () => {
           </div>
 
           {/* Upload Button */}
-          <div className="w-full md:w-1/3 flex items-start md:justify-center">
+          <div className="w-full md:w-1/3 flex items-center md:justify-center">
             <button
               type="submit"
               disabled={!image || uploading}
