@@ -2,20 +2,20 @@ import { useState, useEffect } from "react";
 
 const StageUnrealBanner = () => {
   const [banners, setBanners] = useState([]);
-  const [image, setImage] = useState(null);
+  const [video, setVideo] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
 
   const API_BASE =
     import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
 
-  // Fetch banners on mount
+  // ✅ Fetch banners on mount
   useEffect(() => {
     const fetchBanners = async () => {
       try {
         const res = await fetch(`${API_BASE}/stageunrealbanner`);
         const data = await res.json();
-        setBanners(data);
+        setBanners(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching banners:", err);
         setError("Failed to load banners");
@@ -24,15 +24,16 @@ const StageUnrealBanner = () => {
     fetchBanners();
   }, [API_BASE]);
 
-  // Upload new banner
+  // ✅ Upload new banner
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!image) return;
+    if (!video) return;
 
     setUploading(true);
+    setError(null);
 
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("video", video);
 
     try {
       const res = await fetch(`${API_BASE}/stageunrealbanner/upload`, {
@@ -41,104 +42,83 @@ const StageUnrealBanner = () => {
       });
       const data = await res.json();
 
-      if (data.error) setError(data.error);
-      else setBanners((prev) => [...prev, data]);
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setBanners((prev) => [...prev, data]);
+        setVideo(null);
+      }
     } catch (err) {
       console.error("Upload error:", err);
-      setError(err.message);
+      setError("Error uploading video");
     } finally {
       setUploading(false);
     }
   };
 
-  // Delete banner
+  // ✅ Delete banner
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`${API_BASE}/stageunrealbanner/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
-      if (data.success) setBanners((prev) => prev.filter((b) => b._id !== id));
-      else setError(data.error || "Failed to delete banner");
+
+      if (data.success) {
+        setBanners((prev) => prev.filter((b) => b._id !== id));
+      } else {
+        setError(data.error || "Failed to delete video");
+      }
     } catch (err) {
       console.error("Delete error:", err);
-      setError("Error deleting banner");
+      setError("Error deleting video");
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        🖼 Manage Banners
-      </h2>
+    <div className="p-6">
+      <h2 className="text-xl font-semibold mb-4">Manage Stage Unreal Videos</h2>
 
-      {error && <div className="text-red-600 mb-4 text-center">{error}</div>}
+      {error && <div className="text-red-600 mb-4">{error}</div>}
 
       {/* Upload Form */}
-      <form
-        onSubmit={handleUpload}
-        className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
-      >
-        <label className="block mb-2 font-medium">Upload Banner:</label>
-
-        {/* make all controls inline */}
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          {/* file input */}
-          <div className="flex-1">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="border-2 border-dashed border-gray-300 p-4 rounded-lg w-full"
-            />
-          </div>
-
-          {/* upload button */}
-          <button
-            type="submit"
-            disabled={!image || uploading}
-            className={`px-6 py-3 rounded-md text-white font-semibold transition
-        ${
-          uploading
-            ? "bg-blue-400 cursor-not-allowed"
-            : "bg-blue-600 hover:bg-blue-700"
-        }`}
-          >
-            {uploading ? "Uploading..." : "🚀 Upload Banner"}
-          </button>
-        </div>
+      <form onSubmit={handleUpload} className="mb-6 flex gap-4 items-center">
+        <input
+          type="file"
+          accept="video/*"
+          onChange={(e) => setVideo(e.target.files[0])}
+          className="border p-2"
+        />
+        <button
+          type="submit"
+          disabled={!video || uploading}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-60"
+        >
+          {uploading ? "Uploading..." : "Upload"}
+        </button>
       </form>
 
-      {/* Existing Banners */}
-      <h3 className="text-2xl font-semibold mb-6 text-gray-800">
-        📌 Existing Banners
-      </h3>
-      {banners.length === 0 ? (
-        <p className="text-gray-500">No banners uploaded yet.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {banners.map((banner) => (
-            <div
-              key={banner._id}
-              className="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col"
+      {/* Video List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {banners.map((banner) => (
+          <div
+            key={banner._id}
+            className="relative border rounded-lg overflow-hidden"
+          >
+            <video
+              src={banner.videoUrl}
+              controls
+              className="w-full h-64 object-cover"
+            />
+            <button
+              onClick={() => handleDelete(banner._id)}
+              className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
             >
-              <img
-                src={banner.imageUrl}
-                alt="banner"
-                className="h-40 w-full object-fill"
-              />
-              <div className="p-4 flex flex-col flex-grow">
-                <button
-                  onClick={() => handleDelete(banner._id)}
-                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full"
-                >
-                  🗑 Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
