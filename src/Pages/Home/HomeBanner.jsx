@@ -99,7 +99,7 @@ const HomeBanner = () => {
                 className="hidden"
                 id="banner-upload"
               />
-              <label htmlFor="banner-upload" className="cursor-pointer text-sm">
+              <label htmlFor="banner-upload" className="cursor-pointer text-sm lg:mt-3">
                 {image ? (
                   <img
                     src={URL.createObjectURL(image)}
