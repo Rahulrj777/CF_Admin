@@ -138,16 +138,16 @@ export default function EditingHighlights() {
       {items.length === 0 ? (
         <p className="text-gray-500">No highlights uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {items.map((item) => (
             <div
               key={item._id}
-              className="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col"
+              className="border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-col"
             >
               <img
                 src={item.imageUrl}
-                alt="Highlight"
-                className="h-40 w-full object-cover"
+                alt="Exclusive"
+                className="h-40 w-40 object-cover"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-center font-medium mb-3">{item.titleLine}</p>

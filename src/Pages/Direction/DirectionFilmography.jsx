@@ -63,12 +63,17 @@ const DirectionFilmography = () => {
   // Delete item
   const handleDelete = async (publicId) => {
     try {
-      await axios.delete(`${API_BASE}/directionfilmography/${publicId}`);
+      const url = `${API_BASE}/cinematographyfilmography/${encodeURIComponent(
+        publicId
+      )}`;
+      console.log("Deleting mentor at:", url);
+
+      await axios.delete(url);
       setItems((prev) => prev.filter((item) => item.publicId !== publicId));
-      setMessage("🗑️ Deleted successfully");
+      setMessage("🗑️ Mentor deleted successfully");
     } catch (err) {
-      console.error(err);
-      setMessage("❌ Delete failed");
+      console.error("Delete failed:", err.response?.data || err.message);
+      setMessage("❌ Delete failed. Try again.");
     }
   };
 
