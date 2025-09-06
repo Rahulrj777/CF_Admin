@@ -80,23 +80,25 @@ const ActingMentor = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">Manage Mentors</h2>
+    <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        👥 Manage Mentors
+      </h2>
 
       {/* Upload Form */}
-      <div className="mb-8">
+      <div className="mb-10 bg-gray-50 p-6 rounded-xl shadow-inner">
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter mentor description"
-          className="border p-2 w-full mb-4 rounded h-24"
+          placeholder="Enter mentor description..."
+          className="border-2 border-gray-300 p-3 w-full mb-4 rounded-lg h-28 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="mb-4"
+          className="w-full mb-4 border-2 border-dashed border-gray-300 p-3 rounded-lg cursor-pointer"
         />
 
         {preview && (
@@ -104,44 +106,54 @@ const ActingMentor = () => {
             <img
               src={preview}
               alt="Preview"
-              className="w-40 h-40 object-cover mx-auto rounded-lg shadow"
+              className="w-40 h-40 object-cover mx-auto rounded-lg shadow-md border"
             />
           </div>
         )}
 
         <button
           onClick={handleUpload}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
         >
-          Upload Mentor
+          🚀 Upload Mentor
         </button>
       </div>
 
-      {message && <p className="mb-6 text-center text-sm">{message}</p>}
+      {message && (
+        <p className="mb-8 text-center text-sm text-green-600 font-medium">
+          {message}
+        </p>
+      )}
 
       {/* Mentors List */}
-      <h3 className="text-xl font-semibold mb-4">Current Mentors</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {mentors.map((mentor) => (
-          <div
-            key={mentor.publicId}
-            className="border rounded-lg p-4 text-center shadow-sm"
-          >
-            <img
-              src={mentor.imageUrl}
-              alt="Mentor"
-              className="w-32 h-32 object-cover mx-auto rounded-lg"
-            />
-            <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-            <button
-              onClick={() => handleDelete(mentor.publicId)}
-              className="mt-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+      <h3 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+        📋 Current Mentors
+      </h3>
+      {mentors.length === 0 ? (
+        <p className="text-center text-gray-500">No mentors uploaded yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {mentors.map((mentor) => (
+            <div
+              key={mentor.publicId}
+              className="border rounded-xl p-6 text-center shadow hover:shadow-md transition"
             >
-              Delete
-            </button>
-          </div>
-        ))}
-      </div>
+              <img
+                src={mentor.imageUrl}
+                alt="Mentor"
+                className="w-32 h-32 object-cover mx-auto rounded-lg border shadow-sm"
+              />
+              <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
+              <button
+                onClick={() => handleDelete(mentor.publicId)}
+                className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition"
+              >
+                🗑 Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
