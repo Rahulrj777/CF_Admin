@@ -135,7 +135,7 @@ export default function HomeExclusive() {
           {items.map((item) => (
             <div
               key={item._id}
-              className="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col"
+              className="border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-col"
             >
               <img
                 src={item.imageUrl}

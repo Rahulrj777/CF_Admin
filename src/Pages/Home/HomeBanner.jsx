@@ -87,52 +87,33 @@ const HomeBanner = () => {
         onSubmit={handleUpload}
         className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
       >
-        <div className="flex flex-col md:flex-row md:items-start gap-6">
-          {/* Image Upload */}
-          <div className="w-full md:w-2/3">
-            <label className="block mb-2 font-medium">Upload Banner:</label>
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer text-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files[0])}
-                className="hidden"
-                id="banner-upload"
-              />
-              <label
-                htmlFor="banner-upload"
-                className="cursor-pointer text-sm block"
-              >
-                {image ? (
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt="Preview"
-                    className="mx-auto w-48 h-32 object-cover rounded-lg shadow"
-                  />
-                ) : (
-                  <span className="text-gray-500">
-                    Drag & Drop or Click to Upload
-                  </span>
-                )}
-              </label>
-            </div>
+        <label className="block mb-2 font-medium">Upload Banner:</label>
+
+        {/* make all controls inline */}
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          {/* file input */}
+          <div className="flex-1">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+              className="border-2 border-dashed border-gray-300 p-4 rounded-lg w-full"
+            />
           </div>
 
-          {/* Upload Button */}
-          <div className="w-full md:w-1/3 flex justify-center items-center md:items-start md:justify-center">
-            <button
-              type="submit"
-              disabled={!image || uploading}
-              className={`w-full md:w-auto px-6 py-3 rounded-md text-white font-semibold transition 
+          {/* upload button */}
+          <button
+            type="submit"
+            disabled={!image || uploading}
+            className={`px-6 py-3 rounded-md text-white font-semibold transition
         ${
           uploading
             ? "bg-blue-400 cursor-not-allowed"
             : "bg-blue-600 hover:bg-blue-700"
         }`}
-            >
-              {uploading ? "Uploading..." : "🚀 Upload Banner"}
-            </button>
-          </div>
+          >
+            {uploading ? "Uploading..." : "🚀 Upload Banner"}
+          </button>
         </div>
       </form>
 
