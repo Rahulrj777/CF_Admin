@@ -6,33 +6,21 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 const DirectionFilmography = () => {
   const [file, setFile] = useState(null);
   const [items, setItems] = useState([]);
-  const [message, setMessage] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState(null);
+  const [message, setMessage] = useState(""); // add this at the top
 
-  // Load existing filmography
   useEffect(() => {
     axios
       .get(`${API_BASE}/directionfilmography`)
-      .then((res) => setItems(Array.isArray(res.data) ? res.data : []))
+      .then((res) => {
+        // If backend sends array → use directly, else fallback to []
+        setItems(Array.isArray(res.data) ? res.data : []);
+      })
       .catch((err) => {
         console.error(err);
-        setItems([]);
+        setItems([]); // fallback
       });
   }, []);
 
-  // Handle file selection + preview
-  const handleFileChange = (e) => {
-    const selected = e.target.files[0];
-    setFile(selected);
-    if (selected) {
-      setPreview(URL.createObjectURL(selected));
-    } else {
-      setPreview(null);
-    }
-  };
-
-  // Upload file
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return;
@@ -41,29 +29,24 @@ const DirectionFilmography = () => {
     formData.append("image", file);
 
     try {
-      setUploading(true); // ✅ start uploading
       const res = await axios.post(
         `${API_BASE}/directionfilmography/upload`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
-
-      setItems((prev) => [...prev, res.data.item]);
+      setItems([...items, res.data.item]);
       setFile(null);
-      setPreview(null);
-      setMessage("✅ Uploaded successfully");
     } catch (err) {
       console.error("Upload failed", err);
-      setMessage("❌ Upload failed");
-    } finally {
-      setUploading(false); // ✅ end uploading
     }
   };
 
-  // Delete item
+  // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      const url = `${API_BASE}/cinematographyfilmography/${encodeURIComponent(
+      const url = `${API_BASE}/directionfilmography/${encodeURIComponent(
         publicId
       )}`;
       console.log("Deleting mentor at:", url);
