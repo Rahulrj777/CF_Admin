@@ -53,12 +53,12 @@ const DirectionDiplomaAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // copy input arrays to real arrays you send
+      // use your input arrays
       await axios.post(`${API_BASE}/directiondiploma/text`, {
-        semester1: semester1Array.map((s) =>
+        semester1: semester1Input.map((s) =>
           typeof s === "string" ? s : s.title
         ),
-        semester2: semester2Array.map((s) =>
+        semester2: semester2Input.map((s) =>
           typeof s === "string" ? s : s.title
         ),
       });
@@ -71,7 +71,7 @@ const DirectionDiplomaAdmin = () => {
         });
       }
 
-      // refresh
+      // refresh data
       const res = await axios.get(`${API_BASE}/directiondiploma`);
       const data = res.data.direction.diploma[0] || {
         semester1: [],
@@ -80,6 +80,8 @@ const DirectionDiplomaAdmin = () => {
       };
       setSavedData(data);
       setPdf(null);
+      setSemester1Input([]); // clear the form if you want
+      setSemester2Input([]);
     } catch (err) {
       console.error(err);
     }
