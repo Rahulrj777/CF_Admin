@@ -66,76 +66,98 @@ export default function VfxHighlights() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        👥 Manage Mentors
+    <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+        🎬 Cinema Factory Vfx Highlights
       </h2>
 
       {/* Upload Form */}
-      <div className="mb-10 bg-gray-50 p-6 rounded-xl shadow-inner">
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter mentor description..."
-          className="border-2 border-gray-300 p-3 w-full mb-4 rounded-lg h-28 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-5"
+      >
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          {/* Image Upload */}
+          <div className="w-full md:w-1/2">
+            <label className="block mb-2 font-medium">Upload Image:</label>
+            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer text-center">
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+                accept="image/*"
+                className="hidden"
+                id="file-upload"
+              />
+              <label htmlFor="file-upload" className="cursor-pointer text-sm">
+                {image ? (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="Preview"
+                    className="mx-auto w-48 h-32 object-cover rounded-lg shadow"
+                  />
+                ) : (
+                  <span className="text-gray-500">
+                    Drag & Drop or Click to Upload
+                  </span>
+                )}
+              </label>
+            </div>
+          </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="w-full mb-4 border-2 border-dashed border-gray-300 p-3 rounded-lg cursor-pointer"
-        />
-
-        {preview && (
-          <div className="mb-4">
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-40 h-40 object-cover mx-auto rounded-lg shadow-md border"
+          {/* Title Input */}
+          <div className="w-full md:w-1/2">
+            <label className="block mb-2 font-medium">Highlight Title:</label>
+            <input
+              type="text"
+              value={titleLine}
+              onChange={(e) => setTitleLine(e.target.value)}
+              placeholder="Enter highlight title"
+              className="w-full border border-gray-300 p-3 rounded-md focus:ring focus:ring-green-200"
+              required
             />
           </div>
-        )}
+        </div>
 
         <button
-          onClick={handleUpload}
-          className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          type="submit"
+          disabled={loading}
+          className={`w-full py-3 rounded-md text-white font-semibold transition ${
+            loading
+              ? "bg-green-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
         >
-          🚀 Upload Mentor
+          {loading ? "Uploading..." : "🚀 Upload Highlight"}
         </button>
-      </div>
+      </form>
 
-      {message && (
-        <p className="mb-8 text-center text-sm text-green-600 font-medium">
-          {message}
-        </p>
-      )}
-
-      {/* Mentors List */}
-      <h3 className="text-2xl font-semibold mb-6 text-center text-gray-800">
-        📋 Current Mentors
+      {/* Existing Highlights */}
+      <h3 className="text-2xl font-semibold mb-6 text-gray-800">
+        📌 Existing Highlights
       </h3>
-      {mentors.length === 0 ? (
-        <p className="text-center text-gray-500">No mentors uploaded yet.</p>
+      {items.length === 0 ? (
+        <p className="text-gray-500">No highlights uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-8">
-          {mentors.map((mentor) => (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {items.map((item) => (
             <div
-              key={mentor.publicId}
-              className="border rounded-xl p-6 text-center shadow hover:shadow-md transition"
+              key={item._id}
+              className="border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-col"
             >
               <img
-                src={mentor.imageUrl}
-                alt="Mentor"
-                className="w-32 h-32 object-cover mx-auto rounded-lg border shadow-sm"
+                src={item.imageUrl}
+                alt="Exclusive"
+                className="h-40 w-40 object-cover"
               />
-              <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-              <button
-                onClick={() => handleDelete(mentor.publicId)}
-                className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition"
-              >
-                🗑 Delete
-              </button>
+              <div className="p-4 flex flex-col flex-grow">
+                <p className="text-center font-medium mb-3">{item.titleLine}</p>
+                <button
+                  onClick={() => handleDelete(item._id)}
+                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  🗑 Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
