@@ -77,7 +77,7 @@ const HomeBanner = () => {
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        🖼 Manage Home Banners
+        🖼 Manage Banners
       </h2>
 
       {error && <div className="text-red-600 mb-4 text-center">{error}</div>}
