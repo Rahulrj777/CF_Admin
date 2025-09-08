@@ -181,9 +181,6 @@ const DirectionDiplomaAdmin = () => {
               <div className="h-1 w-32 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mx-auto mt-2"></div>
             </div>
           </div>
-          <p className="text-slate-600 text-xl font-medium">
-            Manage semester curricula and diploma documentation with precision
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
