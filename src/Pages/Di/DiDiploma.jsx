@@ -1,35 +1,39 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
+import { FileText, Upload, Trash2, Edit3, Plus, Minus, Eye, Loader2 } from "lucide-react"
 
 const DiDiploma = () => {
   const [contents, setContents] = useState([])
-  const [globalPdf, setGlobalPdf] = useState(null)
+  const [savedPdf, setSavedPdf] = useState("")
   const [title, setTitle] = useState("")
   const [children, setChildren] = useState([""])
   const [editingId, setEditingId] = useState(null)
-  const [pdfFile, setPdfFile] = useState(null)
-  const [isPdfSaving, setIsPdfSaving] = useState(false)
-  const [isPdfDeleting, setIsPdfDeleting] = useState(false)
-  const fileInputRef = useRef(null)
+  const [pdf, setPdf] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSavingContent, setIsSavingContent] = useState(false)
+  const [isSavingPdf, setIsSavingPdf] = useState(false)
 
   const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com"
   const API = `${API_BASE}/didiploma`
 
   useEffect(() => {
-    fetchAll()
+    fetchDiplomaData()
   }, [])
 
-  const fetchAll = async () => {
+  const fetchDiplomaData = async () => {
     try {
+      setIsLoading(true)
       const res = await axios.get(API)
       const items = (res.data.items || []).map((item) => ({
         ...item,
-        id: item._id, // map MongoDB _id to id
+        id: item._id,
       }))
       setContents(items)
-      setGlobalPdf(res.data.pdf || null)
+      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API}/pdf/view` : "")
     } catch (err) {
-      console.error("[fetchAll] error:", err)
+      console.error("Error fetching diploma data:", err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -45,103 +49,92 @@ const DiDiploma = () => {
     setChildren(updated.length ? updated : [""])
   }
 
-  const handleSave = async () => {
-    if (!title || children.some((c) => !c.trim())) return alert("Title and children are required")
+  const saveContent = async () => {
+    if (!title.trim()) {
+      alert("Please enter a title")
+      return
+    }
+    if (children.some((c) => !c.trim())) {
+      alert("Please fill in all content fields")
+      return
+    }
+
+    if (!window.confirm("Are you sure you want to save this content?")) return
 
     try {
+      setIsSavingContent(true)
       if (editingId) {
-        // ✅ send JSON only
         const res = await axios.put(`${API}/${editingId}`, { title, children })
-        setContents((prev) => prev.map((c) => (c.id === editingId ? res.data : c)))
+        setContents((prev) => prev.map((c) => (c.id === editingId ? { ...res.data, id: res.data._id } : c)))
+        alert("Content updated successfully!")
       } else {
         const res = await axios.post(API, { title, children })
         setContents((prev) => [...prev, { ...res.data, id: res.data._id }])
+        alert("Content saved successfully!")
       }
 
-      await fetchAll()
+      setTitle("")
+      setChildren([""])
+      setEditingId(null)
     } catch (err) {
-      console.error(err)
-      alert("Error saving content")
+      console.error("Error saving content:", err)
+      alert("Error saving content. Please try again.")
+    } finally {
+      setIsSavingContent(false)
     }
-
-    setTitle("")
-    setChildren([""])
-    setEditingId(null)
-  }
-
-  const handlePdfSelect = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    if (file.type !== "application/pdf") {
-      alert("Only PDF files allowed")
-      e.target.value = ""
-      return
-    }
-    setPdfFile(file)
   }
 
   const savePdf = async () => {
-    if (!pdfFile) return alert("Please choose a PDF first.")
+    if (!pdf) {
+      alert("Please select a PDF file")
+      return
+    }
+
+    if (!window.confirm("Are you sure you want to upload this PDF?")) return
+
     const formData = new FormData()
-    formData.append("pdf", pdfFile)
+    formData.append("pdf", pdf)
 
     try {
-      setIsPdfSaving(true)
-      const res = await axios.post(`${API}/pdf`, formData, {
+      setIsSavingPdf(true)
+      await axios.post(`${API}/pdf`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
-      setGlobalPdf(res.data.pdfUrl)
-      await fetchAll()
-      setPdfFile(null)
-      if (fileInputRef.current) fileInputRef.current.value = ""
+      setSavedPdf(`${API}/pdf/view`)
+      setPdf(null)
+      alert("PDF uploaded successfully!")
     } catch (err) {
-      console.error(err)
-      alert("Error uploading PDF")
+      console.error("Error uploading PDF:", err)
+      alert("Error uploading PDF. Please try again.")
     } finally {
-      setIsPdfSaving(false)
+      setIsSavingPdf(false)
     }
   }
 
   const deletePdf = async () => {
+    if (!window.confirm("Are you sure you want to delete this PDF? This action cannot be undone.")) return
+
     try {
-      setIsPdfDeleting(true)
-      console.log("Attempting to delete PDF from:", `${API}/pdf`)
-
-      const response = await axios.delete(`${API}/pdf`)
-      console.log("Delete response:", response)
-
-      setGlobalPdf(null)
-      await fetchAll()
-      setPdfFile(null)
-      if (fileInputRef.current) fileInputRef.current.value = ""
+      await axios.delete(`${API}/pdf`)
+      setSavedPdf("")
+      alert("PDF deleted successfully!")
     } catch (err) {
-      console.error("Delete PDF error details:", {
-        message: err.message,
-        status: err.response?.status,
-        statusText: err.response?.statusText,
-        url: err.config?.url,
-        method: err.config?.method,
-      })
-
-      if (err.response?.status === 404) {
-        alert("PDF delete endpoint not found. Please check your backend routing configuration.")
-      } else {
-        alert(`Error deleting PDF: ${err.response?.data?.message || err.message}`)
-      }
-    } finally {
-      setIsPdfDeleting(false)
+      console.error("Error deleting PDF:", err)
+      alert("Error deleting PDF. Please try again.")
     }
   }
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this entry?")) return
+    if (!window.confirm("Are you sure you want to delete this entry? This action cannot be undone.")) return
+
     try {
       await axios.delete(`${API}/${id}`)
       setContents((prev) => prev.filter((c) => c.id !== id))
+      alert("Entry deleted successfully!")
     } catch (err) {
-      console.error(err)
-      alert("Delete failed")
+      console.error("Error deleting entry:", err)
+      alert("Error deleting entry. Please try again.")
     }
   }
 
@@ -151,125 +144,198 @@ const DiDiploma = () => {
     setEditingId(content.id)
   }
 
-  return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h2 className="text-3xl md:text-4xl font-bold text-center text-indigo-600 mb-8">📸 Stage Unreal Diploma Admin</h2>
-
-      {/* Global PDF Section */}
-      <div className="bg-white shadow-md rounded-xl p-6 mb-8 border border-indigo-200">
-        <h3 className="text-xl font-semibold mb-4">Global Diploma PDF</h3>
-        <input
-          ref={fileInputRef}
-          type="file"
-          name="pdf"
-          accept="application/pdf"
-          onChange={handlePdfSelect}
-          className="mb-2"
-        />
-        {pdfFile && <p className="text-gray-700 mb-2">Selected: {pdfFile.name}</p>}
-        <div className="flex gap-2 mb-2">
-          <button
-            onClick={savePdf}
-            disabled={!pdfFile || isPdfSaving}
-            className={`px-4 py-2 rounded font-semibold text-white ${
-              !pdfFile || isPdfSaving ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700"
-            }`}
-          >
-            {isPdfSaving ? "Saving..." : "Save PDF"}
-          </button>
-          {globalPdf && (
-            <button
-              onClick={deletePdf}
-              disabled={isPdfDeleting}
-              className={`px-4 py-2 rounded font-semibold text-white ${
-                isPdfDeleting ? "bg-gray-400" : "bg-red-600 hover:bg-red-700"
-              }`}
-            >
-              {isPdfDeleting ? "Deleting..." : "Delete PDF"}
-            </button>
-          )}
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-indigo-600">
+          <Loader2 className="w-8 h-8 animate-spin" />
+          <span className="text-lg font-medium">Loading DI Diploma Admin...</span>
         </div>
-        {globalPdf && (
-          <a href={globalPdf} target="_blank" rel="noreferrer" className="text-blue-600 underline">
-            View Global PDF
-          </a>
-        )}
       </div>
+    )
+  }
 
-      {/* Month / Children Form */}
-      <div className="bg-white shadow-md rounded-xl p-6 mb-8 border border-indigo-200">
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="border-2 border-indigo-300 rounded-md p-3 w-full mb-4 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200"
-        />
-        {children.map((child, idx) => (
-          <div key={idx} className="flex items-center gap-2 mb-2">
-            <input
-              type="text"
-              placeholder={`Content ${idx + 1}`}
-              value={child}
-              onChange={(e) => handleChildChange(idx, e.target.value)}
-              className="border-2 border-indigo-300 rounded-md p-3 flex-1 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200"
-            />
-            <button
-              onClick={() => removeChild(idx)}
-              className="bg-red-500 text-white px-3 py-2 rounded-md font-semibold hover:bg-red-600"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-        <button
-          onClick={addChild}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md font-semibold mb-4 hover:bg-blue-600"
-        >
-          + Add Child
-        </button>
-        <button
-          onClick={handleSave}
-          className="bg-green-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-700"
-        >
-          {editingId ? "Update" : "Save"}
-        </button>
-      </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            DI Diploma Admin Panel
+          </h1>
+          <p className="text-gray-600 text-lg">Manage your Digital Imaging diploma content and resources</p>
+        </div>
 
-      {/* List */}
-      <h3 className="text-2xl font-semibold mb-4 text-indigo-600">📌 Existing Entries</h3>
-      {contents.length === 0 ? (
-        <p className="text-gray-500">No entries added yet.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {contents.map((c) => (
-            <div key={c.id} className="bg-white shadow-md border border-indigo-200 rounded-xl p-4 flex flex-col">
-              <h4 className="font-bold text-indigo-600 text-lg mb-2">{c.title}</h4>
-              <ul className="list-disc pl-6 flex-grow">
-                {c.children?.map((child, idx) => (
-                  <li key={idx} className="text-gray-700">
-                    {child}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex gap-2 mt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Content Management Section */}
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                Content Management
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Enter title..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200"
+              />
+
+              {children.map((child, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    placeholder={`Content ${idx + 1}...`}
+                    value={child}
+                    onChange={(e) => handleChildChange(idx, e.target.value)}
+                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200"
+                  />
+                  <button
+                    onClick={() => removeChild(idx)}
+                    className="p-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors duration-200"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+
+              <div className="flex gap-3">
                 <button
-                  onClick={() => handleEdit(c)}
-                  className="flex-1 bg-yellow-400 text-black px-3 py-2 rounded-md font-semibold hover:bg-yellow-500"
+                  onClick={addChild}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
                 >
-                  Edit
+                  <Plus className="w-4 h-4" />
+                  Add Content
                 </button>
                 <button
-                  onClick={() => handleDelete(c.id)}
-                  className="flex-1 bg-red-500 text-white px-3 py-2 rounded-md font-semibold hover:bg-red-600"
+                  onClick={saveContent}
+                  disabled={isSavingContent}
+                  className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
                 >
-                  Delete
+                  {isSavingContent ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
+                  {editingId ? "Update Content" : "Save Content"}
                 </button>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* PDF Management Section */}
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
+                <Upload className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                PDF Management
+              </h2>
+            </div>
+
+            {savedPdf ? (
+              <div className="space-y-4">
+                <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
+                  <p className="text-green-800 font-medium mb-3">PDF is uploaded and ready</p>
+                  <div className="flex gap-3">
+                    <a
+                      href={savedPdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
+                    >
+                      <Eye className="w-4 h-4" />
+                      View PDF
+                    </a>
+                    <button
+                      onClick={deletePdf}
+                      className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete PDF
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {pdf ? (
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <p className="text-blue-800 font-medium mb-2">Selected: {pdf.name}</p>
+                    <button
+                      onClick={savePdf}
+                      disabled={isSavingPdf}
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
+                    >
+                      {isSavingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                      Upload PDF
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 mb-4">Choose a PDF file to upload</p>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e) => setPdf(e.target.files?.[0] || null)}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      )}
+
+        {/* Saved Content Display */}
+        <div className="mt-8 bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
+            Saved Content
+          </h3>
+
+          {contents.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No content added yet. Create your first entry above!</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {contents.map((content) => (
+                <div
+                  key={content.id}
+                  className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-shadow duration-200"
+                >
+                  <h4 className="font-bold text-gray-800 text-lg mb-3">{content.title}</h4>
+                  <ul className="space-y-1 mb-4 flex-grow">
+                    {content.children?.map((child, idx) => (
+                      <li key={idx} className="text-gray-600 text-sm flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
+                        {child}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(content)}
+                      className="flex items-center gap-1 px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm transition-colors duration-200"
+                    >
+                      <Edit3 className="w-3 h-3" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(content.id)}
+                      className="flex items-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors duration-200"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
