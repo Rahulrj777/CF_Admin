@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
+import { Button } from "./ui/button"
+import { Input } from "./ui/input"
+import { Badge } from "./ui/badge"
+import { Separator } from "./ui/separator"
+import { FileText, Download, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000"
+const API_BASE = import.meta.env.VITE_API_BASE
 
 const DirectionDiplomaAdmin = () => {
   const [semester1, setSemester1] = useState([""])
   const [semester2, setSemester2] = useState([""])
   const [pdf, setPdf] = useState(null)
   const [savedData, setSavedData] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Fetch saved data
   useEffect(() => {
@@ -47,6 +54,7 @@ const DirectionDiplomaAdmin = () => {
   // Submit subtitles and PDF
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
     try {
       // Merge old saved data with new input data
       const mergedSemester1 = [
@@ -90,6 +98,9 @@ const DirectionDiplomaAdmin = () => {
       alert("Saved successfully ✅")
     } catch (err) {
       console.error(err)
+      alert("Error saving data!")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -101,7 +112,7 @@ const DirectionDiplomaAdmin = () => {
       // Create a temporary link element and trigger download
       const link = document.createElement("a")
       link.href = downloadUrl
-      link.download = "Direction-Diploma.pdf" // Set a default filename
+      link.download = "Direction-Diploma.pdf"
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -114,7 +125,7 @@ const DirectionDiplomaAdmin = () => {
   // Delete PDF
   const handleDeletePdf = async () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this PDF?")
-    if (!confirmDelete) return // stop if user clicked Cancel
+    if (!confirmDelete) return
 
     try {
       await axios.delete(`${API_BASE}/directiondiploma/pdf`)
@@ -161,156 +172,233 @@ const DirectionDiplomaAdmin = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg text-black">
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">🎬 Direction Diploma</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Semester 1 */}
-        <div className="bg-gray-50 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">Semester 1</h3>
-          {semester1.map((sub, i) => (
-            <div key={i} className="flex gap-2 items-center mb-3">
-              <input
-                value={sub}
-                onChange={(e) => updateSubtitle(semester1, setSemester1, i, e.target.value)}
-                placeholder="Enter subtitle"
-                className="border rounded-md p-2 w-full focus:border-blue-500 focus:outline-none"
-              />
-              <button
-                type="button"
-                className="px-2 py-1 text-red-500 hover:text-red-700"
-                onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}
-              >
-                ✖
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
-            onClick={() => addSubtitle(semester1, setSemester1)}
-          >
-            ➕ Add Subtitle
-          </button>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <GraduationCap className="h-8 w-8 text-primary" />
+            <h1 className="text-4xl font-bold text-foreground">Direction Diploma Management</h1>
+          </div>
+          <p className="text-muted-foreground text-lg">Manage semester curricula and diploma documentation</p>
         </div>
 
-        {/* Semester 2 */}
-        <div className="bg-gray-50 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">Semester 2</h3>
-          {semester2.map((sub, i) => (
-            <div key={i} className="flex gap-2 items-center mb-3">
-              <input
-                value={sub}
-                onChange={(e) => updateSubtitle(semester2, setSemester2, i, e.target.value)}
-                placeholder="Enter subtitle"
-                className="border rounded-md p-2 w-full focus:border-blue-500 focus:outline-none"
-              />
-              <button
-                type="button"
-                className="px-2 py-1 text-red-500 hover:text-red-700"
-                onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}
-              >
-                ✖
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
-            onClick={() => addSubtitle(semester2, setSemester2)}
-          >
-            ➕ Add Subtitle
-          </button>
-        </div>
-
-        {/* PDF Upload */}
-        <div className="bg-gray-50 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-4 text-gray-700">Upload PDF</h3>
-
-          {savedData?.pdfUrl ? (
-            <div className="flex items-center gap-4">
-              <a
-                href={savedData.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                📄 View PDF
-              </a>
-
-              <button
-                type="button"
-                onClick={handleDownloadPdf}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-              >
-                📥 Download PDF
-              </button>
-
-              <button
-                type="button"
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                onClick={handleDeletePdf}
-              >
-                🗑️ Delete PDF
-              </button>
-            </div>
-          ) : (
-            <div>
-              <input
-                type="file"
-                accept="application/pdf"
-                onChange={(e) => setPdf(e.target.files[0])}
-                className="border rounded-md p-2 w-full focus:border-blue-500 focus:outline-none mb-2"
-              />
-              <p className="text-sm text-gray-600">Only PDF files are allowed (max 20MB)</p>
-            </div>
-          )}
-        </div>
-
-        {/* Save button */}
-        <div className="text-center">
-          <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 px-6 py-3 text-white rounded-md font-semibold"
-          >
-            💾 Save Changes
-          </button>
-        </div>
-      </form>
-
-      {/* Saved Data Preview */}
-      <div className="mt-10">
-        <h3 className="text-2xl font-bold mb-4 text-gray-800 text-center">📌 Saved Data</h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-50 p-4 rounded-lg shadow">
-            <h4 className="font-semibold mb-2 text-gray-700">Semester 1</h4>
-            {savedData?.semester1?.map((item, i) => (
-              <div key={i} className="flex items-center gap-2 mb-1">
-                <span className="text-gray-800">{item.title}</span>
-                <button
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => handleDeleteSubtitle("semester1", i)}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Semester 1 */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Badge variant="secondary">1</Badge>
+                  Semester 1 Subjects
+                </CardTitle>
+                <CardDescription>Add and manage subjects for the first semester</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {semester1.map((sub, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <Input
+                      value={sub}
+                      onChange={(e) => updateSubtitle(semester1, setSemester1, i, e.target.value)}
+                      placeholder="Enter subject name"
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => addSubtitle(semester1, setSemester1)}
+                  className="w-full"
                 >
-                  ✖
-                </button>
-              </div>
-            ))}
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Subject
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Semester 2 */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Badge variant="secondary">2</Badge>
+                  Semester 2 Subjects
+                </CardTitle>
+                <CardDescription>Add and manage subjects for the second semester</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {semester2.map((sub, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <Input
+                      value={sub}
+                      onChange={(e) => updateSubtitle(semester2, setSemester2, i, e.target.value)}
+                      placeholder="Enter subject name"
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => addSubtitle(semester2, setSemester2)}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Subject
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg shadow">
-            <h4 className="font-semibold mb-2 text-gray-700">Semester 2</h4>
-            {savedData?.semester2?.map((item, i) => (
-              <div key={i} className="flex items-center gap-2 mb-1">
-                <span className="text-gray-800">{item.title}</span>
-                <button
-                  className="text-red-500 hover:text-red-700"
-                  onClick={() => handleDeleteSubtitle("semester2", i)}
-                >
-                  ✖
-                </button>
-              </div>
-            ))}
+          {/* PDF Upload Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Diploma Document
+              </CardTitle>
+              <CardDescription>Upload or manage the official diploma PDF document</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {savedData?.pdfUrl ? (
+                <div className="flex flex-wrap items-center gap-4 p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <FileText className="h-4 w-4" />
+                    <span>PDF document uploaded</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(savedData.pdfUrl, "_blank")}
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      View PDF
+                    </Button>
+                    <Button type="button" variant="outline" size="sm" onClick={handleDownloadPdf}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                    <Button type="button" variant="destructive" size="sm" onClick={handleDeletePdf}>
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer bg-muted/50 hover:bg-muted">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
+                        <p className="mb-2 text-sm text-muted-foreground">
+                          <span className="font-semibold">Click to upload</span> or drag and drop
+                        </p>
+                        <p className="text-xs text-muted-foreground">PDF files only (max 20MB)</p>
+                      </div>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => setPdf(e.target.files[0])}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                  {pdf && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <FileText className="h-4 w-4" />
+                      <span>Selected: {pdf.name}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Save Button */}
+          <div className="flex justify-center">
+            <Button type="submit" size="lg" disabled={isLoading} className="px-8">
+              {isLoading ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
+        </form>
+
+        <Separator className="my-8" />
+
+        {/* Saved Data Preview */}
+        <div className="space-y-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-foreground mb-2">Current Curriculum</h2>
+            <p className="text-muted-foreground">Review and manage saved subjects</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Badge variant="secondary">1</Badge>
+                  Semester 1 Subjects
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {savedData?.semester1?.length > 0 ? (
+                  <div className="space-y-2">
+                    {savedData.semester1.map((item, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 bg-muted rounded">
+                        <span className="text-sm">{item.title}</span>
+                        <Button variant="ghost" size="sm" onClick={() => handleDeleteSubtitle("semester1", i)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm">No subjects added yet</p>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Badge variant="secondary">2</Badge>
+                  Semester 2 Subjects
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {savedData?.semester2?.length > 0 ? (
+                  <div className="space-y-2">
+                    {savedData.semester2.map((item, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 bg-muted rounded">
+                        <span className="text-sm">{item.title}</span>
+                        <Button variant="ghost" size="sm" onClick={() => handleDeleteSubtitle("semester2", i)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm">No subjects added yet</p>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
