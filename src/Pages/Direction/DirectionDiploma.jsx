@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
-import { Badge } from "./ui/badge"
 import { FileText, Download, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
@@ -195,9 +192,9 @@ const DirectionDiplomaAdmin = () => {
               <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-6">
                 <div className="flex items-center gap-3">
                   <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
-                    <Badge variant="secondary" className="bg-white text-emerald-700 font-bold px-3 py-1">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white text-emerald-700">
                       1
-                    </Badge>
+                    </span>
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white">Semester 1 Subjects</h3>
@@ -208,32 +205,29 @@ const DirectionDiplomaAdmin = () => {
               <div className="p-6 space-y-4">
                 {semester1.map((sub, i) => (
                   <div key={i} className="flex gap-3 items-center group">
-                    <Input
+                    <input
                       value={sub}
                       onChange={(e) => updateSubtitle(semester1, setSemester1, i, e.target.value)}
                       placeholder="Enter subject name"
-                      className="flex-1 border-2 border-slate-200 focus:border-emerald-400 focus:ring-emerald-200 rounded-xl h-12 text-lg"
+                      className="flex-1 border-2 border-slate-200 focus:border-emerald-400 focus:ring-emerald-200 rounded-xl h-12 text-lg px-4 outline-none transition-colors"
                     />
-                    <Button
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="sm"
                       onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3 border-none bg-transparent cursor-pointer"
                     >
                       <X className="h-5 w-5" />
-                    </Button>
+                    </button>
                   </div>
                 ))}
-                <Button
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => addSubtitle(semester1, setSemester1)}
-                  className="w-full h-12 border-2 border-dashed border-emerald-300 hover:border-emerald-400 hover:bg-emerald-50 text-emerald-700 rounded-xl font-semibold"
+                  className="w-full h-12 border-2 border-dashed border-emerald-300 hover:border-emerald-400 hover:bg-emerald-50 text-emerald-700 rounded-xl font-semibold bg-transparent cursor-pointer transition-colors flex items-center justify-center gap-2"
                 >
-                  <Plus className="h-5 w-5 mr-2" />
+                  <Plus className="h-5 w-5" />
                   Add Subject
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -241,9 +235,9 @@ const DirectionDiplomaAdmin = () => {
               <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-6">
                 <div className="flex items-center gap-3">
                   <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
-                    <Badge variant="secondary" className="bg-white text-violet-700 font-bold px-3 py-1">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white text-violet-700">
                       2
-                    </Badge>
+                    </span>
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white">Semester 2 Subjects</h3>
@@ -254,32 +248,29 @@ const DirectionDiplomaAdmin = () => {
               <div className="p-6 space-y-4">
                 {semester2.map((sub, i) => (
                   <div key={i} className="flex gap-3 items-center group">
-                    <Input
+                    <input
                       value={sub}
                       onChange={(e) => updateSubtitle(semester2, setSemester2, i, e.target.value)}
                       placeholder="Enter subject name"
-                      className="flex-1 border-2 border-slate-200 focus:border-violet-400 focus:ring-violet-200 rounded-xl h-12 text-lg"
+                      className="flex-1 border-2 border-slate-200 focus:border-violet-400 focus:ring-violet-200 rounded-xl h-12 text-lg px-4 outline-none transition-colors"
                     />
-                    <Button
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="sm"
                       onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3 border-none bg-transparent cursor-pointer"
                     >
                       <X className="h-5 w-5" />
-                    </Button>
+                    </button>
                   </div>
                 ))}
-                <Button
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => addSubtitle(semester2, setSemester2)}
-                  className="w-full h-12 border-2 border-dashed border-violet-300 hover:border-violet-400 hover:bg-violet-50 text-violet-700 rounded-xl font-semibold"
+                  className="w-full h-12 border-2 border-dashed border-violet-300 hover:border-violet-400 hover:bg-violet-50 text-violet-700 rounded-xl font-semibold bg-transparent cursor-pointer transition-colors flex items-center justify-center gap-2"
                 >
-                  <Plus className="h-5 w-5 mr-2" />
+                  <Plus className="h-5 w-5" />
                   Add Subject
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -309,42 +300,36 @@ const DirectionDiplomaAdmin = () => {
                     </div>
                   </div>
                   <div className="flex gap-3 ml-auto">
-                    <Button
+                    <button
                       type="button"
-                      variant="outline"
-                      size="sm"
                       onClick={() => window.open(savedData.pdfUrl, "_blank")}
-                      className="border-blue-300 text-blue-700 hover:bg-blue-50 rounded-xl px-4 py-2"
+                      className="inline-flex items-center gap-2 px-4 py-2 border border-blue-300 text-blue-700 hover:bg-blue-50 rounded-xl transition-colors bg-transparent cursor-pointer"
                     >
-                      <FileText className="h-4 w-4 mr-2" />
+                      <FileText className="h-4 w-4" />
                       View PDF
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="button"
-                      variant="outline"
-                      size="sm"
                       onClick={handleDownloadPdf}
-                      className="border-indigo-300 text-indigo-700 hover:bg-indigo-50 rounded-xl px-4 py-2 bg-transparent"
+                      className="inline-flex items-center gap-2 px-4 py-2 border border-indigo-300 text-indigo-700 hover:bg-indigo-50 rounded-xl transition-colors bg-transparent cursor-pointer"
                     >
-                      <Download className="h-4 w-4 mr-2" />
+                      <Download className="h-4 w-4" />
                       Download
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="button"
-                      variant="destructive"
-                      size="sm"
                       onClick={handleDeletePdf}
-                      className="bg-red-500 hover:bg-red-600 rounded-xl px-4 py-2"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors cursor-pointer border-none"
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="h-4 w-4" />
                       Delete
-                    </Button>
+                    </button>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex flex-col items-center justify-center w-full h-40 border-3 border-dashed border-blue-300 rounded-2xl cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-all duration-300">
+                    <label className="flex flex-col items-center justify-center w-full h-40 border-4 border-dashed border-blue-300 rounded-2xl cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-all duration-300">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <div className="p-4 bg-blue-100 rounded-2xl mb-4">
                           <Upload className="w-10 h-10 text-blue-600" />
@@ -372,14 +357,13 @@ const DirectionDiplomaAdmin = () => {
           </div>
 
           <div className="flex justify-center">
-            <Button
+            <button
               type="submit"
-              size="lg"
               disabled={isLoading}
-              className="px-12 py-4 text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="px-12 py-4 text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Saving..." : "Save Changes"}
-            </Button>
+            </button>
           </div>
         </form>
 
@@ -397,9 +381,9 @@ const DirectionDiplomaAdmin = () => {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
               <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="bg-white text-emerald-700 font-bold px-3 py-1">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white text-emerald-700">
                     1
-                  </Badge>
+                  </span>
                   <h3 className="text-xl font-bold text-white">Semester 1 Subjects</h3>
                 </div>
               </div>
@@ -412,14 +396,12 @@ const DirectionDiplomaAdmin = () => {
                         className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl group hover:shadow-md transition-all"
                       >
                         <span className="font-medium text-emerald-800">{item.title}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        <button
                           onClick={() => handleDeleteSubtitle("semester1", i)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
-                        </Button>
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -432,9 +414,9 @@ const DirectionDiplomaAdmin = () => {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
               <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="bg-white text-violet-700 font-bold px-3 py-1">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white text-violet-700">
                     2
-                  </Badge>
+                  </span>
                   <h3 className="text-xl font-bold text-white">Semester 2 Subjects</h3>
                 </div>
               </div>
@@ -447,14 +429,12 @@ const DirectionDiplomaAdmin = () => {
                         className="flex items-center justify-between p-4 bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200 rounded-xl group hover:shadow-md transition-all"
                       >
                         <span className="font-medium text-violet-800">{item.title}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        <button
                           onClick={() => handleDeleteSubtitle("semester2", i)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
-                        </Button>
+                        </button>
                       </div>
                     ))}
                   </div>
