@@ -143,14 +143,14 @@ const DirectionDiplomaAdmin = () => {
           <h3 className="text-xl font-semibold mb-4 text-indigo-700">
             Semester 1
           </h3>
-          {semester1Input.map((sub, i) => (
+          {semester1.map((sub, i) => (
             <div key={i} className="flex gap-2 mb-2">
               <input
                 value={sub}
                 onChange={(e) =>
                   updateSubtitle(
-                    semester1Input,
-                    setSemester1Input,
+                    semester1,
+                    setsemester1,
                     i,
                     e.target.value
                   )
@@ -161,7 +161,7 @@ const DirectionDiplomaAdmin = () => {
               <button
                 type="button"
                 onClick={() =>
-                  deleteSubtitleLocal(semester1Input, setSemester1Input, i)
+                  deleteSubtitleLocal(semester1, setsemester1, i)
                 }
                 className="text-red-500"
               >
@@ -171,7 +171,7 @@ const DirectionDiplomaAdmin = () => {
           ))}
           <button
             type="button"
-            onClick={() => addSubtitle(semester1Input, setSemester1Input)}
+            onClick={() => addSubtitle(semester1, setsemester1)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
           >
             ➕ Add Subtitle
@@ -183,14 +183,14 @@ const DirectionDiplomaAdmin = () => {
           <h3 className="text-xl font-semibold mb-4 text-indigo-700">
             Semester 2
           </h3>
-          {semester2Input.map((sub, i) => (
+          {semester2.map((sub, i) => (
             <div key={i} className="flex gap-2 mb-2">
               <input
                 value={sub}
                 onChange={(e) =>
                   updateSubtitle(
-                    semester2Input,
-                    setSemester2Input,
+                    semester2,
+                    setsemester2,
                     i,
                     e.target.value
                   )
@@ -201,7 +201,7 @@ const DirectionDiplomaAdmin = () => {
               <button
                 type="button"
                 onClick={() =>
-                  deleteSubtitleLocal(semester2Input, setSemester2Input, i)
+                  deleteSubtitleLocal(semester2, setsemester2, i)
                 }
                 className="text-red-500"
               >
@@ -211,7 +211,7 @@ const DirectionDiplomaAdmin = () => {
           ))}
           <button
             type="button"
-            onClick={() => addSubtitle(semester2Input, setSemester2Input)}
+            onClick={() => addSubtitle(semester2, setsemester2)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
           >
             ➕ Add Subtitle
