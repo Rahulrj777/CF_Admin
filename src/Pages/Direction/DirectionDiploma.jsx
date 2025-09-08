@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Badge } from "./ui/badge"
-import { Separator } from "./ui/separator"
 import { FileText, Download, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
@@ -172,44 +170,58 @@ const DirectionDiplomaAdmin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <GraduationCap className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold text-foreground">Direction Diploma Management</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
+              <GraduationCap className="h-10 w-10 text-white" />
+            </div>
+            <div>
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-900 via-indigo-800 to-purple-800 bg-clip-text text-transparent">
+                Direction Diploma Management
+              </h1>
+              <div className="h-1 w-32 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mx-auto mt-2"></div>
+            </div>
           </div>
-          <p className="text-muted-foreground text-lg">Manage semester curricula and diploma documentation</p>
+          <p className="text-slate-600 text-xl font-medium">
+            Manage semester curricula and diploma documentation with precision
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Semester 1 */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="secondary">1</Badge>
-                  Semester 1 Subjects
-                </CardTitle>
-                <CardDescription>Add and manage subjects for the first semester</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
+                    <Badge variant="secondary" className="bg-white text-emerald-700 font-bold px-3 py-1">
+                      1
+                    </Badge>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">Semester 1 Subjects</h3>
+                    <p className="text-emerald-100">Add and manage first semester curriculum</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
                 {semester1.map((sub, i) => (
-                  <div key={i} className="flex gap-2 items-center">
+                  <div key={i} className="flex gap-3 items-center group">
                     <Input
                       value={sub}
                       onChange={(e) => updateSubtitle(semester1, setSemester1, i, e.target.value)}
                       placeholder="Enter subject name"
-                      className="flex-1"
+                      className="flex-1 border-2 border-slate-200 focus:border-emerald-400 focus:ring-emerald-200 rounded-xl h-12 text-lg"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
                       onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-5 w-5" />
                     </Button>
                   </div>
                 ))}
@@ -217,39 +229,45 @@ const DirectionDiplomaAdmin = () => {
                   type="button"
                   variant="outline"
                   onClick={() => addSubtitle(semester1, setSemester1)}
-                  className="w-full"
+                  className="w-full h-12 border-2 border-dashed border-emerald-300 hover:border-emerald-400 hover:bg-emerald-50 text-emerald-700 rounded-xl font-semibold"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-5 w-5 mr-2" />
                   Add Subject
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            {/* Semester 2 */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="secondary">2</Badge>
-                  Semester 2 Subjects
-                </CardTitle>
-                <CardDescription>Add and manage subjects for the second semester</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
+                    <Badge variant="secondary" className="bg-white text-violet-700 font-bold px-3 py-1">
+                      2
+                    </Badge>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">Semester 2 Subjects</h3>
+                    <p className="text-violet-100">Add and manage second semester curriculum</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
                 {semester2.map((sub, i) => (
-                  <div key={i} className="flex gap-2 items-center">
+                  <div key={i} className="flex gap-3 items-center group">
                     <Input
                       value={sub}
                       onChange={(e) => updateSubtitle(semester2, setSemester2, i, e.target.value)}
                       placeholder="Enter subject name"
-                      className="flex-1"
+                      className="flex-1 border-2 border-slate-200 focus:border-violet-400 focus:ring-violet-200 rounded-xl h-12 text-lg"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
                       onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-5 w-5" />
                     </Button>
                   </div>
                 ))}
@@ -257,46 +275,67 @@ const DirectionDiplomaAdmin = () => {
                   type="button"
                   variant="outline"
                   onClick={() => addSubtitle(semester2, setSemester2)}
-                  className="w-full"
+                  className="w-full h-12 border-2 border-dashed border-violet-300 hover:border-violet-400 hover:bg-violet-50 text-violet-700 rounded-xl font-semibold"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-5 w-5 mr-2" />
                   Add Subject
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
-          {/* PDF Upload Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Diploma Document
-              </CardTitle>
-              <CardDescription>Upload or manage the official diploma PDF document</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
+                  <FileText className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Diploma Document</h3>
+                  <p className="text-blue-100">Upload or manage the official diploma PDF document</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
               {savedData?.pdfUrl ? (
-                <div className="flex flex-wrap items-center gap-4 p-4 bg-muted rounded-lg">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <FileText className="h-4 w-4" />
-                    <span>PDF document uploaded</span>
+                <div className="flex flex-wrap items-center gap-4 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 rounded-xl">
+                      <FileText className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-green-800">PDF document uploaded successfully</p>
+                      <p className="text-sm text-green-600">Ready for download and viewing</p>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3 ml-auto">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => window.open(savedData.pdfUrl, "_blank")}
+                      className="border-blue-300 text-blue-700 hover:bg-blue-50 rounded-xl px-4 py-2"
                     >
                       <FileText className="h-4 w-4 mr-2" />
                       View PDF
                     </Button>
-                    <Button type="button" variant="outline" size="sm" onClick={handleDownloadPdf}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDownloadPdf}
+                      className="border-indigo-300 text-indigo-700 hover:bg-indigo-50 rounded-xl px-4 py-2 bg-transparent"
+                    >
                       <Download className="h-4 w-4 mr-2" />
                       Download
                     </Button>
-                    <Button type="button" variant="destructive" size="sm" onClick={handleDeletePdf}>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleDeletePdf}
+                      className="bg-red-500 hover:bg-red-600 rounded-xl px-4 py-2"
+                    >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete
                     </Button>
@@ -305,13 +344,13 @@ const DirectionDiplomaAdmin = () => {
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer bg-muted/50 hover:bg-muted">
+                    <label className="flex flex-col items-center justify-center w-full h-40 border-3 border-dashed border-blue-300 rounded-2xl cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-all duration-300">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
-                        <p className="mb-2 text-sm text-muted-foreground">
-                          <span className="font-semibold">Click to upload</span> or drag and drop
-                        </p>
-                        <p className="text-xs text-muted-foreground">PDF files only (max 20MB)</p>
+                        <div className="p-4 bg-blue-100 rounded-2xl mb-4">
+                          <Upload className="w-10 h-10 text-blue-600" />
+                        </div>
+                        <p className="mb-2 text-lg font-semibold text-blue-800">Click to upload or drag and drop</p>
+                        <p className="text-sm text-blue-600 font-medium">PDF files only (max 20MB)</p>
                       </div>
                       <input
                         type="file"
@@ -322,83 +361,108 @@ const DirectionDiplomaAdmin = () => {
                     </label>
                   </div>
                   {pdf && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <FileText className="h-4 w-4" />
-                      <span>Selected: {pdf.name}</span>
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                      <span className="font-medium text-blue-800">Selected: {pdf.name}</span>
                     </div>
                   )}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Save Button */}
           <div className="flex justify-center">
-            <Button type="submit" size="lg" disabled={isLoading} className="px-8">
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isLoading}
+              className="px-12 py-4 text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>
 
-        <Separator className="my-8" />
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent my-12"></div>
 
-        {/* Saved Data Preview */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-foreground mb-2">Current Curriculum</h2>
-            <p className="text-muted-foreground">Review and manage saved subjects</p>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-3">
+              Current Curriculum
+            </h2>
+            <p className="text-slate-600 text-lg">Review and manage saved subjects</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="secondary">1</Badge>
-                  Semester 1 Subjects
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-4">
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className="bg-white text-emerald-700 font-bold px-3 py-1">
+                    1
+                  </Badge>
+                  <h3 className="text-xl font-bold text-white">Semester 1 Subjects</h3>
+                </div>
+              </div>
+              <div className="p-6">
                 {savedData?.semester1?.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {savedData.semester1.map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-2 bg-muted rounded">
-                        <span className="text-sm">{item.title}</span>
-                        <Button variant="ghost" size="sm" onClick={() => handleDeleteSubtitle("semester1", i)}>
+                      <div
+                        key={i}
+                        className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl group hover:shadow-md transition-all"
+                      >
+                        <span className="font-medium text-emerald-800">{item.title}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteSubtitle("semester1", i)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg"
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-sm">No subjects added yet</p>
+                  <p className="text-slate-500 text-center py-8 italic">No subjects added yet</p>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Badge variant="secondary">2</Badge>
-                  Semester 2 Subjects
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-4">
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className="bg-white text-violet-700 font-bold px-3 py-1">
+                    2
+                  </Badge>
+                  <h3 className="text-xl font-bold text-white">Semester 2 Subjects</h3>
+                </div>
+              </div>
+              <div className="p-6">
                 {savedData?.semester2?.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {savedData.semester2.map((item, i) => (
-                      <div key={i} className="flex items-center justify-between p-2 bg-muted rounded">
-                        <span className="text-sm">{item.title}</span>
-                        <Button variant="ghost" size="sm" onClick={() => handleDeleteSubtitle("semester2", i)}>
+                      <div
+                        key={i}
+                        className="flex items-center justify-between p-4 bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200 rounded-xl group hover:shadow-md transition-all"
+                      >
+                        <span className="font-medium text-violet-800">{item.title}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteSubtitle("semester2", i)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg"
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-sm">No subjects added yet</p>
+                  <p className="text-slate-500 text-center py-8 italic">No subjects added yet</p>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </div>
