@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { FileText, Download, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
+import { FileText, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -96,24 +96,6 @@ const DirectionDiplomaAdmin = () => {
       alert("Error saving data!")
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const handleDownloadPdf = async () => {
-    try {
-      const response = await axios.get(`${API_BASE}/directiondiploma/pdf/download`)
-      const { downloadUrl } = response.data
-
-      // Create a temporary link element and trigger download
-      const link = document.createElement("a")
-      link.href = downloadUrl
-      link.download = "Direction-Diploma.pdf"
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    } catch (err) {
-      console.error("Download error:", err)
-      alert("Error downloading PDF!")
     }
   }
 
@@ -296,7 +278,7 @@ const DirectionDiplomaAdmin = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-green-800">PDF document uploaded successfully</p>
-                      <p className="text-sm text-green-600">Ready for download and viewing</p>
+                      <p className="text-sm text-green-600">Ready for viewing</p>
                     </div>
                   </div>
                   <div className="flex gap-3 ml-auto">
@@ -307,14 +289,6 @@ const DirectionDiplomaAdmin = () => {
                     >
                       <FileText className="h-4 w-4" />
                       View PDF
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleDownloadPdf}
-                      className="inline-flex items-center gap-2 px-4 py-2 border border-indigo-300 text-indigo-700 hover:bg-indigo-50 rounded-xl transition-colors bg-transparent cursor-pointer"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
                     </button>
                     <button
                       type="button"
