@@ -45,47 +45,53 @@ const DirectionDiplomaAdmin = () => {
   };
 
   // Submit subtitles and PDF
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      // Update subtitles first
-      await axios.post(`${API_BASE}/directiondiploma/text`, {
-        semester1,
-        semester2,
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    // Merge old saved data with new input data
+    const mergedSemester1 = [
+      ...((savedData?.semester1 || []).map((item) => item.title)),
+      ...semester1.filter((t) => t.trim() !== "")
+    ];
+    const mergedSemester2 = [
+      ...((savedData?.semester2 || []).map((item) => item.title)),
+      ...semester2.filter((t) => t.trim() !== "")
+    ];
+
+    // Send merged arrays
+    await axios.post(`${API_BASE}/directiondiploma/text`, {
+      semester1: mergedSemester1,
+      semester2: mergedSemester2,
+    });
+
+    // Upload PDF if selected
+    if (pdf) {
+      const formData = new FormData();
+      formData.append("pdf", pdf);
+      await axios.post(`${API_BASE}/directiondiploma/pdf`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-
-      // Upload PDF if selected
-      if (pdf) {
-        const formData = new FormData();
-        formData.append("pdf", pdf);
-
-        const uploadRes = await axios.post(
-          `${API_BASE}/directiondiploma/pdf`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-
-        console.log("PDF Upload Response:", uploadRes.data); // 👈 add this
-      }
-
-      // Refresh data
-      const res = await axios.get(`${API_BASE}/directiondiploma`);
-      const data = res.data.direction.diploma[0] || {
-        semester1: [],
-        semester2: [],
-        pdfUrl: "",
-      };
-      console.log("Fetched diploma data:", res.data); // 👈 add this
-      setSavedData(data);
-      setSemester1([]); // clear form
-      setSemester2([]);
-      setPdf(null);
-    } catch (err) {
-      console.error(err);
     }
-  };
+
+    // Refresh data
+    const res = await axios.get(`${API_BASE}/directiondiploma`);
+    const data = res.data.direction.diploma[0] || {
+      semester1: [],
+      semester2: [],
+      pdfUrl: "",
+    };
+    setSavedData(data);
+
+    // Clear form after saving
+    setSemester1([]);
+    setSemester2([]);
+    setPdf(null);
+
+    alert("Saved successfully ✅");
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   // Delete PDF
   const handleDeletePdf = async () => {
