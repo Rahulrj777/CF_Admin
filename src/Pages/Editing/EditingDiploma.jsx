@@ -22,7 +22,7 @@ const EditingDiploma = () => {
       setLoading(true)
       const res = await axios.get(`${API_BASE}/editingdiploma`)
       setSavedMonths(res.data.diploma || [])
-      setSavedPdf(res.data.pdfName ? `${API_BASE}/editingdiploma/pdf` : "")
+      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API_BASE}/editingdiploma/pdf/view` : "")
     } catch (err) {
       console.error("Error fetching diploma data:", err)
     } finally {
@@ -189,7 +189,7 @@ const EditingDiploma = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
-      setSavedPdf(res.data.pdfName ? `${API_BASE}/editingdiploma/pdf` : "")
+      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API_BASE}/editingdiploma/pdf/view` : "")
       setPdf(null)
       setFileKey((k) => k + 1)
       alert("PDF uploaded successfully ✅")
