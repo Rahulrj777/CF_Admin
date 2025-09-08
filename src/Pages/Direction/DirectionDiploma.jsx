@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { Button } from "./ui/button"
+import { Input } from "./ui/input"
+import { Badge } from "./ui/badge"
 import { FileText, Download, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
