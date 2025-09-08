@@ -51,28 +51,20 @@ const DirectionDiplomaAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Update subtitles first
+      // Send objects with title
       await axios.post(`${API_BASE}/directiondiploma/text`, {
-        semester1,
-        semester2,
+        semester1: semester1.map((t) => ({ title: t })),
+        semester2: semester2.map((t) => ({ title: t })),
       });
 
-      // Upload PDF if selected
       if (pdf) {
         const formData = new FormData();
         formData.append("pdf", pdf);
-
-        const uploadRes = await axios.post(
-          `${API_BASE}/directiondiploma/pdf`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-        console.log("PDF Upload Response:", uploadRes.data);
+        await axios.post(`${API_BASE}/directiondiploma/pdf`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
 
-      // Refresh data
       const res = await axios.get(`${API_BASE}/directiondiploma`);
       const data = res.data.direction.diploma[0] || {
         semester1: [],
@@ -81,12 +73,11 @@ const DirectionDiplomaAdmin = () => {
       };
       setSavedData(data);
 
-      // ✅ Reset inputs so they disappear
-      setSemester1([""]);
-      setSemester2([""]);
+      // ✅ No input boxes after save
+      setSemester1([]);
+      setSemester2([]);
       setPdf(null);
 
-      // ✅ Alert user
       alert("Data saved successfully!");
     } catch (err) {
       console.error(err);
