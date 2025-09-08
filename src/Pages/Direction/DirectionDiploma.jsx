@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { FileText, Download, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
+import { FileText, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -288,7 +288,7 @@ const DirectionDiplomaAdmin = () => {
               </div>
             </div>
             <div className="p-6">
-              {savedData?.pdfUrl ? (
+              {savedData?.pdfData ? (
                 <div className="flex flex-wrap items-center gap-4 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-green-100 rounded-xl">
@@ -296,25 +296,19 @@ const DirectionDiplomaAdmin = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-green-800">PDF document uploaded successfully</p>
-                      <p className="text-sm text-green-600">Ready for download and viewing</p>
+                      <p className="text-sm text-green-600">
+                        {savedData.pdfName} ({Math.round(savedData.pdfSize / 1024)} KB)
+                      </p>
                     </div>
                   </div>
                   <div className="flex gap-3 ml-auto">
                     <button
                       type="button"
-                      onClick={() => window.open(savedData.pdfUrl, "_blank")}
+                      onClick={() => window.open(`${API_BASE}/directiondiploma/pdf/view`, "_blank")}
                       className="inline-flex items-center gap-2 px-4 py-2 border border-blue-300 text-blue-700 hover:bg-blue-50 rounded-xl transition-colors bg-transparent cursor-pointer"
                     >
                       <FileText className="h-4 w-4" />
                       View PDF
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleDownloadPdf}
-                      className="inline-flex items-center gap-2 px-4 py-2 border border-indigo-300 text-indigo-700 hover:bg-indigo-50 rounded-xl transition-colors bg-transparent cursor-pointer"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
                     </button>
                     <button
                       type="button"
