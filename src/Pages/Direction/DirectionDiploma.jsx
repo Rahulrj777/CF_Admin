@@ -69,8 +69,7 @@ const DirectionDiplomaAdmin = () => {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-
-        console.log("PDF Upload Response:", uploadRes.data); // 👈 add this
+        console.log("PDF Upload Response:", uploadRes.data);
       }
 
       // Refresh data
@@ -80,16 +79,28 @@ const DirectionDiplomaAdmin = () => {
         semester2: [],
         pdfUrl: "",
       };
-      console.log("Fetched diploma data:", res.data); // 👈 add this
       setSavedData(data);
+
+      // ✅ Reset inputs so they disappear
+      setSemester1([""]);
+      setSemester2([""]);
       setPdf(null);
+
+      // ✅ Alert user
+      alert("Data saved successfully!");
     } catch (err) {
       console.error(err);
+      alert("Error saving data!");
     }
   };
 
   // Delete PDF
   const handleDeletePdf = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete the PDF?"
+    );
+    if (!confirmDelete) return;
+
     try {
       await axios.delete(`${API_BASE}/directiondiploma/pdf`);
       const res = await axios.get(`${API_BASE}/directiondiploma`);
@@ -99,13 +110,20 @@ const DirectionDiplomaAdmin = () => {
         pdfUrl: "",
       };
       setSavedData(data);
+      alert("PDF deleted successfully!");
     } catch (err) {
       console.error(err);
+      alert("Error deleting PDF!");
     }
   };
 
   // Delete subtitle from server
-  const handleDeleteSubtitle = async (semester, idx) => {
+  const handleDelete = async (semester, idx) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this subtitle?"
+    );
+    if (!confirmDelete) return;
+
     try {
       await axios.delete(`${API_BASE}/directiondiploma/diploma/subtitle`, {
         data: { semester, index: idx },
@@ -117,13 +135,15 @@ const DirectionDiplomaAdmin = () => {
         pdfUrl: "",
       };
       setSavedData(data);
-      // Update local state too
       if (semester === "semester1")
         setSemester1(data.semester1.map((item) => item.title));
       if (semester === "semester2")
         setSemester2(data.semester2.map((item) => item.title));
+
+      alert("Subtitle deleted successfully!");
     } catch (err) {
       console.error(err);
+      alert("Error deleting subtitle!");
     }
   };
 
@@ -148,21 +168,14 @@ const DirectionDiplomaAdmin = () => {
               <input
                 value={sub}
                 onChange={(e) =>
-                  updateSubtitle(
-                    semester1,
-                    setsemester1,
-                    i,
-                    e.target.value
-                  )
+                  updateSubtitle(semester1, setSemester1, i, e.target.value)
                 }
                 placeholder="Enter subtitle"
                 className="border rounded-md p-2 w-full"
               />
               <button
                 type="button"
-                onClick={() =>
-                  deleteSubtitleLocal(semester1, setsemester1, i)
-                }
+                onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}
                 className="text-red-500"
               >
                 ✖
@@ -171,7 +184,7 @@ const DirectionDiplomaAdmin = () => {
           ))}
           <button
             type="button"
-            onClick={() => addSubtitle(semester1, setsemester1)}
+            onClick={() => addSubtitle(semester1, setSemester1)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
           >
             ➕ Add Subtitle
@@ -188,21 +201,14 @@ const DirectionDiplomaAdmin = () => {
               <input
                 value={sub}
                 onChange={(e) =>
-                  updateSubtitle(
-                    semester2,
-                    setsemester2,
-                    i,
-                    e.target.value
-                  )
+                  updateSubtitle(semester2, setSemester2, i, e.target.value)
                 }
                 placeholder="Enter subtitle"
                 className="border rounded-md p-2 w-full"
               />
               <button
                 type="button"
-                onClick={() =>
-                  deleteSubtitleLocal(semester2, setsemester2, i)
-                }
+                onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}
                 className="text-red-500"
               >
                 ✖
@@ -211,7 +217,7 @@ const DirectionDiplomaAdmin = () => {
           ))}
           <button
             type="button"
-            onClick={() => addSubtitle(semester2, setsemester2)}
+            onClick={() => addSubtitle(semester2, setSemester2)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md"
           >
             ➕ Add Subtitle
@@ -270,7 +276,7 @@ const DirectionDiplomaAdmin = () => {
               <span className="text-gray-800">{item.title}</span>
               <button
                 className="text-red-500"
-                onClick={() => handleDeleteSubtitle("semester1", i)}
+                onClick={() => handleDelete("semester1", i)}
               >
                 ✖
               </button>
@@ -284,7 +290,7 @@ const DirectionDiplomaAdmin = () => {
               <span className="text-gray-800">{item.title}</span>
               <button
                 className="text-red-500"
-                onClick={() => handleDeleteSubtitle("semester2", i)}
+                onClick={() => handleDelete("semester2", i)}
               >
                 ✖
               </button>
