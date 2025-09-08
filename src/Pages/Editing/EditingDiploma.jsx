@@ -13,14 +13,13 @@ const EditingDiploma = () => {
   const [saving, setSaving] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editingIndex, setEditingIndex] = useState(-1)
-
-  // -------- Fetch Saved Data --------
+  const [showAddForm, setShowAddForm] = useState(false)
 
   const fetchDiplomaData = async () => {
     try {
       const res = await axios.get(`${API_BASE}/editingdiploma`)
       setSavedMonths(res.data.diploma || [])
-      setSavedPdf(res.data.diplomaPdf?.url || "") // ✅ load Cloudinary URL
+      setSavedPdf(res.data.diplomaPdf?.url || "")
     } catch (err) {
       console.error("Error fetching diploma data:", err)
     }
@@ -30,14 +29,13 @@ const EditingDiploma = () => {
     fetchDiplomaData()
   }, [])
 
-  // -------- Editing --------
-
   const startEditingMonth = (index) => {
     setEditMode(true)
     setEditingIndex(index)
     setMonths([{ ...savedMonths[index] }])
     setPdf(null)
     setFileKey((k) => k + 1)
+    setShowAddForm(true)
   }
 
   const cancelEdit = () => {
@@ -46,31 +44,29 @@ const EditingDiploma = () => {
     setMonths([])
     setPdf(null)
     setFileKey((k) => k + 1)
+    setShowAddForm(false)
   }
 
-  // -------- Delete Month --------
-
   const deleteSavedMonth = async (index) => {
-    if (!confirm("Are you sure you want to delete this month?")) return
+    const confirmDelete = window.confirm("Are you sure you want to delete this month? This action cannot be undone.")
+    if (!confirmDelete) return
+
     try {
       const updatedDiploma = savedMonths.filter((_, i) => i !== index)
       const formData = new FormData()
       formData.append("diploma", JSON.stringify(updatedDiploma))
-      if (pdf) formData.append("pdf_global", pdf)
 
-      const res = await axios.post(`${API_BASE}/editingdiploma/save`, formData, {
+      await axios.post(`${API_BASE}/editingdiploma/save`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
-      setSavedMonths(res.data.diploma || [])
+      setSavedMonths(updatedDiploma)
       alert("Month deleted successfully ✅")
     } catch (err) {
       console.error("Error deleting month:", err)
       alert("Error deleting month")
     }
   }
-
-  // -------- CRUD Helpers --------
 
   const addMonth = () => setMonths((prev) => [...prev, { month: "", sections: [] }])
   const updateMonthTitle = (mi, value) =>
@@ -146,8 +142,6 @@ const EditingDiploma = () => {
       ),
     )
 
-  // -------- Save --------
-
   const saveData = async () => {
     setSaving(true)
     try {
@@ -167,41 +161,46 @@ const EditingDiploma = () => {
         headers: { "Content-Type": "multipart/form-data" },
       })
 
-      // ✅ refresh from backend instead of trusting local state
-      await fetchDiplomaData()
+      setSavedMonths(res.data.diploma || updatedMonths)
+      if (pdf) {
+        setSavedPdf(res.data.diplomaPdf?.url || "")
+      }
 
-      // ✅ clear draft form
       setMonths([])
       setPdf(null)
       setFileKey((k) => k + 1)
       setEditMode(false)
       setEditingIndex(-1)
+      setShowAddForm(false)
 
       alert(editMode ? "Updated successfully ✅" : "Saved successfully ✅")
     } catch (err) {
       console.error("Error saving diploma data:", err)
+      alert("Error saving data")
     } finally {
       setSaving(false)
     }
   }
 
-  // -------- Delete Global PDF --------
-
   const deleteSavedPdf = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this PDF? This action cannot be undone.")
+    if (!confirmDelete) return
+
     try {
       await axios.delete(`${API_BASE}/editingdiploma/pdf`)
       setSavedPdf("")
       setPdf(null)
       setFileKey((k) => k + 1)
+      alert("PDF deleted successfully ✅")
     } catch (err) {
       console.error("Error deleting PDF:", err)
+      alert("Error deleting PDF")
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Modern header design matching cinematography */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="p-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl shadow-lg">
@@ -237,168 +236,184 @@ const EditingDiploma = () => {
           </div>
         )}
 
-        {months.map((month, mi) => (
-          <div
-            key={mi}
-            className="mb-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden"
-          >
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
-                    <Calendar className="h-6 w-6 text-white" />
-                  </div>
-                  <input
-                    className="bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white focus:bg-white/30 rounded-xl px-4 py-3 text-white placeholder-white/70 text-xl font-bold flex-1 outline-none transition-all"
-                    placeholder="Enter Month (e.g. January 2025)"
-                    value={month.month}
-                    onChange={(e) => updateMonthTitle(mi, e.target.value)}
-                  />
-                </div>
-                <button
-                  onClick={() => addSection(mi)}
-                  className="ml-4 px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl font-semibold text-white transition-colors flex items-center gap-2"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Section
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-6">
-              {month.sections.map((section, si) => (
-                <div
-                  key={si}
-                  className="bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-gray-200 rounded-2xl p-6"
-                >
-                  <div className="flex items-center justify-between mb-4">
+        {(showAddForm || editMode) && (
+          <>
+            {months.map((month, mi) => (
+              <div
+                key={mi}
+                className="mb-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden"
+              >
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 p-6">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 flex-1">
-                      <BookOpen className="h-5 w-5 text-gray-600" />
+                      <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
+                        <Calendar className="h-6 w-6 text-white" />
+                      </div>
                       <input
-                        className="bg-white border-2 border-gray-200 focus:border-orange-400 focus:ring-orange-200 rounded-xl px-4 py-3 text-lg font-semibold flex-1 outline-none transition-colors"
-                        value={section.name}
-                        onChange={(e) => updateSectionName(mi, si, e.target.value)}
+                        className="bg-white/20 backdrop-blur-sm border-2 border-white/30 focus:border-white focus:bg-white/30 rounded-xl px-4 py-3 text-white placeholder-white/70 text-xl font-bold flex-1 outline-none transition-all"
+                        placeholder="Enter Month (e.g. January 2025)"
+                        value={month.month}
+                        onChange={(e) => updateMonthTitle(mi, e.target.value)}
                       />
                     </div>
                     <button
-                      onClick={() => deleteSection(mi, si)}
-                      className="ml-3 p-3 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
+                      onClick={() => addSection(mi)}
+                      className="ml-4 px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl font-semibold text-white transition-colors flex items-center gap-2"
                     >
-                      <Trash2 className="h-5 w-5" />
+                      <Plus className="h-4 w-4" />
+                      Add Section
                     </button>
                   </div>
+                </div>
 
-                  <div className="space-y-3 ml-8">
-                    {section.items.map((item, ii) => (
-                      <div key={ii} className="flex items-center gap-3 group">
-                        <input
-                          className="flex-1 border-2 border-slate-200 focus:border-orange-400 focus:ring-orange-200 rounded-xl h-12 text-lg px-4 outline-none transition-colors"
-                          placeholder="Item Title"
-                          value={item.title || ""}
-                          onChange={(e) => updateItemTitle(mi, si, ii, e.target.value)}
-                        />
+                <div className="p-6 space-y-6">
+                  {month.sections.map((section, si) => (
+                    <div
+                      key={si}
+                      className="bg-gradient-to-r from-gray-50 to-slate-50 border-2 border-gray-200 rounded-2xl p-6"
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3 flex-1">
+                          <BookOpen className="h-5 w-5 text-gray-600" />
+                          <input
+                            className="bg-white border-2 border-gray-200 focus:border-orange-400 focus:ring-orange-200 rounded-xl px-4 py-3 text-lg font-semibold flex-1 outline-none transition-colors"
+                            value={section.name}
+                            onChange={(e) => updateSectionName(mi, si, e.target.value)}
+                          />
+                        </div>
                         <button
-                          onClick={() => deleteItem(mi, si, ii)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3"
+                          onClick={() => deleteSection(mi, si)}
+                          className="ml-3 p-3 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
                         >
-                          <X className="h-5 w-5" />
+                          <Trash2 className="h-5 w-5" />
                         </button>
                       </div>
-                    ))}
 
-                    <button
-                      onClick={() => addItem(mi, si)}
-                      className="w-full h-12 border-2 border-dashed border-orange-300 hover:border-orange-400 hover:bg-orange-50 text-orange-700 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Plus className="h-5 w-5" />
-                      Add Item
-                    </button>
-                  </div>
+                      <div className="space-y-3 ml-8">
+                        {section.items.map((item, ii) => (
+                          <div key={ii} className="flex items-center gap-3 group">
+                            <input
+                              className="flex-1 border-2 border-slate-200 focus:border-orange-400 focus:ring-orange-200 rounded-xl h-12 text-lg px-4 outline-none transition-colors"
+                              placeholder="Item Title"
+                              value={item.title || ""}
+                              onChange={(e) => updateItemTitle(mi, si, ii, e.target.value)}
+                            />
+                            <button
+                              onClick={() => deleteItem(mi, si, ii)}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3"
+                            >
+                              <X className="h-5 w-5" />
+                            </button>
+                          </div>
+                        ))}
+
+                        <button
+                          onClick={() => addItem(mi, si)}
+                          className="w-full h-12 border-2 border-dashed border-orange-300 hover:border-orange-400 hover:bg-orange-50 text-orange-700 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+                        >
+                          <Plus className="h-5 w-5" />
+                          Add Item
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
+              </div>
+            ))}
 
-        <div className="mb-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
-                <FileText className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-white">Diploma Document</h3>
-                <p className="text-blue-100">Upload or manage the official diploma PDF document</p>
-              </div>
-            </div>
-          </div>
-          <div className="p-6">
-            {pdf && (
-              <div className="mb-4 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl flex items-center justify-between">
+            <div className="mb-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-xl">
-                    <FileText className="h-6 w-6 text-green-600" />
+                  <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
+                    <FileText className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold text-green-800">Selected PDF: {pdf.name}</p>
-                    <p className="text-sm text-green-600">Ready to upload</p>
+                    <h3 className="text-2xl font-bold text-white">Diploma Document</h3>
+                    <p className="text-blue-100">Upload or manage the official diploma PDF document</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => {
-                    setPdf(null)
-                    setFileKey((k) => k + 1)
-                  }}
-                  className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors flex items-center gap-2"
-                >
-                  <X className="h-4 w-4" />
-                  Remove
-                </button>
               </div>
-            )}
-
-            {!pdf && !savedPdf && (
-              <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-40 border-4 border-dashed border-blue-300 rounded-2xl cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-all duration-300">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <div className="p-4 bg-blue-100 rounded-2xl mb-4">
-                      <Upload className="w-10 h-10 text-blue-600" />
+              <div className="p-6">
+                {pdf && (
+                  <div className="mb-4 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-green-100 rounded-xl">
+                        <FileText className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-green-800">Selected PDF: {pdf.name}</p>
+                        <p className="text-sm text-green-600">Ready to upload</p>
+                      </div>
                     </div>
-                    <p className="mb-2 text-lg font-semibold text-blue-800">Click to upload or drag and drop</p>
-                    <p className="text-sm text-blue-600 font-medium">PDF files only (max 20MB)</p>
+                    <button
+                      onClick={() => {
+                        setPdf(null)
+                        setFileKey((k) => k + 1)
+                      }}
+                      className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors flex items-center gap-2"
+                    >
+                      <X className="h-4 w-4" />
+                      Remove
+                    </button>
                   </div>
-                  <input
-                    key={fileKey}
-                    type="file"
-                    accept="application/pdf"
-                    onChange={(e) => setPdf(e.target.files?.[0] || null)}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            )}
-          </div>
-        </div>
+                )}
 
-        <div className="flex justify-center gap-4 mb-12">
-          {!editMode && (
+                {!pdf && !savedPdf && (
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex flex-col items-center justify-center w-full h-40 border-4 border-dashed border-blue-300 rounded-2xl cursor-pointer bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-all duration-300">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <div className="p-4 bg-blue-100 rounded-2xl mb-4">
+                          <Upload className="w-10 h-10 text-blue-600" />
+                        </div>
+                        <p className="mb-2 text-lg font-semibold text-blue-800">Click to upload or drag and drop</p>
+                        <p className="text-sm text-blue-600 font-medium">PDF files only (max 20MB)</p>
+                      </div>
+                      <input
+                        key={fileKey}
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => setPdf(e.target.files?.[0] || null)}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-center gap-4 mb-12">
+              {!editMode && (
+                <button
+                  onClick={addMonth}
+                  className="px-8 py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-white flex items-center gap-3"
+                  disabled={saving}
+                >
+                  <Plus className="h-5 w-5" />
+                  Add Month
+                </button>
+              )}
+              <button
+                onClick={saveData}
+                className="px-12 py-4 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+                disabled={saving}
+              >
+                {saving ? "Saving..." : editMode ? "Update Changes" : "Save Changes"}
+              </button>
+            </div>
+          </>
+        )}
+
+        {!showAddForm && !editMode && (
+          <div className="flex justify-center mb-12">
             <button
-              onClick={addMonth}
+              onClick={() => setShowAddForm(true)}
               className="px-8 py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-white flex items-center gap-3"
-              disabled={saving}
             >
               <Plus className="h-5 w-5" />
-              Add Month
+              Add New Month
             </button>
-          )}
-          <button
-            onClick={saveData}
-            className="px-12 py-4 text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
-            disabled={saving}
-          >
-            {saving ? "Saving..." : editMode ? "Update Changes" : "Save Changes"}
-          </button>
-        </div>
+          </div>
+        )}
 
         <div className="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent my-12"></div>
 
