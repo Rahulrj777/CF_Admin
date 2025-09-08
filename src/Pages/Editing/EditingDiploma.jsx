@@ -228,7 +228,7 @@ const EditingDiploma = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="flex flex-col gap-8 mb-12">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
             <div className="bg-gradient-to-r from-orange-500 to-red-500 p-6">
               <div className="flex items-center gap-3">
