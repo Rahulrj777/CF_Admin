@@ -19,7 +19,10 @@ const DirectionDiplomaAdmin = () => {
           semester2: [],
           pdfUrl: "",
         };
+
         setSavedData(data);
+        setSemester1(data.semester1.map((item) => item.title));
+        setSemester2(data.semester2.map((item) => item.title));
       } catch (err) {
         console.error(err);
       }
@@ -79,8 +82,6 @@ const DirectionDiplomaAdmin = () => {
       };
       console.log("Fetched diploma data:", res.data); // 👈 add this
       setSavedData(data);
-      setSemester1([]); // clear form
-      setSemester2([]);
       setPdf(null);
     } catch (err) {
       console.error(err);
