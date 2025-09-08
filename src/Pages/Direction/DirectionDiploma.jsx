@@ -93,44 +93,56 @@ const handleSubmit = async (e) => {
   }
 };
 
-  // Delete PDF
-  const handleDeletePdf = async () => {
-    try {
-      await axios.delete(`${API_BASE}/directiondiploma/pdf`);
-      const res = await axios.get(`${API_BASE}/directiondiploma`);
-      const data = res.data.direction.diploma[0] || {
-        semester1: [],
-        semester2: [],
-        pdfUrl: "",
-      };
-      setSavedData(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+// Delete PDF
+const handleDeletePdf = async () => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this PDF?");
+  if (!confirmDelete) return; // stop if user clicked Cancel
 
-  // Delete subtitle from server
-  const handleDeleteSubtitle = async (semester, idx) => {
-    try {
-      await axios.delete(`${API_BASE}/directiondiploma/diploma/subtitle`, {
-        data: { semester, index: idx },
-      });
-      const res = await axios.get(`${API_BASE}/directiondiploma`);
-      const data = res.data.direction.diploma[0] || {
-        semester1: [],
-        semester2: [],
-        pdfUrl: "",
-      };
-      setSavedData(data);
-      // Update local state too
-      if (semester === "semester1")
-        setSemester1(data.semester1.map((item) => item.title));
-      if (semester === "semester2")
-        setSemester2(data.semester2.map((item) => item.title));
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  try {
+    await axios.delete(`${API_BASE}/directiondiploma/pdf`);
+    const res = await axios.get(`${API_BASE}/directiondiploma`);
+    const data = res.data.direction.diploma[0] || {
+      semester1: [],
+      semester2: [],
+      pdfUrl: "",
+    };
+    setSavedData(data);
+    alert("PDF deleted successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Error deleting PDF!");
+  }
+};
+
+// Delete subtitle from server
+const handleDeleteSubtitle = async (semester, idx) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this subtitle?");
+  if (!confirmDelete) return;
+
+  try {
+    await axios.delete(`${API_BASE}/directiondiploma/diploma/subtitle`, {
+      data: { semester, index: idx },
+    });
+    const res = await axios.get(`${API_BASE}/directiondiploma`);
+    const data = res.data.direction.diploma[0] || {
+      semester1: [],
+      semester2: [],
+      pdfUrl: "",
+    };
+    setSavedData(data);
+
+    // Update local state too
+    if (semester === "semester1")
+      setSemester1(data.semester1.map((item) => item.title));
+    if (semester === "semester2")
+      setSemester2(data.semester2.map((item) => item.title));
+
+    alert("Subtitle deleted successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Error deleting subtitle!");
+  }
+};
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg text-black">
