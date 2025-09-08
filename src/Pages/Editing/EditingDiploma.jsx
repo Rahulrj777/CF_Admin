@@ -15,14 +15,18 @@ const EditingDiploma = () => {
   const [editMode, setEditMode] = useState(false)
   const [editingIndex, setEditingIndex] = useState(-1)
   const [showAddForm, setShowAddForm] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const fetchDiplomaData = async () => {
     try {
+      setLoading(true)
       const res = await axios.get(`${API_BASE}/editingdiploma`)
       setSavedMonths(res.data.diploma || [])
       setSavedPdf(res.data.diplomaPdf?.url || "")
     } catch (err) {
       console.error("Error fetching diploma data:", err)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -211,6 +215,17 @@ const EditingDiploma = () => {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-lg font-semibold text-slate-600">Loading diploma data...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -228,7 +243,7 @@ const EditingDiploma = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
             <div className="bg-gradient-to-r from-orange-500 to-red-500 p-6">
               <div className="flex items-center gap-3">
@@ -374,24 +389,15 @@ const EditingDiploma = () => {
             <div className="p-6">
               {savedPdf ? (
                 <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-100 rounded-xl">
-                          <FileText className="h-5 w-5 text-green-600" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-green-800">PDF Document Uploaded</p>
-                          <p className="text-sm text-green-600">Ready to view or manage</p>
-                        </div>
+                  <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-green-100 rounded-xl">
+                        <FileText className="h-6 w-6 text-green-600" />
                       </div>
-                      <button
-                        onClick={deleteSavedPdf}
-                        className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
-                      </button>
+                      <div>
+                        <p className="font-bold text-green-800 text-lg">PDF Document Available</p>
+                        <p className="text-sm text-green-600">Your diploma PDF is ready to view</p>
+                      </div>
                     </div>
                     <div className="flex gap-3">
                       <a
@@ -403,6 +409,13 @@ const EditingDiploma = () => {
                         <FileText className="h-4 w-4" />
                         View PDF
                       </a>
+                      <button
+                        onClick={deleteSavedPdf}
+                        className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete PDF
+                      </button>
                     </div>
                   </div>
                 </div>
