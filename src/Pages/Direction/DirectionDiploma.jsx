@@ -51,10 +51,10 @@ const DirectionDiplomaAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send objects with title
+      // Send plain strings, let backend wrap into {title:…}
       await axios.post(`${API_BASE}/directiondiploma/text`, {
-        semester1: semester1.map((t) => ({ title: t })),
-        semester2: semester2.map((t) => ({ title: t })),
+        semester1,
+        semester2,
       });
 
       if (pdf) {
@@ -65,6 +65,7 @@ const DirectionDiplomaAdmin = () => {
         });
       }
 
+      // Refresh data
       const res = await axios.get(`${API_BASE}/directiondiploma`);
       const data = res.data.direction.diploma[0] || {
         semester1: [],
@@ -73,7 +74,7 @@ const DirectionDiplomaAdmin = () => {
       };
       setSavedData(data);
 
-      // ✅ No input boxes after save
+      // ✅ reset local inputs
       setSemester1([]);
       setSemester2([]);
       setPdf(null);
