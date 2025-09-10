@@ -147,7 +147,7 @@ const HomeFilmography = () => {
           {filmographys.map((filmography) => (
             <div
               key={filmography._id}
-              className="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col"
+              className=" relative border rounded-lg overflow-hidden shadow-md bg-white flex flex-col group"
             >
               <img
                 src={filmography.imageUrl}
@@ -157,9 +157,9 @@ const HomeFilmography = () => {
               <div className="p-4 flex flex-col flex-grow">
                 <button
                   onClick={() => handleDelete(filmography._id)}
-                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="absolute mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
-                  🗑 Delete
+                  🗑
                 </button>
               </div>
             </div>

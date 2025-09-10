@@ -121,7 +121,7 @@ const HomeMentor = () => {
           {mentors.map((mentor) => (
             <div
               key={mentor._id}
-              className="relative border rounded-lg overflow-hidden shadow-md bg-white"
+              className="relative border rounded-lg overflow-hidden shadow-md bg-white group"
             >
               <img
                 src={mentor.imageUrl}
@@ -130,7 +130,7 @@ const HomeMentor = () => {
               />
               <button
                 onClick={() => handleDelete(mentor._id)}
-                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
               </button>
