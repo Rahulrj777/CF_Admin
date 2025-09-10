@@ -137,22 +137,24 @@ export default function HomeExclusive() {
           {items.map((item) => (
             <div
               key={item._id}
-              className="relative border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-colg roup"
+              className="relative border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-col group"
             >
               <img
                 src={item.imageUrl}
                 alt="Exclusive"
-                className="h-40 w-40 object-contain"
+                className="h-40 w-40 object-cover mx-auto mt-4"
               />
+
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-center font-medium mb-3">{item.titleLine}</p>
-                <button
-                  onClick={() => handleDelete(banner._id)}
-                  className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-2 py-1 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  🗑
-                </button>
               </div>
+
+              <button
+                onClick={() => handleDelete(item._id)}
+                className="absolute top-2 right-2 bg-red-500 text-white px-3 py-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                🗑 Delete
+              </button>
             </div>
           ))}
         </div>
