@@ -15,7 +15,6 @@ const HomeFilmography = () => {
       try {
         const res = await fetch(`${API_BASE}/homefilmography`);
         const data = await res.json();
-        console.log("Fetched filmographys:", data);
         setFilmographys(data);
       } catch (err) {
         console.error("Error fetching filmographys:", err);
@@ -26,53 +25,58 @@ const HomeFilmography = () => {
   }, [API_BASE]);
 
   // ✅ Upload new filmography
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!image) return;
+const handleUpload = async (e) => {
+  e.preventDefault();
+  if (!image) return;
 
-    setUploading(true);
+  setUploading(true);
 
-    const formData = new FormData();
-    formData.append("image", image);
+  const formData = new FormData();
+  formData.append("image", image);
 
-    try {
-      const res = await fetch(`${API_BASE}/homefilmography/upload`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
+  try {
+    const res = await fetch(`${API_BASE}/homefilmography/upload`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
 
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setFilmographys((prev) => [...prev, data]);
-      }
-    } catch (err) {
-      console.error("Frontend upload error:", err);
-      setError(err.message);
-    } finally {
-      setUploading(false);
+    if (data.error) {
+      setError(data.error);
+    } else {
+      setFilmographys((prev) => [...prev, data]);
+      alert("✅ Filmography uploaded successfully!");
     }
-  };
+  } catch (err) {
+    console.error("Frontend upload error:", err);
+    setError(err.message);
+  } finally {
+    setUploading(false);
+  }
+};
 
-  // ✅ Delete filmography (from backend + state)
-  const handleDelete = async (id) => {
-    try {
-      const res = await fetch(`${API_BASE}/homefilmography/${id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
+const handleDelete = async (id) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this filmography?");
+  
+  if (!confirmed) return;
 
-      if (data.success) {
-        setFilmographys((prev) => prev.filter((b) => b._id !== id));
-      } else {
-        setError(data.error || "Failed to delete filmography");
-      }
-    } catch (err) {
-      console.error("Delete error:", err);
-      setError("Error deleting filmography");
+  try {
+    const res = await fetch(`${API_BASE}/homefilmography/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setFilmographys((prev) => prev.filter((b) => b._id !== id));
+      alert("🗑️ Filmography deleted successfully.");
+    } else {
+      setError(data.error || "Failed to delete filmography");
     }
-  };
+  } catch (err) {
+    console.error("Delete error:", err);
+    setError("Error deleting filmography");
+  }
+};
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
