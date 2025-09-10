@@ -133,7 +133,7 @@ const StageUnrealBanner = () => {
               <video
                 src={banner.videoUrl}
                 controls
-                className="w-full h-64 object-cover"
+                className="w-full h-64 object-contain"
               />
               <button
                 onClick={() => handleDelete(banner._id)}

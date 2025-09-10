@@ -179,7 +179,7 @@ export default function VirtualProductionDiploma() {
               <img
                 src={URL.createObjectURL(image)}
                 alt="Preview"
-                className="mx-auto w-48 h-32 object-cover rounded-md shadow"
+                className="mx-auto w-48 h-32 object-contain rounded-md shadow"
               />
             ) : (
               <span className="text-indigo-400">
@@ -218,7 +218,7 @@ export default function VirtualProductionDiploma() {
               <img
                 src={c.imageUrl}
                 alt={c.course}
-                className="h-40 w-full object-cover"
+                className="h-40 w-full object-contain"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <h4 className="font-bold text-indigo-600">{c.course}</h4>

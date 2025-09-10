@@ -107,7 +107,7 @@ const StageUnrealFilmography = () => {
               <img
                 src={item.imageUrl}
                 alt=""
-                className="w-full h-60 object-cover"
+                className="w-full h-60 object-contain"
               />
               <button
                 onClick={() => handleDelete(item.publicId)}

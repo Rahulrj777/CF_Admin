@@ -210,7 +210,7 @@ const VfxDiplomaAdmin = () => {
                         <img
                           src={img.imageUrl || "/placeholder.svg"}
                           alt="VFX Image"
-                          className="w-full h-24 object-cover rounded-xl border-2 border-gray-200 group-hover:border-orange-400 transition-colors"
+                          className="w-full h-24 object-contain rounded-xl border-2 border-gray-200 group-hover:border-orange-400 transition-colors"
                         />
                         <button
                           onClick={() => deleteImage(img.publicId)}

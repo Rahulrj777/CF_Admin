@@ -93,7 +93,7 @@ export default function DiHighlights() {
                   <img
                     src={URL.createObjectURL(image)}
                     alt="Preview"
-                    className="mx-auto w-48 h-32 object-cover rounded-lg shadow"
+                    className="mx-auto w-48 h-32 object-contain rounded-lg shadow"
                   />
                 ) : (
                   <span className="text-gray-500">
@@ -147,7 +147,7 @@ export default function DiHighlights() {
               <img
                 src={item.imageUrl}
                 alt="Exclusive"
-                className="h-40 w-40 object-cover"
+                className="h-40 w-40 object-contain"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-center font-medium mb-3">{item.titleLine}</p>
