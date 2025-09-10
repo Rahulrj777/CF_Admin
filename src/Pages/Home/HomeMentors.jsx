@@ -117,7 +117,7 @@ const HomeMentor = () => {
           No mentors uploaded yet.
         </p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {mentors.map((mentor) => (
             <div
               key={mentor._id}
@@ -126,7 +126,7 @@ const HomeMentor = () => {
               <img
                 src={mentor.imageUrl}
                 alt="mentor"
-                className="w-full h-110 lg:h-70 object-cover"
+                className="w-full h-60 lg:h-70 object-contain lg:object-cover "
               />
               <button
                 onClick={() => handleDelete(mentor._id)}
