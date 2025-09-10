@@ -204,7 +204,7 @@ const ActingDiploma = () => {
                   />
                   <button
                     onClick={() => removeChild(idx)}
-                    className="px-4 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors"
+                    className="px-4 py-3 bg-red-500 cursor-pointer text-white rounded-xl hover:bg-red-600 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -214,7 +214,7 @@ const ActingDiploma = () => {
               <div className="flex gap-3">
                 <button
                   onClick={addChild}
-                  className="flex items-center gap-2 px-4 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+                  className="flex items-center cursor-pointer gap-2 px-4 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Add Content
@@ -222,7 +222,7 @@ const ActingDiploma = () => {
                 <button
                   onClick={handleSave}
                   disabled={isSavingContent}
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-3 cursor-pointer bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50"
                 >
                   {isSavingContent ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -260,7 +260,7 @@ const ActingDiploma = () => {
                   />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+                    className="px-6 py-3 bg-blue-500 text-white cursor-pointer rounded-xl hover:bg-blue-600 transition-colors"
                   >
                     Choose PDF File
                   </button>
@@ -272,7 +272,7 @@ const ActingDiploma = () => {
                     <button
                       onClick={savePdf}
                       disabled={isSavingPdf}
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all disabled:opacity-50"
+                      className="flex items-center gap-2 px-6 cursor-pointer py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all disabled:opacity-50"
                     >
                       {isSavingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                       {isSavingPdf ? "Uploading..." : "Upload PDF"}
@@ -297,7 +297,7 @@ const ActingDiploma = () => {
                   <button
                     onClick={deletePdf}
                     disabled={isDeletingPdf}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 cursor-pointer bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50"
                   >
                     {isDeletingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                     {isDeletingPdf ? "Deleting..." : "Delete"}
@@ -339,14 +339,14 @@ const ActingDiploma = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(c)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-yellow-400 text-yellow-900 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-medium"
+                      className="flex-1 flex items-center cursor-pointer justify-center gap-2 px-3 py-2 bg-yellow-400 text-yellow-900 rounded-lg hover:bg-yellow-500 transition-colors text-sm font-medium"
                     >
                       <Edit className="w-4 h-4" />
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(c.id)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+                      className="flex-1 flex items-center cursor-pointer justify-center gap-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete
