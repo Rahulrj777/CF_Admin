@@ -133,7 +133,7 @@ const HomeBanner = () => {
               <img
                 src={banner.imageUrl}
                 alt="banner"
-                className="h-45 w-full object-fill"
+                className="h-42 w-full object-fill"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <button
