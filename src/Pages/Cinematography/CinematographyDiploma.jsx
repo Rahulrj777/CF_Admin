@@ -389,7 +389,7 @@ const CinematographyDiplomaAdmin = () => {
                         <span className="font-medium text-emerald-800">{item.title}</span>
                         <button
                           onClick={() => handleDeleteSubtitle("semester1", i)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
+                          className="opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -422,7 +422,7 @@ const CinematographyDiplomaAdmin = () => {
                         <span className="font-medium text-violet-800">{item.title}</span>
                         <button
                           onClick={() => handleDeleteSubtitle("semester2", i)}
-                          className="opacity-0 lg:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
+                          className="opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

@@ -67,9 +67,7 @@ const CinematographyMentor = () => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      const url = `${API_BASE}/cinematographymentor/${encodeURIComponent(
-        publicId
-      )}`;
+      const url = `${API_BASE}/cinematographymentor/${encodeURIComponent(publicId)}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
@@ -138,7 +136,7 @@ const CinematographyMentor = () => {
           {mentors.map((mentor) => (
             <div
               key={mentor.publicId}
-              className="border rounded-xl p-6 text-center shadow hover:shadow-md transition"
+              className="relative border rounded-xl p-6 text-center shadow hover:shadow-md transition group"
             >
               <img
                 src={mentor.imageUrl}
@@ -146,9 +144,9 @@ const CinematographyMentor = () => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-              <button
-                onClick={() => handleDelete(item.publicId)}
-                className="absolute cursor-pointer top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+               <button
+                onClick={() => handleDelete(item._id)}
+                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
               </button>

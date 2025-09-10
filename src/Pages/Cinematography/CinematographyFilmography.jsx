@@ -98,16 +98,16 @@ const CinematographyFilmography = () => {
           No filmography uploaded yet.
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {items.map((item) => (
             <div
               key={item.publicId}
-              className="relative group border rounded-lg overflow-hidden shadow-md bg-white"
+              className="relative border rounded-lg overflow-hidden shadow-md bg-white group"
             >
               <img
                 src={item.imageUrl}
                 alt=""
-                className="w-full h-100 lg:h-70 object-cover"
+                className="w-full h-50 lg:h-70 object-cover"
               />
               <button
                 onClick={() => handleDelete(item.publicId)}
