@@ -197,7 +197,7 @@ const DiDiploma = () => {
                   />
                   <button
                     onClick={() => removeChild(idx)}
-                    className="p-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors duration-200"
+                    className="p-3 bg-red-500 cursor-pointer hover:bg-red-600 text-white rounded-xl transition-colors duration-200"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
@@ -207,7 +207,7 @@ const DiDiploma = () => {
               <div className="flex gap-3">
                 <button
                   onClick={addChild}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
+                  className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200"
                 >
                   <Plus className="w-4 h-4" />
                   Add Content
@@ -215,7 +215,7 @@ const DiDiploma = () => {
                 <button
                   onClick={saveContent}
                   disabled={isSavingContent}
-                  className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2 cursor-pointer bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
                 >
                   {isSavingContent ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
                   {editingId ? "Update Content" : "Save Content"}
@@ -251,7 +251,7 @@ const DiDiploma = () => {
                     </a>
                     <button
                       onClick={deletePdf}
-                      className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors duration-200"
+                      className="flex items-center gap-2 px-4 py-2 cursor-pointer bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors duration-200"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete PDF
@@ -267,7 +267,7 @@ const DiDiploma = () => {
                     <button
                       onClick={savePdf}
                       disabled={isSavingPdf}
-                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
+                      className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-xl transition-all duration-200 disabled:opacity-50"
                     >
                       {isSavingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                       Upload PDF
@@ -317,14 +317,14 @@ const DiDiploma = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(content)}
-                      className="flex items-center gap-1 px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm transition-colors duration-200"
+                      className="flex items-center gap-1 cursor-pointer px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm transition-colors duration-200"
                     >
                       <Edit3 className="w-3 h-3" />
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(content.id)}
-                      className="flex items-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors duration-200"
+                      className="flex items-center gap-1 cursor-pointer px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors duration-200"
                     >
                       <Trash2 className="w-3 h-3" />
                       Delete

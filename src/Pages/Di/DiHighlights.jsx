@@ -85,7 +85,7 @@ export default function DiHighlights() {
                 type="file"
                 onChange={(e) => setImage(e.target.files[0])}
                 accept="image/*"
-                className="hidden"
+                className="hidden cursor-pointer"
                 id="file-upload"
               />
               <label htmlFor="file-upload" className="cursor-pointer text-sm">
@@ -121,7 +121,7 @@ export default function DiHighlights() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 rounded-md text-white font-semibold transition ${
+          className={`w-full py-3 rounded-md cursor-pointer text-white font-semibold transition ${
             loading
               ? "bg-green-400 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700"
@@ -138,26 +138,26 @@ export default function DiHighlights() {
       {items.length === 0 ? (
         <p className="text-gray-500">No highlights uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {items.map((item) => (
             <div
               key={item._id}
-              className="border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-col"
+              className="group relative border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-col group"
             >
               <img
                 src={item.imageUrl}
                 alt="Exclusive"
-                className="h-40 w-40 object-contain"
+                className="h-40 w-40 object-cover mx-auto mt-4"
               />
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-center font-medium mb-3">{item.titleLine}</p>
-                <button
-                  onClick={() => handleDelete(item._id)}
-                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  🗑 Delete
-                </button>
               </div>
+              <button
+                onClick={() => handleDelete(item._id)}
+                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                🗑
+              </button>
             </div>
           ))}
         </div>
