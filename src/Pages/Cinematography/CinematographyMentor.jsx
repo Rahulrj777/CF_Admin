@@ -67,7 +67,9 @@ const CinematographyMentor = () => {
   // Delete mentor
   const handleDelete = async (publicId) => {
     try {
-      const url = `${API_BASE}/cinematographymentor/${encodeURIComponent(publicId)}`;
+      const url = `${API_BASE}/cinematographymentor/${encodeURIComponent(
+        publicId
+      )}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
@@ -113,7 +115,7 @@ const CinematographyMentor = () => {
 
         <button
           onClick={handleUpload}
-          className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="w-full md:w-auto px-6 py-3 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           🚀 Upload Mentor
         </button>
@@ -145,10 +147,10 @@ const CinematographyMentor = () => {
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
               <button
-                onClick={() => handleDelete(mentor.publicId)}
-                className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition"
+                onClick={() => handleDelete(item.publicId)}
+                className="absolute cursor-pointer top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
-                🗑 Delete
+                🗑
               </button>
             </div>
           ))}

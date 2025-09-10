@@ -82,7 +82,7 @@ const CinematographyFilmography = () => {
           />
           <button
             type="submit"
-            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-semibold transition"
+            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-semibold cursor-pointer transition"
           >
             🚀 Upload
           </button>
@@ -102,7 +102,7 @@ const CinematographyFilmography = () => {
           {items.map((item) => (
             <div
               key={item.publicId}
-              className="relative border rounded-lg overflow-hidden shadow-md bg-white"
+              className="relative group border rounded-lg overflow-hidden shadow-md bg-white"
             >
               <img
                 src={item.imageUrl}
@@ -111,7 +111,7 @@ const CinematographyFilmography = () => {
               />
               <button
                 onClick={() => handleDelete(item.publicId)}
-                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                className="absolute cursor-pointer top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
               </button>
