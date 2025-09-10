@@ -25,46 +25,64 @@ const CinematographyBanner = () => {
   }, [API_BASE]);
 
   // Upload new banner
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!image) return;
+const handleUpload = async (e) => {
+  e.preventDefault();
+  if (!image) {
+    alert("⚠️ Please select an image to upload.");
+    return;
+  }
 
-    setUploading(true);
+  setUploading(true);
 
-    const formData = new FormData();
-    formData.append("image", image);
+  const formData = new FormData();
+  formData.append("image", image);
 
-    try {
-      const res = await fetch(`${API_BASE}/cinematographybanner/upload`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
+  try {
+    const res = await fetch(`${API_BASE}/cinematographybanner/upload`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
 
-      if (data.error) setError(data.error);
-      else setBanners((prev) => [...prev, data]);
-    } catch (err) {
-      console.error("Upload error:", err);
-      setError(err.message);
-    } finally {
-      setUploading(false);
+    if (data.error) {
+      setError(data.error);
+      alert(`❌ Upload failed: ${data.error}`);
+    } else {
+      setBanners((prev) => [...prev, data]);
+      alert("✅ Banner uploaded successfully!");
     }
-  };
+  } catch (err) {
+    console.error("Upload error:", err);
+    setError(err.message);
+    alert("❌ Upload failed. Please try again.");
+  } finally {
+    setUploading(false);
+  }
+};
 
-  // Delete banner
-  const handleDelete = async (id) => {
-    try {
-      const res = await fetch(`${API_BASE}/cinematographybanner/${id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (data.success) setBanners((prev) => prev.filter((b) => b._id !== id));
-      else setError(data.error || "Failed to delete banner");
-    } catch (err) {
-      console.error("Delete error:", err);
-      setError("Error deleting banner");
+const handleDelete = async (id) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this banner?");
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/cinematographybanner/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setBanners((prev) => prev.filter((b) => b._id !== id));
+      alert("🗑️ Banner deleted successfully");
+    } else {
+      setError(data.error || "Failed to delete banner");
+      alert(`❌ Delete failed: ${data.error || "Unknown error"}`);
     }
-  };
+  } catch (err) {
+    console.error("Delete error:", err);
+    setError("Error deleting banner");
+    alert("❌ Delete failed. Please try again.");
+  }
+};
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">

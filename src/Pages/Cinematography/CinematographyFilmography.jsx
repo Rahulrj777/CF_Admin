@@ -21,44 +21,53 @@ const CinematographyFilmography = () => {
       });
   }, []);
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!file) return;
+const handleUpload = async (e) => {
+  e.preventDefault();
+  
+  if (!file) {
+    alert("⚠️ Please select an image to upload.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("image", file);
+  const formData = new FormData();
+  formData.append("image", file);
 
-    try {
-      const res = await axios.post(
-        `${API_BASE}/cinematographyfilmography/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      setItems([...items, res.data.item]);
-      setFile(null);
-    } catch (err) {
-      console.error("Upload failed", err);
-    }
-  };
+  try {
+    const res = await axios.post(
+      `${API_BASE}/cinematographyfilmography/upload`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
 
-  // Delete mentor
-  const handleDelete = async (publicId) => {
-    try {
-      const url = `${API_BASE}/cinematographyfilmography/${encodeURIComponent(
-        publicId
-      )}`;
-      console.log("Deleting mentor at:", url);
+    setItems([...items, res.data.item]);
+    setFile(null);
+    alert("✅ Item uploaded successfully!");
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert("❌ Upload failed. Please try again.");
+  }
+};
 
-      await axios.delete(url);
-      setItems((prev) => prev.filter((item) => item.publicId !== publicId));
-      setMessage("🗑️ Mentor deleted successfully");
-    } catch (err) {
-      console.error("Delete failed:", err.response?.data || err.message);
-      setMessage("❌ Delete failed. Try again.");
-    }
-  };
+const handleDelete = async (publicId) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this item?");
+  if (!confirmed) return;
+
+  try {
+    const url = `${API_BASE}/cinematographyfilmography/${encodeURIComponent(publicId)}`;
+    console.log("Deleting item at:", url);
+
+    await axios.delete(url);
+    setItems((prev) => prev.filter((item) => item.publicId !== publicId));
+    setMessage("🗑️ Item deleted successfully");
+    alert("🗑️ Item deleted successfully");
+  } catch (err) {
+    console.error("Delete failed:", err.response?.data || err.message);
+    setMessage("❌ Delete failed. Try again.");
+    alert("❌ Delete failed. Please try again.");
+  }
+};
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">

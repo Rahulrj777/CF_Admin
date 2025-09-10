@@ -37,112 +37,81 @@ const DiDiploma = () => {
     }
   }
 
-  const handleChildChange = (index, value) => {
-    const updated = [...children]
-    updated[index] = value
-    setChildren(updated)
+// Helper for dynamic alerts
+const showAlert = (action, type = "content") => {
+  const messages = {
+    save: `${type} saved successfully!`,
+    update: `${type} updated successfully!`,
+    delete: `${type} deleted successfully!`,
+    error: `Error ${action} ${type}. Please try again.`,
+  };
+  alert(messages[action] || "Action completed!");
+};
+
+// Example usage inside saveContent
+const saveContent = async () => {
+  if (!title.trim()) {
+    alert("Please enter a title");
+    return;
   }
-
-  const addChild = () => setChildren([...children, ""])
-  const removeChild = (index) => {
-    const updated = children.filter((_, i) => i !== index)
-    setChildren(updated.length ? updated : [""])
+  if (children.some((c) => !c.trim())) {
+    alert("Please fill in all content fields");
+    return;
   }
+  if (!window.confirm("Are you sure you want to save this content?")) return;
 
-  const saveContent = async () => {
-    if (!title.trim()) {
-      alert("Please enter a title")
-      return
-    }
-    if (children.some((c) => !c.trim())) {
-      alert("Please fill in all content fields")
-      return
-    }
-
-    if (!window.confirm("Are you sure you want to save this content?")) return
-
-    try {
-      setIsSavingContent(true)
-      if (editingId) {
-        const res = await axios.put(`${API}/${editingId}`, { title, children })
-        setContents((prev) => prev.map((c) => (c.id === editingId ? { ...res.data, id: res.data._id } : c)))
-        alert("Content updated successfully!")
-      } else {
-        const res = await axios.post(API, { title, children })
-        setContents((prev) => [...prev, { ...res.data, id: res.data._id }])
-        alert("Content saved successfully!")
-      }
-
-      setTitle("")
-      setChildren([""])
-      setEditingId(null)
-    } catch (err) {
-      console.error("Error saving content:", err)
-      alert("Error saving content. Please try again.")
-    } finally {
-      setIsSavingContent(false)
-    }
-  }
-
-  const savePdf = async () => {
-    if (!pdf) {
-      alert("Please select a PDF file")
-      return
+  try {
+    setIsSavingContent(true);
+    if (editingId) {
+      const res = await axios.put(`${API}/${editingId}`, { title, children });
+      setContents((prev) =>
+        prev.map((c) => (c.id === editingId ? { ...res.data, id: res.data._id } : c))
+      );
+      showAlert("update"); // dynamically show update message
+    } else {
+      const res = await axios.post(API, { title, children });
+      setContents((prev) => [...prev, { ...res.data, id: res.data._id }]);
+      showAlert("save"); // dynamically show save message
     }
 
-    if (!window.confirm("Are you sure you want to upload this PDF?")) return
-
-    const formData = new FormData()
-    formData.append("pdf", pdf)
-
-    try {
-      setIsSavingPdf(true)
-      await axios.post(`${API}/pdf`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-
-      setSavedPdf(`${API}/pdf/view`)
-      setPdf(null)
-      alert("PDF uploaded successfully!")
-    } catch (err) {
-      console.error("Error uploading PDF:", err)
-      alert("Error uploading PDF. Please try again.")
-    } finally {
-      setIsSavingPdf(false)
-    }
+    setTitle("");
+    setChildren([""]);
+    setEditingId(null);
+  } catch (err) {
+    console.error("Error saving content:", err);
+    showAlert("error");
+  } finally {
+    setIsSavingContent(false);
   }
+};
 
-  const deletePdf = async () => {
-    if (!window.confirm("Are you sure you want to delete this PDF? This action cannot be undone.")) return
+// Example usage inside deletePdf
+const deletePdf = async () => {
+  if (!window.confirm("Are you sure you want to delete this PDF? This action cannot be undone.")) return;
 
-    try {
-      await axios.delete(`${API}/pdf`)
-      setSavedPdf("")
-      alert("PDF deleted successfully!")
-    } catch (err) {
-      console.error("Error deleting PDF:", err)
-      alert("Error deleting PDF. Please try again.")
-    }
+  try {
+    await axios.delete(`${API}/pdf`);
+    setSavedPdf("");
+    showAlert("delete", "PDF"); // dynamic delete message for PDF
+  } catch (err) {
+    console.error("Error deleting PDF:", err);
+    showAlert("error", "PDF");
   }
+};
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this entry? This action cannot be undone.")) return
+// Similarly update handleDelete
+const handleDelete = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this entry? This action cannot be undone.")) return;
 
-    try {
-      await axios.delete(`${API}/${id}`)
-      setContents((prev) => prev.filter((c) => c.id !== id))
-      alert("Entry deleted successfully!")
-    } catch (err) {
-      console.error("Error deleting entry:", err)
-      alert("Error deleting entry. Please try again.")
-    }
+  try {
+    await axios.delete(`${API}/${id}`);
+    setContents((prev) => prev.filter((c) => c.id !== id));
+    showAlert("delete"); // delete content alert
+  } catch (err) {
+    console.error("Error deleting entry:", err);
+    showAlert("error");
   }
-
-  const handleEdit = (content) => {
-    setTitle(content.title)
-    setChildren(content.children || [""])
-    setEditingId(content.id)
-  }
+};
 
   if (isLoading) {
     return (

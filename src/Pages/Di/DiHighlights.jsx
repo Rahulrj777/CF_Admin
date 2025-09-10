@@ -25,45 +25,50 @@ export default function DiHighlights() {
   }, []);
 
   // Handle new highlight upload
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!image || !titleLine) return alert("⚠️ Image and title required");
+// Upload highlight
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!image || !titleLine) {
+    alert("⚠️ Please provide both an image and a title.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("image", image);
-    formData.append("titleLine", titleLine);
+  const formData = new FormData();
+  formData.append("image", image);
+  formData.append("titleLine", titleLine);
 
-    try {
-      setLoading(true);
-      await axios.post(`${API_BASE}/dihighlights/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setImage(null);
-      setTitleLine("");
-      fetchItems();
-      alert("✅ Highlight uploaded!");
-    } catch (err) {
-      console.error("Upload failed:", err);
-      alert("❌ Upload failed. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    const res = await axios.post(`${API_BASE}/dihighlights/upload`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-  // Handle deletion
-  const handleDelete = async (_id) => {
-    if (!window.confirm("Are you sure you want to delete this highlight?"))
-      return;
+    setImage(null);
+    setTitleLine("");
+    fetchItems(); // refresh the list
+    alert("✅ Highlight uploaded successfully!");
+  } catch (err) {
+    console.error("Upload failed:", err.response?.data || err.message);
+    alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      await axios.delete(`${API_BASE}/dihighlights/${_id}`);
-      fetchItems();
-      alert("🗑️ Deleted successfully");
-    } catch (err) {
-      console.error("Delete failed:", err);
-      alert("❌ Delete failed. Try again.");
-    }
-  };
+// Delete highlight with confirmation
+const handleDelete = async (_id) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this highlight?");
+  if (!confirmed) return;
+
+  try {
+    await axios.delete(`${API_BASE}/dihighlights/${_id}`);
+    fetchItems(); // refresh the list
+    alert("🗑️ Highlight deleted successfully!");
+  } catch (err) {
+    console.error("Delete failed:", err.response?.data || err.message);
+    alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
+  }
+};
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">

@@ -34,50 +34,57 @@ const ActingMentor = () => {
   };
 
   // Upload image + paragraph
-  const handleUpload = async () => {
-    if (!file || !description.trim()) {
-      setMessage("⚠️ Please provide both an image and a description.");
-      return;
-    }
+const handleUpload = async () => {
+  if (!file || !description.trim()) {
+    setMessage("⚠️ Please provide both an image and a description.");
+    alert("⚠️ Please provide both an image and a description.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("image", file);
-    formData.append("description", description);
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("description", description);
 
-    try {
-      const res = await axios.post(
-        `${API_BASE}/actingmentor/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+  try {
+    const res = await axios.post(
+      `${API_BASE}/actingmentor/upload`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
 
-      fetchMentors();
-      setFile(null);
-      setPreview(null);
-      setDescription("");
-      setMessage("✅ Mentor uploaded successfully!");
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      setMessage("❌ Upload failed. Try again.");
-    }
-  };
+    fetchMentors();
+    setFile(null);
+    setPreview(null);
+    setDescription("");
+    setMessage("✅ Mentor uploaded successfully!");
+    alert("✅ Mentor uploaded successfully!");
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    setMessage("❌ Upload failed. Try again.");
+    alert("❌ Upload failed. Try again.");
+  }
+};
 
-  // Delete mentor
-  const handleDelete = async (publicId) => {
-    try {
-      const url = `${API_BASE}/actingmentor/${encodeURIComponent(publicId)}`;
-      console.log("Deleting mentor at:", url);
+const handleDelete = async (publicId) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this mentor?");
+  if (!confirmed) return;
 
-      await axios.delete(url);
-      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
-      setMessage("🗑️ Mentor deleted successfully");
-    } catch (err) {
-      console.error("Delete failed:", err.response?.data || err.message);
-      setMessage("❌ Delete failed. Try again.");
-    }
-  };
+  try {
+    const url = `${API_BASE}/actingmentor/${encodeURIComponent(publicId)}`;
+    console.log("Deleting mentor at:", url);
+
+    await axios.delete(url);
+    setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+    setMessage("🗑️ Mentor deleted successfully");
+    alert("🗑️ Mentor deleted successfully");
+  } catch (err) {
+    console.error("Delete failed:", err.response?.data || err.message);
+    setMessage("❌ Delete failed. Try again.");
+    alert("❌ Delete failed. Try again.");
+  }
+};
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
