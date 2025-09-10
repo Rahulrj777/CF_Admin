@@ -101,7 +101,7 @@ const DiMentor = () => {
             <img
               src={preview}
               alt="Preview"
-              className="w-40 h-40 object-contain  mx-auto rounded-lg shadow-md border"
+              className="w-40 h-40 object-contain object-top mx-auto rounded-lg shadow-md border"
             />
           </div>
         )}
@@ -136,7 +136,7 @@ const DiMentor = () => {
               <img
                 src={mentor.imageUrl}
                 alt="Mentor"
-                className="w-32 h-32 object-contain  mx-auto rounded-lg border shadow-sm"
+                className="w-32 h-32 object-contain object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
               <button

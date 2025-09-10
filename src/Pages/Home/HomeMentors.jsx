@@ -109,7 +109,7 @@ const HomeMentor = () => {
                   <img
                     src={URL.createObjectURL(image)}
                     alt="Preview"
-                    className="mx-auto w-48 h-48 object-contain  rounded-lg shadow"
+                    className="mx-auto w-48 h-48 object-contain object-top rounded-lg shadow"
                   />
                 ) : (
                   <span className="text-gray-500">

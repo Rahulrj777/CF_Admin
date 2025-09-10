@@ -105,7 +105,7 @@ const CfaFilmography = () => {
               <img
                 src={item.imageUrl}
                 alt=""
-                className="w-full h-60 object-contain"
+                className="w-full h-60 object-cover"
               />
               <button
                 onClick={() => handleDelete(item.publicId)}
