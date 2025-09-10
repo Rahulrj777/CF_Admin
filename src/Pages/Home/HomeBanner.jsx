@@ -128,16 +128,16 @@ const HomeBanner = () => {
           {banners.map((banner) => (
             <div
               key={banner._id}
-              className=" relative border rounded-lg overflow-hidden shadow-md bg-white flex flex-col"
+              className="relative border rounded-lg overflow-hidden shadow-md bg-white flex flex-col group"
             >
               <img
                 src={banner.imageUrl}
                 alt="banner"
                 className="h-42 w-full object-fill"
               />
-               <button
-                onClick={() => handleDelete(mentor._id)}
-                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-0 hover:opacity-100"
+              <button
+                onClick={() => handleDelete(banner._id)}
+                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 🗑
               </button>
