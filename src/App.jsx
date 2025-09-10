@@ -462,7 +462,7 @@ function App() {
         </aside>
 
         <main className="flex-1 lg:ml-0 overflow-y-auto h-screen">
-          <div className="sm:fixed top-0 left-0 right-0 bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between z-50">
+          <div className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between z-50 lg:hidden">
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
               className="p-2 rounded-md hover:bg-gray-100"
