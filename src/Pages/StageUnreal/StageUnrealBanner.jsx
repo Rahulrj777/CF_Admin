@@ -105,7 +105,7 @@ const StageUnrealBanner = () => {
           <button
             type="submit"
             disabled={!video || uploading}
-            className={`px-6 py-3 rounded-md text-white font-semibold transition
+            className={`px-6 py-3 rounded-md text-white cursor-pointer font-semibold transition
         ${
           uploading
             ? "bg-blue-400 cursor-not-allowed"
@@ -139,7 +139,7 @@ const StageUnrealBanner = () => {
                 onClick={() => handleDelete(banner._id)}
                 className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
               >
-                🗑 Delete
+                🗑
               </button>
             </div>
           ))}
