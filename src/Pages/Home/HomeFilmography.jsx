@@ -157,7 +157,7 @@ const HomeFilmography = () => {
               <div className="p-4 flex flex-col flex-grow">
                 <button
                   onClick={() => handleDelete(filmography._id)}
-                  className="absolute top-2 right-2 cursor-pointer mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute top-2 right-2 cursor-pointer mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
                   🗑
                 </button>

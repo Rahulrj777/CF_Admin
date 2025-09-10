@@ -111,7 +111,7 @@ const DirectionFilmography = () => {
               />
               <button
                 onClick={() => handleDelete(item.publicId)}
-                className="absolute cursor-pointer top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute cursor-pointer top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
               </button>

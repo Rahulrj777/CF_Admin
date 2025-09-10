@@ -151,7 +151,7 @@ export default function HomeExclusive() {
 
               <button
                 onClick={() => handleDelete(item._id)}
-                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
               </button>
