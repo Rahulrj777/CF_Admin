@@ -6,7 +6,7 @@ export default function HomeExclusive() {
   const [image, setImage] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+
   const API_BASE =
     import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
 
@@ -33,7 +33,9 @@ export default function HomeExclusive() {
 
     try {
       setLoading(true);
-      await axios.post(`${API_BASE}/exclusive/upload`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+      await axios.post(`${API_BASE}/exclusive/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       setImage(null);
       setTitleLine("");
       fetchItems();
@@ -135,7 +137,7 @@ export default function HomeExclusive() {
           {items.map((item) => (
             <div
               key={item._id}
-              className="border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-col"
+              className="relative border rounded-lg justify-center items-center overflow-hidden shadow-md bg-white flex flex-colg roup"
             >
               <img
                 src={item.imageUrl}
@@ -145,10 +147,10 @@ export default function HomeExclusive() {
               <div className="p-4 flex flex-col flex-grow">
                 <p className="text-center font-medium mb-3">{item.titleLine}</p>
                 <button
-                  onClick={() => handleDelete(item._id)}
-                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  onClick={() => handleDelete(banner._id)}
+                  className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-2 py-1 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  🗑 Delete
+                  🗑
                 </button>
               </div>
             </div>
