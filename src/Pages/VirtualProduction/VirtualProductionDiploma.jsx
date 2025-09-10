@@ -192,7 +192,7 @@ export default function VirtualProductionDiploma() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 rounded-md text-white font-semibold transition ${
+          className={`w-full py-3 rounded-md text-white font-semibold cursor-pointer transition ${
             loading
               ? "bg-indigo-300 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700"
@@ -215,11 +215,15 @@ export default function VirtualProductionDiploma() {
               key={c._id}
               className="border border-indigo-200 rounded-xl shadow-md overflow-hidden flex flex-col bg-white"
             >
-              <img
-                src={c.imageUrl}
-                alt={c.course}
-                className="h-40 w-full object-contain"
-              />
+              {/* Black background wrapper */}
+              <div className="bg-black flex justify-center items-center h-40">
+                <img
+                  src={c.imageUrl}
+                  alt={c.course}
+                  className="h-full object-contain"
+                />
+              </div>
+
               <div className="p-4 flex flex-col flex-grow">
                 <h4 className="font-bold text-indigo-600">{c.course}</h4>
                 <p className="text-red-500 font-semibold">{c.time}</p>
@@ -233,16 +237,17 @@ export default function VirtualProductionDiploma() {
                 >
                   {links.find((l) => l.url === c.link)?.label || c.link}
                 </Link>
+
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => edit(c)}
-                    className="flex items-center gap-1 bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-2 rounded-md font-semibold"
+                    className="flex items-center cursor-pointer gap-1 bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-2 rounded-md font-semibold"
                   >
                     <FaEdit /> Edit
                   </button>
                   <button
                     onClick={() => del(c._id)}
-                    className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md font-semibold"
+                    className="flex items-center cursor-pointer gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md font-semibold"
                   >
                     <FaTrash /> Delete
                   </button>
