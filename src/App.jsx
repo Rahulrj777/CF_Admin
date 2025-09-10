@@ -462,7 +462,7 @@ function App() {
         </aside>
 
         <main className="flex-1 lg:ml-0 overflow-y-auto h-screen">
-          <div className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between z-50">
+          <div className="sm:fixed top-0 left-0 right-0 bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between z-50">
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
               className="p-2 rounded-md hover:bg-gray-100"
@@ -478,7 +478,7 @@ function App() {
             </button>
           </div>
 
-          <div className="p-6 pt-16">
+          <div className="p-6 pt-18">
             <div className="hidden lg:flex justify-end mb-4">
               <button
                 onClick={handleLogout}
@@ -489,7 +489,6 @@ function App() {
             </div>
 
             <Routes>
-              {/* Optional home route - you can point this to a dashboard page if desired */}
               <Route path="/" element={<HomeBanner />} />
 
               {/* Home */}
