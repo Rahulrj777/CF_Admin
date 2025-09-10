@@ -113,7 +113,7 @@ const DirectorMentor = () => {
 
         <button
           onClick={handleUpload}
-          className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="w-full md:w-auto cursor-pointer px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           🚀 Upload Mentor
         </button>
@@ -132,11 +132,11 @@ const DirectorMentor = () => {
       {mentors.length === 0 ? (
         <p className="text-center text-gray-500">No mentors uploaded yet.</p>
       ) : (
-        <div className=" relative grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-8">
           {mentors.map((mentor) => (
             <div
               key={mentor.publicId}
-              className="border rounded-xl p-6 text-center shadow hover:shadow-md transition group"
+              className="relative border rounded-xl p-6 text-center shadow hover:shadow-md transition group"
             >
               <img
                 src={mentor.imageUrl}

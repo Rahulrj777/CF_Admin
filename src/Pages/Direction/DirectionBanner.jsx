@@ -89,7 +89,7 @@ const DirectionBanner = () => {
               type="file"
               accept="image/*"
               onChange={(e) => setImage(e.target.files[0])}
-              className="border-2 border-dashed border-gray-300 p-4 rounded-lg w-full coursor-pointer"
+              className="border-2 border-dashed border-gray-300 p-4 rounded-lg w-full cursor-pointer"
             />
           </div>
 
