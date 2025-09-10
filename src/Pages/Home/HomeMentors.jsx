@@ -126,7 +126,7 @@ const HomeMentor = () => {
               <img
                 src={mentor.imageUrl}
                 alt="mentor"
-                className="w-full h-65 object-cover"
+                className="w-full h-100 lg:h-70 object-cover"
               />
               <button
                 onClick={() => handleDelete(mentor._id)}
