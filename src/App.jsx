@@ -478,7 +478,7 @@ function App() {
             </button>
           </div>
 
-          <div className="p-6 sm:pt-18 pt-0">
+          <div className="p-6 pt-18 lg:pt-0">
             <div className="hidden lg:flex justify-end mb-4">
               <button
                 onClick={handleLogout}
