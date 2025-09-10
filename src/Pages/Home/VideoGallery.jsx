@@ -81,7 +81,7 @@ const VideoGallery = () => {
               accept="video/*"
               ref={fileInputRef}
               onChange={(e) => setFile(e.target.files[0])}
-              className="flex-1 border-2 border-dashed border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+              className="flex-1 border-2 border-dashed cursor-pointer border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
             />
             <input
               type="text"
@@ -93,7 +93,7 @@ const VideoGallery = () => {
             <button
               onClick={handleUpload}
               disabled={!file || !title || uploading}
-              className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200 min-w-[120px]"
+              className="bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200 min-w-[120px]"
             >
               {uploading ? "Uploading..." : "Upload"}
             </button>
@@ -141,7 +141,7 @@ const VideoGallery = () => {
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleDelete(video._id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                          className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
                         >
                           🗑️ Delete
                         </button>

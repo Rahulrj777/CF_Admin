@@ -97,7 +97,7 @@ const HomeMentor = () => {
           <button
             type="submit"
             disabled={!image || uploading}
-            className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-semibold transition ${
+            className={`w-full md:w-auto bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-6 py-3 rounded-md font-semibold transition ${
               uploading
                 ? "bg-blue-400 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700"
@@ -130,7 +130,7 @@ const HomeMentor = () => {
               />
               <button
                 onClick={() => handleDelete(mentor._id)}
-                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
               </button>

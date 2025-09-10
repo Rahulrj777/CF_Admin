@@ -107,7 +107,7 @@ export default function HomeExclusive() {
               value={titleLine}
               onChange={(e) => setTitleLine(e.target.value)}
               placeholder="Enter exclusive title"
-              className="w-full border border-gray-300 p-3 rounded-md focus:ring focus:ring-green-200"
+              className="w-full border border-gray-300 cursor-pointer p-3 rounded-md focus:ring focus:ring-green-200"
               required
             />
           </div>
@@ -116,7 +116,7 @@ export default function HomeExclusive() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 rounded-md text-white font-semibold transition ${
+          className={`w-full py-3 rounded-md cursor-pointer text-white font-semibold transition ${
             loading
               ? "bg-green-400 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700"
@@ -151,7 +151,7 @@ export default function HomeExclusive() {
 
               <button
                 onClick={() => handleDelete(item._id)}
-                className="absolute top-2 right-2 bg-red-500 text-white px-3 py-2 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
               </button>
