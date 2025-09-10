@@ -89,7 +89,7 @@ const DirectionBanner = () => {
               type="file"
               accept="image/*"
               onChange={(e) => setImage(e.target.files[0])}
-              className="border-2 border-dashed border-gray-300 p-4 rounded-lg w-full"
+              className="border-2 border-dashed border-gray-300 p-4 rounded-lg w-full coursor-pointer"
             />
           </div>
 
@@ -97,7 +97,7 @@ const DirectionBanner = () => {
           <button
             type="submit"
             disabled={!image || uploading}
-            className={`w-full md:w-auto px-6 py-3 rounded-md text-white font-semibold transition
+            className={`w-full md:w-auto px-6 py-3 rounded-md cursor-pointer text-white font-semibold transition
         ${
           uploading
             ? "bg-blue-400 cursor-not-allowed"
@@ -120,21 +120,19 @@ const DirectionBanner = () => {
           {banners.map((banner) => (
             <div
               key={banner._id}
-              className="border rounded-lg overflow-hidden shadow-md bg-white flex flex-col"
+              className="relative border rounded-lg overflow-hidden shadow-md bg-white flex flex-col group"
             >
               <img
                 src={banner.imageUrl}
                 alt="banner"
-                className="h-40 w-full object-fill"
+                className="h-42 w-full object-fill"
               />
-              <div className="p-4 flex flex-col flex-grow">
-                <button
-                  onClick={() => handleDelete(banner._id)}
-                  className="mt-auto px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full"
-                >
-                  🗑 Delete
-                </button>
-              </div>
+              <button
+                onClick={() => handleDelete(banner._id)}
+                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-2 py-1 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                🗑
+              </button>
             </div>
           ))}
         </div>

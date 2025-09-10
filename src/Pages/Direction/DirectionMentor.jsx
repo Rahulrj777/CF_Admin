@@ -132,11 +132,11 @@ const DirectorMentor = () => {
       {mentors.length === 0 ? (
         <p className="text-center text-gray-500">No mentors uploaded yet.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className=" relative grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-8">
           {mentors.map((mentor) => (
             <div
               key={mentor.publicId}
-              className="border rounded-xl p-6 text-center shadow hover:shadow-md transition"
+              className="border rounded-xl p-6 text-center shadow hover:shadow-md transition group"
             >
               <img
                 src={mentor.imageUrl}
@@ -144,11 +144,11 @@ const DirectorMentor = () => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-              <button
-                onClick={() => handleDelete(mentor.publicId)}
-                className="mt-4 px-4 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition"
+               <button
+                onClick={() => handleDelete(item._id)}
+                className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
-                🗑 Delete
+                🗑
               </button>
             </div>
           ))}
