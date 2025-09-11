@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-const DirectorMentor = () => {
+const DirectionMentor = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [description, setDescription] = useState("");
@@ -33,58 +33,50 @@ const DirectorMentor = () => {
     setPreview(URL.createObjectURL(selectedFile));
   };
 
-  // Handle image select
-  const handleUpload = async () => {
-    if (!file || !description.trim()) {
-      setMessage("⚠️ Please provide both an image and a description.");
-      return;
-    }
+  // Upload image + paragraph
+const handleUpload = async () => {
+  if (!file || !description.trim()) {
+    alert("⚠️ Please provide both an image and a description.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("image", file);
-    formData.append("description", description);
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("description", description);
 
-    try {
-      const res = await axios.post(
-        `${API_BASE}/directionmentor/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      fetchMentors();
-      setFile(null);
-      setPreview(null);
-      setDescription("");
-      setMessage("✅ Mentor uploaded successfully!");
-      alert("✅ Mentor uploaded successfully!");
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      setMessage("❌ Upload failed. Try again.");
-    }
-  };
-
-  const handleDelete = async (publicId) => {
-    const confirmed = window.confirm(
-      "❓ Are you sure you want to delete this mentor?"
+  try {
+    await axios.post(
+      `${API_BASE}/directionmentor/upload`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
     );
 
-    if (!confirmed) return;
+    fetchMentors();
+    setFile(null);
+    setPreview(null);
+    setDescription("");
+    alert("✅ Mentor uploaded successfully!");
+  } catch (err) {
+    console.error("Upload failed:", err.response?.data || err.message);
+    alert("❌ Upload failed. Please try again.");
+  }
+};
 
-    try {
-      const url = `${API_BASE}/directionmentor/${encodeURIComponent(publicId)}`;
-      console.log("Deleting mentor at:", url);
+const handleDelete = async (publicId) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this mentor?");
+  if (!confirmed) return;
 
-      await axios.delete(url);
-      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
-      setMessage("🗑️ Mentor deleted successfully");
-      alert("🗑️ Mentor deleted successfully.");
-    } catch (err) {
-      console.error("Delete failed:", err.response?.data || err.message);
-      setMessage("❌ Delete failed. Try again.");
-    }
-  };
+  try {
+    await axios.delete(`${API_BASE}/directionmentor/${encodeURIComponent(publicId)}`);
+    setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+    alert("🗑️ Mentor deleted successfully");
+  } catch (err) {
+    console.error("Delete failed:", err.response?.data || err.message);
+    alert("❌ Delete failed. Please try again.");
+  }
+};
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
@@ -120,7 +112,7 @@ const DirectorMentor = () => {
 
         <button
           onClick={handleUpload}
-          className="w-full md:w-auto cursor-pointer px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="w-full md:w-auto px-6 py-3 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           🚀 Upload Mentor
         </button>
@@ -151,8 +143,8 @@ const DirectorMentor = () => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-              <button
-                onClick={() => handleDelete(mentor._id)}
+               <button
+                onClick={() => handleDelete(mentor.publicId)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
@@ -165,4 +157,4 @@ const DirectorMentor = () => {
   );
 };
 
-export default DirectorMentor;
+export default DirectionMentor;
