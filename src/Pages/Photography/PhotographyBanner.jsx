@@ -41,28 +41,41 @@ const PhotographyBanner = () => {
       });
       const data = await res.json();
 
-      if (data.error) setError(data.error);
-      else setBanners((prev) => [...prev, data]);
+      if (data.error) {
+        alert(`❌ Upload failed: ${data.error}`);
+      } else {
+        setBanners((prev) => [...prev, data]);
+        alert("✅ Banner uploaded successfully!");
+      }
     } catch (err) {
       console.error("Upload error:", err);
-      setError(err.message);
+      alert(`❌ Upload error: ${err.message}`);
     } finally {
       setUploading(false);
     }
   };
 
-  // Delete banner
   const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this banner?"
+    );
+    if (!confirmed) return;
+
     try {
       const res = await fetch(`${API_BASE}/photographybanner/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
-      if (data.success) setBanners((prev) => prev.filter((b) => b._id !== id));
-      else setError(data.error || "Failed to delete banner");
+
+      if (data.success) {
+        setBanners((prev) => prev.filter((b) => b._id !== id));
+        alert("🗑️ Banner deleted successfully");
+      } else {
+        alert(`❌ Delete failed: ${data.error || "Unknown error"}`);
+      }
     } catch (err) {
       console.error("Delete error:", err);
-      setError("Error deleting banner");
+      alert(`❌ Delete error: ${err.message}`);
     }
   };
 
