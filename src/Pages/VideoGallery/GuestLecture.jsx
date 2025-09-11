@@ -4,7 +4,7 @@ import { API_BASE } from "../../Utils/Api.js";
 
 const GestLecture = () => {
 
-  const category = "guestlecture";
+  const category = "guestLecture";
 
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);

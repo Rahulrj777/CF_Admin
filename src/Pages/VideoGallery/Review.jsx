@@ -4,7 +4,7 @@ import { API_BASE } from "../../Utils/Api.js";
 
 const Review = () => {
 
-  const category = "review";
+  const category = "studentReview";
 
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);
