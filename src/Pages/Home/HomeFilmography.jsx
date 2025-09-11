@@ -10,17 +10,18 @@ const HomeFilmography = () => {
     import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
 
   // ✅ Fetch existing filmographys on mount
+  const fetchFilmographys = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/homefilmography`);
+      const data = await res.json();
+      setFilmographys(data);
+    } catch (err) {
+      console.error("Error fetching filmographys:", err);
+      setError("Failed to load filmographys");
+    }
+  };
+
   useEffect(() => {
-    const fetchFilmographys = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/homefilmography`);
-        const data = await res.json();
-        setFilmographys(data);
-      } catch (err) {
-        console.error("Error fetching filmographys:", err);
-        setError("Failed to load filmographys");
-      }
-    };
     fetchFilmographys();
   }, [API_BASE]);
 
@@ -44,13 +45,10 @@ const HomeFilmography = () => {
       if (data.error) {
         setError(data.error);
       } else {
-        await fetchFilmographys(); // ✅ Fetch fresh data
+        await fetchFilmographys(); // Now correctly called
         alert("✅ Filmography uploaded successfully!");
 
-        // Reset states
         setImage(null);
-
-        // Also reset file input field manually
         document.getElementById("mentor-upload").value = null;
       }
     } catch (err) {
