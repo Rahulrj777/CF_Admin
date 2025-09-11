@@ -15,6 +15,9 @@ import {
   ChevronRight,
   Menu,
   X,
+  Images, // add this
+  LayoutGrid, // or this
+  Clapperboard,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -92,6 +95,13 @@ import StageUnrealDiploma from "./Pages/StageUnreal/StageUnrealDiploma.jsx";
 import StageUnrealMentor from "./Pages/StageUnreal/StageUnrealMentor.jsx";
 import StageUnrealFilmography from "./Pages/StageUnreal/StageUnrealFilmography.jsx";
 
+//Video Gallery
+import NewLaunches from "./Pages/VideoGallery/NewLaunches";
+import Highlights from "./Pages/VideoGallery/Highlights";
+import Review from "./Pages/VideoGallery/Review";
+import Gestlecture from "./Pages/VideoGallery/Gestlecture";
+import StudentWorks from "./Pages/VideoGallery/StudentWorks";
+
 // Full menu from app-SPL3L
 const menu = [
   {
@@ -106,6 +116,26 @@ const menu = [
       {
         title: "Video Upload",
         path: "/home/video-upload",
+        icon: <Video size={16} />,
+      },
+    ],
+  },
+  {
+    title: "Video Gallery Page",
+    path: "/gallery",
+    icon: <Images size={18} />, // or <LayoutGrid size={18} /> or <Clapperboard size={18} />
+    children: [
+      { title: "Gest Lecture", path: "/gallery/guestlecture", icon: "🏠" },
+      { title: "Highlights", path: "/gallery/highlights", icon: "🎞️" },
+      {
+        title: "New Launches",
+        path: "/gallery/newlaunches",
+        icon: <Users size={16} />,
+      },
+      { title: "Student Review", path: "/gallery/review", icon: "🎬" },
+      {
+        title: "Student Works",
+        path: "/gallery/studentworks",
         icon: <Video size={16} />,
       },
     ],
@@ -497,6 +527,13 @@ function App() {
               <Route path="/home/video-upload" element={<VideoPage />} />
               <Route path="/home/mentor" element={<MentorPage />} />
               <Route path="/home/filmography" element={<HomeFilmography />} />
+
+              {/* Video Gallery */}
+              <Route path="/gallery/guestlecture" element={<Gestlecture />} />
+              <Route path="/gallery/highlights" element={<Highlights />} />
+              <Route path="/gallery/newlaunches" element={<NewLaunches />} />
+              <Route path="/gallery/review" element={<Review />} />
+              <Route path="/gallery/studentworks" element={<StudentWorks />} />
 
               {/* Direction */}
               <Route
