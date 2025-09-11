@@ -121,11 +121,11 @@ const menu = [
     ],
   },
   {
-    title: "Video Gallery Page",
+    title: "Video Gallery",
     path: "/gallery",
     icon: <Images size={18} />, // or <LayoutGrid size={18} /> or <Clapperboard size={18} />
     children: [
-      { title: "Gest Lecture", path: "/gallery/guestlecture", icon: "🏠" },
+      { title: "Guest Lecture", path: "/gallery/guestlecture", icon: "🏠" },
       { title: "Highlights", path: "/gallery/highlights", icon: "🎞️" },
       {
         title: "New Launches",

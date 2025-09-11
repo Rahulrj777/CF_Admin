@@ -11,7 +11,7 @@ const GuestLecture = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/gestlecture`);
+      const res = await axios.get(`${API_BASE}/guestlecture`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -32,7 +32,7 @@ const GuestLecture = () => {
     formData.append("title", title);
 
     try {
-      await axios.post(`${API_BASE}/gestlecture/upload`, formData, {
+      await axios.post(`${API_BASE}/guestlecture/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -53,7 +53,7 @@ const GuestLecture = () => {
     if (!confirm("Are you sure you want to delete this video?")) return;
 
     try {
-      await axios.delete(`${API_BASE}/gestlecture/${_id}`);
+      await axios.delete(`${API_BASE}/guestlecture/${_id}`);
       await fetchVideos();
       alert("Video deleted successfully!");
     } catch (err) {
