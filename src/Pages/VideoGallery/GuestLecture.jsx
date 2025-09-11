@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { API_BASE } from "../../Utils/Api.js"; // keep your API_BASE import
 
-const GestLecture = () => {
+const GuestLecture = () => {
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
@@ -158,4 +158,4 @@ const GestLecture = () => {
   );
 };
 
-export default GestLecture;
+export default GuestLecture;

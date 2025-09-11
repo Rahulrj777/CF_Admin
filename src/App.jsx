@@ -16,8 +16,8 @@ import {
   Menu,
   X,
   Images,
-  // LayoutGrid,
-  // Clapperboard,
+  LayoutGrid,
+  Clapperboard,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -99,7 +99,7 @@ import StageUnrealFilmography from "./Pages/StageUnreal/StageUnrealFilmography.j
 import NewLaunches from "./Pages/VideoGallery/NewLaunches";
 import Highlights from "./Pages/VideoGallery/Highlights";
 import Review from "./Pages/VideoGallery/Review";
-import Gestlecture from "./Pages/VideoGallery/Gestlecture";
+import GuestLecture from "./Pages/VideoGallery/GuestLecture.jsx";
 import StudentWorks from "./Pages/VideoGallery/StudentWorks";
 
 // Full menu from app-SPL3L
@@ -529,7 +529,7 @@ function App() {
               <Route path="/home/filmography" element={<HomeFilmography />} />
 
               {/* Video Gallery */}
-              <Route path="/gallery/guestlecture" element={<Gestlecture />} />
+              <Route path="/gallery/guestlecture" element={<GuestLecture />} />
               <Route path="/gallery/highlights" element={<Highlights />} />
               <Route path="/gallery/newlaunches" element={<NewLaunches />} />
               <Route path="/gallery/review" element={<Review />} />
