@@ -59,8 +59,6 @@ const DiDiploma = () => {
       return
     }
 
-    if (!window.confirm("Are you sure you want to save this content?")) return
-
     try {
       setIsSavingContent(true)
       if (editingId) {
