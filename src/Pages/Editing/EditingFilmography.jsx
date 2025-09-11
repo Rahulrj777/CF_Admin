@@ -23,8 +23,10 @@ const EditingFilmography = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file) return;
-
+    if (!file) {
+      alert("⚠️ Please select an image before uploading.");
+      return;
+    }
     const formData = new FormData();
     formData.append("image", file);
 
@@ -38,13 +40,17 @@ const EditingFilmography = () => {
       );
       setItems([...items, res.data.item]);
       setFile(null);
+      alert("✅ Filmography item uploaded successfully!");
     } catch (err) {
-      console.error("Upload failed", err);
+      console.error("Upload failed:", err);
+      alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
     }
   };
 
   // Delete mentor
   const handleDelete = async (publicId) => {
+    if (!window.confirm("Are you sure you want to delete this highlight?"))
+      return;
     try {
       const url = `${API_BASE}/editingfilmography/${encodeURIComponent(
         publicId

@@ -23,7 +23,10 @@ const StageUnrealFilmography = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file) return;
+    if (!file) {
+      alert("⚠️ Please select an image before uploading.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("image", file);
@@ -40,11 +43,17 @@ const StageUnrealFilmography = () => {
       setFile(null);
     } catch (err) {
       console.error("Upload failed", err);
+      alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
     }
   };
 
   // Delete mentor
   const handleDelete = async (publicId) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this filmography item?"
+    );
+    if (!confirmed) return;
+
     try {
       const url = `${API_BASE}/stageunrealfilmography/${encodeURIComponent(
         publicId
@@ -53,10 +62,10 @@ const StageUnrealFilmography = () => {
 
       await axios.delete(url);
       setItems((prev) => prev.filter((item) => item.publicId !== publicId));
-      setMessage("🗑️ Mentor deleted successfully");
+      alert("🗑️ Filmography item deleted successfully!");
     } catch (err) {
       console.error("Delete failed:", err.response?.data || err.message);
-      setMessage("❌ Delete failed. Try again.");
+      alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
     }
   };
 

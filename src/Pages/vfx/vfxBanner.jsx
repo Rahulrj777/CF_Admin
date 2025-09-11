@@ -25,46 +25,65 @@ const VfxBanner = () => {
   }, [API_BASE]);
 
   // Upload new banner
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!image) return;
+const handleUpload = async (e) => {
+  e.preventDefault();
 
-    setUploading(true);
+  if (!image) {
+    alert("⚠️ Please select an image before uploading.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("image", image);
+  setUploading(true);
 
-    try {
-      const res = await fetch(`${API_BASE}/vfxbanner/upload`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
+  const formData = new FormData();
+  formData.append("image", image);
 
-      if (data.error) setError(data.error);
-      else setBanners((prev) => [...prev, data]);
-    } catch (err) {
-      console.error("Upload error:", err);
-      setError(err.message);
-    } finally {
-      setUploading(false);
+  try {
+    const res = await fetch(`${API_BASE}/vfxbanner/upload`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      alert(`❌ Upload failed: ${data.error}`);
+      setError(data.error);
+    } else {
+      setBanners((prev) => [...prev, data]);
+      alert("✅ Banner uploaded successfully!");
     }
-  };
+  } catch (err) {
+    console.error("Upload error:", err);
+    setError(err.message);
+    alert(`❌ Upload failed: ${err.message}`);
+  } finally {
+    setUploading(false);
+  }
+};
 
-  // Delete banner
-  const handleDelete = async (id) => {
-    try {
-      const res = await fetch(`${API_BASE}/vfxbanner/${id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (data.success) setBanners((prev) => prev.filter((b) => b._id !== id));
-      else setError(data.error || "Failed to delete banner");
-    } catch (err) {
-      console.error("Delete error:", err);
-      setError("Error deleting banner");
+const handleDelete = async (id) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this banner?");
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/vfxbanner/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      setBanners((prev) => prev.filter((b) => b._id !== id));
+      alert("🗑️ Banner deleted successfully!");
+    } else {
+      setError(data.error || "Failed to delete banner");
+      alert(`❌ Delete failed: ${data.error || "Unknown error"}`);
     }
-  };
+  } catch (err) {
+    console.error("Delete error:", err);
+    setError("Error deleting banner");
+    alert(`❌ Delete failed: ${err.message}`);
+  }
+};
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">

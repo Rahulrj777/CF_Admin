@@ -152,7 +152,7 @@ const handleDelete = async (publicId) => {
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
                <button
-                onClick={() => handleDelete(item._id)}
+                onClick={() => handleDelete(mentor.publicId)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑

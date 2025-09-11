@@ -21,42 +21,53 @@ const VfxFilmography = () => {
       });
   }, []);
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (!file) return;
+const handleUpload = async (e) => {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("image", file);
+  if (!file) {
+    alert("⚠️ Please select an image before uploading.");
+    return;
+  }
 
-    try {
-      const res = await axios.post(
-        `${API_BASE}/vfxfilmography/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      setItems([...items, res.data.item]);
-      setFile(null);
-    } catch (err) {
-      console.error("Upload failed", err);
-    }
-  };
+  const formData = new FormData();
+  formData.append("image", file);
 
-  // Delete mentor
-  const handleDelete = async (publicId) => {
-    try {
-      const url = `${API_BASE}/vfxfilmography/${encodeURIComponent(publicId)}`;
-      console.log("Deleting mentor at:", url);
+  try {
+    const res = await axios.post(
+      `${API_BASE}/vfxfilmography/upload`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
 
-      await axios.delete(url);
-      setItems((prev) => prev.filter((item) => item.publicId !== publicId));
-      setMessage("🗑️ Mentor deleted successfully");
-    } catch (err) {
-      console.error("Delete failed:", err.response?.data || err.message);
-      setMessage("❌ Delete failed. Try again.");
-    }
-  };
+    setItems([...items, res.data.item]);
+    setFile(null);
+
+    alert("✅ Filmography item uploaded successfully!");
+  } catch (err) {
+    console.error("Upload failed:", err);
+    alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
+  }
+};
+
+const handleDelete = async (publicId) => {
+  const confirmed = window.confirm("❓ Are you sure you want to delete this filmography item?");
+  if (!confirmed) return;
+
+  try {
+    const url = `${API_BASE}/vfxfilmography/${encodeURIComponent(publicId)}`;
+    console.log("Deleting item at:", url);
+
+    await axios.delete(url);
+    setItems((prev) => prev.filter((item) => item.publicId !== publicId));
+
+    alert("🗑️ Filmography item deleted successfully!");
+  } catch (err) {
+    console.error("Delete failed:", err.response?.data || err.message);
+    alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
+  }
+};
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">

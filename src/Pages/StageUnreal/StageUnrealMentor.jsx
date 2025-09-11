@@ -66,8 +66,14 @@ const StageUnrealMentor = () => {
 
   // Delete mentor
   const handleDelete = async (publicId) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this filmography item?"
+    );
+    if (!confirmed) return;
     try {
-      const url = `${API_BASE}/stageunrealmentor/${encodeURIComponent(publicId)}`;
+      const url = `${API_BASE}/stageunrealmentor/${encodeURIComponent(
+        publicId
+      )}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
@@ -144,7 +150,7 @@ const StageUnrealMentor = () => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-               <button
+              <button
                 onClick={() => handleDelete(mentor._id)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
