@@ -1,17 +1,21 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { API_BASE } from "../../Utils/Api.js"; // keep your API_BASE import
+import { API_BASE } from "../../Utils/Api.js";
 
 const NewLaunches = () => {
+
+  const category = "newlaunches";
+
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  // ✅ fetch only videos of this category
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/videos`);
+      const res = await axios.get(`${API_BASE}/videos/${category}`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -22,6 +26,7 @@ const NewLaunches = () => {
     fetchVideos();
   }, []);
 
+  // ✅ upload video with category included
   const handleUpload = async () => {
     if (!file) return alert("Please select a video");
     if (!title.trim()) return alert("Please enter a title");
@@ -30,6 +35,7 @@ const NewLaunches = () => {
     const formData = new FormData();
     formData.append("video", file);
     formData.append("title", title);
+    formData.append("category", category);
 
     try {
       await axios.post(`${API_BASE}/videos/upload`, formData, {
@@ -49,6 +55,7 @@ const NewLaunches = () => {
     }
   };
 
+  // ✅ delete stays the same
   const handleDelete = async (_id) => {
     if (!confirm("Are you sure you want to delete this video?")) return;
 

@@ -1,17 +1,21 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { API_BASE } from "../../Utils/Api.js"; // keep your API_BASE import
+import { API_BASE } from "../../Utils/Api.js";
 
 const GestLecture = () => {
+
+  const category = "guestlecture";
+
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  // ✅ fetch only videos of this category
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/videos`);
+      const res = await axios.get(`${API_BASE}/videos/${category}`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -22,6 +26,7 @@ const GestLecture = () => {
     fetchVideos();
   }, []);
 
+  // ✅ upload video with category included
   const handleUpload = async () => {
     if (!file) return alert("Please select a video");
     if (!title.trim()) return alert("Please enter a title");
@@ -30,6 +35,7 @@ const GestLecture = () => {
     const formData = new FormData();
     formData.append("video", file);
     formData.append("title", title);
+    formData.append("category", category);
 
     try {
       await axios.post(`${API_BASE}/videos/upload`, formData, {
@@ -49,6 +55,7 @@ const GestLecture = () => {
     }
   };
 
+  // ✅ delete stays the same
   const handleDelete = async (_id) => {
     if (!confirm("Are you sure you want to delete this video?")) return;
 
@@ -69,12 +76,16 @@ const GestLecture = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             🎬 Guest Lecture Video Gallery
           </h1>
-          <p className="text-gray-600">Upload and manage our Guest Lecture videos</p>
+          <p className="text-gray-600">
+            Upload and manage our Guest Lecture videos
+          </p>
         </div>
 
         {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">📤 Upload New Video</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            📤 Upload New Video
+          </h2>
           <div className="flex lg:flex-col flex-row gap-4">
             <input
               type="file"
