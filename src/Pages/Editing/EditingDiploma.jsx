@@ -460,7 +460,7 @@ const EditingDiploma = () => {
                         <Upload className="w-10 h-10 text-blue-600" />
                       </div>
                       <p className="mb-2 text-lg font-semibold text-blue-800">Click to upload PDF</p>
-                      <p className="text-sm text-blue-600 font-medium">PDF files only (max 20MB)</p>
+                      <p className="text-sm text-blue-600 font-medium">PDF files only (max 10MB)</p>
                     </div>
                     <input
                       key={fileKey}

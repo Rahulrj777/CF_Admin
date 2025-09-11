@@ -250,7 +250,7 @@ const ActingDiploma = () => {
               <div className="space-y-4">
                 <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
                   <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 mb-4">Upload diploma PDF</p>
+                  <p className="text-gray-600 mb-4">Upload diploma PDF (10MB)</p>
                   <input
                     ref={fileInputRef}
                     type="file"
