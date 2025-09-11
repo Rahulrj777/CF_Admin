@@ -18,7 +18,7 @@ const VirtualProductionMentor = () => {
   const fetchMentors = async () => {
     try {
       const res = await axios.get(`${API_BASE}/virtualproductionmentor`);
-      const mentorData = res.data?.virtualproduction?.mentor || [];
+      const mentorData = res.data?.virtualProduction?.mentor || [];
       setMentors(Array.isArray(mentorData) ? mentorData : []);
     } catch (err) {
       console.error("Error fetching mentors:", err);
@@ -48,12 +48,11 @@ const VirtualProductionMentor = () => {
       const res = await axios.post(
         `${API_BASE}/virtualproductionmentor/upload`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      fetchMentors();
+      // Add the new mentor directly
+      setMentors((prev) => [...prev, res.data.mentor]);
       setFile(null);
       setPreview(null);
       setDescription("");
@@ -72,7 +71,9 @@ const VirtualProductionMentor = () => {
     if (!confirmDelete) return;
 
     try {
-      const url = `${API_BASE}/virtualproductionmentor/${encodeURIComponent(publicId)}`;
+      const url = `${API_BASE}/virtualproductionmentor/${encodeURIComponent(
+        publicId
+      )}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);

@@ -66,14 +66,13 @@ const StageUnrealMentor = () => {
 
   // Delete mentor
   const handleDelete = async (publicId) => {
-    const confirmed = window.confirm(
-      "❓ Are you sure you want to delete this filmography item?"
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PDF? This action cannot be undone."
     );
-    if (!confirmed) return;
+    if (!confirmDelete) return;
+
     try {
-      const url = `${API_BASE}/stageunrealmentor/${encodeURIComponent(
-        publicId
-      )}`;
+      const url = `${API_BASE}/stageunrealmentor/${encodeURIComponent(publicId)}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
@@ -112,14 +111,14 @@ const StageUnrealMentor = () => {
             <img
               src={preview}
               alt="Preview"
-              className="w-40 h-40 object-contain object-top mx-auto rounded-lg shadow-md border"
+              className="w-40 h-40 object-cover object-top mx-auto rounded-lg shadow-md border"
             />
           </div>
         )}
 
         <button
           onClick={handleUpload}
-          className="w-full md:w-auto px-6 py-3 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white cursor-pointer rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           🚀 Upload Mentor
         </button>
@@ -151,7 +150,7 @@ const StageUnrealMentor = () => {
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
               <button
-                onClick={() => handleDelete(mentor._id)}
+                onClick={() => handleDelete(mentor.publicId)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
