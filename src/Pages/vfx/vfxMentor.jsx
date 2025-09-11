@@ -64,22 +64,25 @@ const handleUpload = async () => {
   }
 };
 
-const handleDelete = async (publicId) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this mentor?");
-  if (!confirmed) return;
+  // Delete mentor
+  const handleDelete = async (publicId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PDF? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
 
-  try {
-    const url = `${API_BASE}/vfxmentor/${encodeURIComponent(publicId)}`;
-    console.log("Deleting mentor at:", url);
+    try {
+      const url = `${API_BASE}/editingmentor/${encodeURIComponent(publicId)}`;
+      console.log("Deleting mentor at:", url);
 
-    await axios.delete(url);
-    setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
-    alert("🗑️ Mentor deleted successfully!");
-  } catch (err) {
-    console.error("Delete failed:", err.response?.data || err.message);
-    alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+      await axios.delete(url);
+      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+      setMessage("🗑️ Mentor deleted successfully");
+    } catch (err) {
+      console.error("Delete failed:", err.response?.data || err.message);
+      setMessage("❌ Delete failed. Try again.");
+    }
+  };
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
