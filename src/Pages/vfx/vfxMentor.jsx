@@ -34,35 +34,35 @@ const VfxMentor = () => {
   };
 
   // Upload image + paragraph
-const handleUpload = async () => {
-  if (!file || !description.trim()) {
-    alert("⚠️ Please provide both an image and a description.");
-    return;
-  }
+  const handleUpload = async () => {
+    if (!file || !description.trim()) {
+      setMessage("⚠️ Please provide both an image and a description.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("description", description);
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("description", description);
 
-  try {
-    const res = await axios.post(
-      `${API_BASE}/vfxmentor/upload`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
+    try {
+      const res = await axios.post(
+        `${API_BASE}/vfxmentor/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-    fetchMentors();
-    setFile(null);
-    setPreview(null);
-    setDescription("");
-    alert("✅ Mentor uploaded successfully!");
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+      fetchMentors();
+      setFile(null);
+      setPreview(null);
+      setDescription("");
+      setMessage("✅ Mentor uploaded successfully!");
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      setMessage("❌ Upload failed. Try again.");
+    }
+  };
 
   // Delete mentor
   const handleDelete = async (publicId) => {
@@ -72,7 +72,7 @@ const handleUpload = async () => {
     if (!confirmDelete) return;
 
     try {
-      const url = `${API_BASE}/editingmentor/${encodeURIComponent(publicId)}`;
+      const url = `${API_BASE}/vfxmentor/${encodeURIComponent(publicId)}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
@@ -111,14 +111,14 @@ const handleUpload = async () => {
             <img
               src={preview}
               alt="Preview"
-              className="w-40 h-40 object-contain object-top mx-auto rounded-lg shadow-md border"
+              className="w-40 h-40 object-cover object-top mx-auto rounded-lg shadow-md border"
             />
           </div>
         )}
 
         <button
           onClick={handleUpload}
-          className="w-full md:w-auto px-6 py-3 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white cursor-pointer rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           🚀 Upload Mentor
         </button>
@@ -149,8 +149,8 @@ const handleUpload = async () => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-               <button
-                onClick={() => handleDelete(mentor._id)}
+              <button
+                onClick={() => handleDelete(mentor.publicId)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 🗑
