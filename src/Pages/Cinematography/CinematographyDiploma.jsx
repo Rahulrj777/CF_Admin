@@ -1,170 +1,152 @@
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { FileText, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { FileText, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_BASE
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const CinematographyDiplomaAdmin = () => {
-  const [semester1, setSemester1] = useState([""])
-  const [semester2, setSemester2] = useState([""])
-  const [pdf, setPdf] = useState(null)
-  const [savedData, setSavedData] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [semester1, setSemester1] = useState([""]);
+  const [semester2, setSemester2] = useState([""]);
+  const [pdf, setPdf] = useState(null);
+  const [savedData, setSavedData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch saved data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/cinematographydiploma`)
+        const res = await axios.get(`${API_BASE}/cinematographydiploma`);
         const data = res.data.cinematography.diploma[0] || {
           semester1: [],
           semester2: [],
           pdfUrl: "",
-        }
-        setSavedData(data)
+        };
+        setSavedData(data);
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   // Add subtitle input
-  const addSubtitle = (semester, setSemester) => setSemester([...semester, ""])
+  const addSubtitle = (semester, setSemester) => setSemester([...semester, ""]);
 
   // Update subtitle
   const updateSubtitle = (semester, setSemester, idx, value) => {
-    const updated = [...semester]
-    updated[idx] = value
-    setSemester(updated)
-  }
+    const updated = [...semester];
+    updated[idx] = value;
+    setSemester(updated);
+  };
 
   // Delete subtitle (local state)
   const deleteSubtitleLocal = (semester, setSemester, idx) => {
-    const updated = [...semester]
-    updated.splice(idx, 1)
-    setSemester(updated)
-  }
+    const updated = [...semester];
+    updated.splice(idx, 1);
+    setSemester(updated);
+  };
 
   // Submit subtitles and PDF
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     try {
       // Merge old saved data with new input data
       const mergedSemester1 = [
         ...(savedData?.semester1 || []).map((item) => item.title),
         ...semester1.filter((t) => t.trim() !== ""),
-      ]
+      ];
       const mergedSemester2 = [
         ...(savedData?.semester2 || []).map((item) => item.title),
         ...semester2.filter((t) => t.trim() !== ""),
-      ]
+      ];
 
       // Send merged arrays
       await axios.post(`${API_BASE}/cinematographydiploma/text`, {
         semester1: mergedSemester1,
         semester2: mergedSemester2,
-      })
+      });
 
       // Upload PDF if selected
       if (pdf) {
-        const formData = new FormData()
-        formData.append("pdf", pdf)
+        const formData = new FormData();
+        formData.append("pdf", pdf);
         await axios.post(`${API_BASE}/cinematographydiploma/pdf`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
-        })
+        });
       }
 
       // Refresh data
-      const res = await axios.get(`${API_BASE}/cinematographydiploma`)
+      const res = await axios.get(`${API_BASE}/cinematographydiploma`);
       const data = res.data.cinematography.diploma[0] || {
         semester1: [],
         semester2: [],
         pdfUrl: "",
-      }
-      setSavedData(data)
+      };
+      setSavedData(data);
 
       // Clear form after saving
-      setSemester1([])
-      setSemester2([])
-      setPdf(null)
+      setSemester1([]);
+      setSemester2([]);
+      setPdf(null);
 
-      alert("Saved successfully ✅")
+      alert("Saved successfully ✅");
     } catch (err) {
-      console.error(err)
-      alert("Error saving data!")
+      console.error(err);
+      alert("Error saving data!");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-
-  const handleDownloadPdf = async () => {
-    try {
-      const response = await axios.get(`${API_BASE}/Cinematographydiploma/pdf/download`)
-      const { downloadUrl } = response.data
-
-      // Create a temporary link element and trigger download
-      const link = document.createElement("a")
-      link.href = downloadUrl
-      link.download = "Cinematography-Diploma.pdf"
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    } catch (err) {
-      console.error("Download error:", err)
-      alert("Error downloading PDF!")
-    }
-  }
+  };
 
   // Delete PDF
   const handleDeletePdf = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this PDF?")
-    if (!confirmDelete) return
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PDF?"
+    );
+    if (!confirmDelete) return;
 
     try {
-      await axios.delete(`${API_BASE}/cinematographydiploma/pdf`)
-      const res = await axios.get(`${API_BASE}/cinematographydiploma`)
+      await axios.delete(`${API_BASE}/cinematographydiploma/pdf`);
+      const res = await axios.get(`${API_BASE}/cinematographydiploma`);
       const data = res.data.cinematography.diploma[0] || {
         semester1: [],
         semester2: [],
         pdfUrl: "",
-      }
-      setSavedData(data)
-      alert("PDF deleted successfully!")
+      };
+      setSavedData(data);
+      alert("PDF deleted successfully!");
     } catch (err) {
-      console.error(err)
-      alert("Error deleting PDF!")
+      console.error(err);
+      alert("Error deleting PDF!");
     }
-  }
+  };
 
   // Delete subtitle from server
   const handleDeleteSubtitle = async (semester, idx) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this subtitle?")
-    if (!confirmDelete) return
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this subtitle?"
+    );
+    if (!confirmDelete) return;
 
     try {
       await axios.delete(`${API_BASE}/cinematographydiploma/diploma/subtitle`, {
         data: { semester, index: idx },
-      })
-      const res = await axios.get(`${API_BASE}/cinematographydiploma`)
-      const data = res.data.cinematography.diploma[0] || {
-        semester1: [],
-        semester2: [],
-        pdfUrl: "",
-      }
-      setSavedData(data)
+      });
 
-      // Update local state too
-      if (semester === "semester1") setSemester1(data.semester1.map((item) => item.title))
-      if (semester === "semester2") setSemester2(data.semester2.map((item) => item.title))
+      // Update savedData locally
+      setSavedData((prev) => {
+        const updatedSemester = [...prev[semester]];
+        updatedSemester.splice(idx, 1);
+        return { ...prev, [semester]: updatedSemester };
+      });
 
-      alert("Subtitle deleted successfully!")
+      alert("Subtitle deleted successfully!");
     } catch (err) {
-      console.error(err)
-      alert("Error deleting subtitle!")
+      console.error(err);
+      alert("Error deleting subtitle!");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -194,8 +176,12 @@ const CinematographyDiplomaAdmin = () => {
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white">Semester 1 Subjects</h3>
-                    <p className="text-emerald-100">Add and manage first semester curriculum</p>
+                    <h3 className="text-2xl font-bold text-white">
+                      Semester 1 Subjects
+                    </h3>
+                    <p className="text-emerald-100">
+                      Add and manage first semester curriculum
+                    </p>
                   </div>
                 </div>
               </div>
@@ -204,13 +190,22 @@ const CinematographyDiplomaAdmin = () => {
                   <div key={i} className="flex gap-3 items-center group">
                     <input
                       value={sub}
-                      onChange={(e) => updateSubtitle(semester1, setSemester1, i, e.target.value)}
+                      onChange={(e) =>
+                        updateSubtitle(
+                          semester1,
+                          setSemester1,
+                          i,
+                          e.target.value
+                        )
+                      }
                       placeholder="Enter subject name"
                       className="flex-1 border-2 border-slate-200 focus:border-emerald-400 focus:ring-emerald-200 rounded-xl h-12 text-lg px-4 outline-none transition-colors"
                     />
                     <button
                       type="button"
-                      onClick={() => deleteSubtitleLocal(semester1, setSemester1, i)}
+                      onClick={() =>
+                        deleteSubtitleLocal(semester1, setSemester1, i)
+                      }
                       className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3 border-none bg-transparent cursor-pointer"
                     >
                       <X className="h-5 w-5" />
@@ -237,8 +232,12 @@ const CinematographyDiplomaAdmin = () => {
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white">Semester 2 Subjects</h3>
-                    <p className="text-violet-100">Add and manage second semester curriculum</p>
+                    <h3 className="text-2xl font-bold text-white">
+                      Semester 2 Subjects
+                    </h3>
+                    <p className="text-violet-100">
+                      Add and manage second semester curriculum
+                    </p>
                   </div>
                 </div>
               </div>
@@ -247,13 +246,22 @@ const CinematographyDiplomaAdmin = () => {
                   <div key={i} className="flex gap-3 items-center group">
                     <input
                       value={sub}
-                      onChange={(e) => updateSubtitle(semester2, setSemester2, i, e.target.value)}
+                      onChange={(e) =>
+                        updateSubtitle(
+                          semester2,
+                          setSemester2,
+                          i,
+                          e.target.value
+                        )
+                      }
                       placeholder="Enter subject name"
                       className="flex-1 border-2 border-slate-200 focus:border-violet-400 focus:ring-violet-200 rounded-xl h-12 text-lg px-4 outline-none transition-colors"
                     />
                     <button
                       type="button"
-                      onClick={() => deleteSubtitleLocal(semester2, setSemester2, i)}
+                      onClick={() =>
+                        deleteSubtitleLocal(semester2, setSemester2, i)
+                      }
                       className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-xl p-3 border-none bg-transparent cursor-pointer"
                     >
                       <X className="h-5 w-5" />
@@ -279,8 +287,12 @@ const CinematographyDiplomaAdmin = () => {
                   <FileText className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white">Diploma Document</h3>
-                  <p className="text-blue-100">Upload or manage the official diploma PDF document</p>
+                  <h3 className="text-2xl font-bold text-white">
+                    Diploma Document
+                  </h3>
+                  <p className="text-blue-100">
+                    Upload or manage the official diploma PDF document
+                  </p>
                 </div>
               </div>
             </div>
@@ -292,16 +304,24 @@ const CinematographyDiplomaAdmin = () => {
                       <FileText className="h-6 w-6 text-green-600" />
                     </div>
                     <div>
-                      <p className="font-semibold text-green-800">PDF document uploaded successfully</p>
+                      <p className="font-semibold text-green-800">
+                        PDF document uploaded successfully
+                      </p>
                       <p className="text-sm text-green-600">
-                        {savedData.pdfName} ({Math.round(savedData.pdfSize / 1024)} KB)
+                        {savedData.pdfName} (
+                        {Math.round(savedData.pdfSize / 1024)} KB)
                       </p>
                     </div>
                   </div>
                   <div className="flex gap-3 ml-auto">
                     <button
                       type="button"
-                      onClick={() => window.open(`${API_BASE}/cinematographydiploma/pdf/view`, "_blank")}
+                      onClick={() =>
+                        window.open(
+                          `${API_BASE}/cinematographydiploma/pdf/view`,
+                          "_blank"
+                        )
+                      }
                       className="inline-flex items-center gap-2 px-4 py-2 border border-blue-300 text-blue-700 hover:bg-blue-50 rounded-xl transition-colors bg-transparent cursor-pointer"
                     >
                       <FileText className="h-4 w-4" />
@@ -325,8 +345,12 @@ const CinematographyDiplomaAdmin = () => {
                         <div className="p-4 bg-blue-100 rounded-2xl mb-4">
                           <Upload className="w-10 h-10 text-blue-600" />
                         </div>
-                        <p className="mb-2 text-lg font-semibold text-blue-800">Click to upload or drag and drop</p>
-                        <p className="text-sm text-blue-600 font-medium">PDF files only (max 20MB)</p>
+                        <p className="mb-2 text-lg font-semibold text-blue-800">
+                          Click to upload or drag and drop
+                        </p>
+                        <p className="text-sm text-blue-600 font-medium">
+                          PDF files only (max 10MB)
+                        </p>
                       </div>
                       <input
                         type="file"
@@ -339,7 +363,9 @@ const CinematographyDiplomaAdmin = () => {
                   {pdf && (
                     <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
                       <FileText className="h-5 w-5 text-blue-600" />
-                      <span className="font-medium text-blue-800">Selected: {pdf.name}</span>
+                      <span className="font-medium text-blue-800">
+                        Selected: {pdf.name}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -365,7 +391,9 @@ const CinematographyDiplomaAdmin = () => {
             <h2 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-3">
               Current Curriculum
             </h2>
-            <p className="text-slate-600 text-lg">Review and manage saved subjects</p>
+            <p className="text-slate-600 text-lg">
+              Review and manage saved subjects
+            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -375,7 +403,9 @@ const CinematographyDiplomaAdmin = () => {
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white text-emerald-700">
                     1
                   </span>
-                  <h3 className="text-xl font-bold text-white">Semester 1 Subjects</h3>
+                  <h3 className="text-xl font-bold text-white">
+                    Semester 1 Subjects
+                  </h3>
                 </div>
               </div>
               <div className="p-6">
@@ -386,7 +416,9 @@ const CinematographyDiplomaAdmin = () => {
                         key={i}
                         className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl group hover:shadow-md transition-all"
                       >
-                        <span className="font-medium text-emerald-800">{item.title}</span>
+                        <span className="font-medium text-emerald-800">
+                          {item.title}
+                        </span>
                         <button
                           onClick={() => handleDeleteSubtitle("semester1", i)}
                           className="opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
@@ -397,7 +429,9 @@ const CinematographyDiplomaAdmin = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-slate-500 text-center py-8 italic">No subjects added yet</p>
+                  <p className="text-slate-500 text-center py-8 italic">
+                    No subjects added yet
+                  </p>
                 )}
               </div>
             </div>
@@ -408,7 +442,9 @@ const CinematographyDiplomaAdmin = () => {
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-white text-violet-700">
                     2
                   </span>
-                  <h3 className="text-xl font-bold text-white">Semester 2 Subjects</h3>
+                  <h3 className="text-xl font-bold text-white">
+                    Semester 2 Subjects
+                  </h3>
                 </div>
               </div>
               <div className="p-6">
@@ -419,7 +455,9 @@ const CinematographyDiplomaAdmin = () => {
                         key={i}
                         className="flex items-center justify-between p-4 bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200 rounded-xl group hover:shadow-md transition-all"
                       >
-                        <span className="font-medium text-violet-800">{item.title}</span>
+                        <span className="font-medium text-violet-800">
+                          {item.title}
+                        </span>
                         <button
                           onClick={() => handleDeleteSubtitle("semester2", i)}
                           className="opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-600 rounded-lg p-2 border-none bg-transparent cursor-pointer"
@@ -430,7 +468,9 @@ const CinematographyDiplomaAdmin = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-slate-500 text-center py-8 italic">No subjects added yet</p>
+                  <p className="text-slate-500 text-center py-8 italic">
+                    No subjects added yet
+                  </p>
                 )}
               </div>
             </div>
@@ -438,7 +478,7 @@ const CinematographyDiplomaAdmin = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CinematographyDiplomaAdmin
+export default CinematographyDiplomaAdmin;
