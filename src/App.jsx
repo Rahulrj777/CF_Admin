@@ -15,9 +15,9 @@ import {
   ChevronRight,
   Menu,
   X,
-  Images, // add this
-  LayoutGrid, // or this
-  Clapperboard,
+  Images,
+  // LayoutGrid,
+  // Clapperboard,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
