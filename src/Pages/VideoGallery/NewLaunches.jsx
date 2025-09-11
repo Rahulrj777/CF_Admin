@@ -11,7 +11,7 @@ const NewLaunches = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/newlaunches`);
+      const res = await axios.get(`${API_BASE}/videos`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -32,7 +32,7 @@ const NewLaunches = () => {
     formData.append("title", title);
 
     try {
-      await axios.post(`${API_BASE}/newlaunches/upload`, formData, {
+      await axios.post(`${API_BASE}/videos/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -53,7 +53,7 @@ const NewLaunches = () => {
     if (!confirm("Are you sure you want to delete this video?")) return;
 
     try {
-      await axios.delete(`${API_BASE}/newlaunches/${_id}`);
+      await axios.delete(`${API_BASE}/videos/${_id}`);
       await fetchVideos();
       alert("Video deleted successfully!");
     } catch (err) {

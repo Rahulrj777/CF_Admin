@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { API_BASE } from "../../Utils/Api.js"; // keep your API_BASE import
 
-const GuestLecture = () => {
+const GestLecture = () => {
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
@@ -11,7 +11,7 @@ const GuestLecture = () => {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/guestlecture`);
+      const res = await axios.get(`${API_BASE}/videos`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -32,7 +32,7 @@ const GuestLecture = () => {
     formData.append("title", title);
 
     try {
-      await axios.post(`${API_BASE}/guestlecture/upload`, formData, {
+      await axios.post(`${API_BASE}/videos/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -53,7 +53,7 @@ const GuestLecture = () => {
     if (!confirm("Are you sure you want to delete this video?")) return;
 
     try {
-      await axios.delete(`${API_BASE}/guestlecture/${_id}`);
+      await axios.delete(`${API_BASE}/videos/${_id}`);
       await fetchVideos();
       alert("Video deleted successfully!");
     } catch (err) {
@@ -158,4 +158,4 @@ const GuestLecture = () => {
   );
 };
 
-export default GuestLecture;
+export default GestLecture;
