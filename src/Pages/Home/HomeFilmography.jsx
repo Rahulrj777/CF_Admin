@@ -43,16 +43,19 @@ const HomeFilmography = () => {
 
       if (data.error) {
         setError(data.error);
-        alert(`❌ Upload failed: ${data.error}`);
       } else {
-        await fetchFilmographys(); // Fetch latest list from backend
+        await fetchFilmographys(); // ✅ Fetch fresh data
         alert("✅ Filmography uploaded successfully!");
+
+        // Reset states
         setImage(null);
+
+        // Also reset file input field manually
+        document.getElementById("mentor-upload").value = null;
       }
     } catch (err) {
-      console.error("Upload failed:", err);
+      console.error("Frontend upload error:", err);
       setError(err.message);
-      alert(`❌ Upload failed: ${err.message}`);
     } finally {
       setUploading(false);
     }
