@@ -125,12 +125,12 @@ const PhotographyDiploma = () => {
     }
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (_id) => {
     if (!window.confirm("Are you sure you want to delete this entry? This action cannot be undone.")) return
 
     try {
-      await axios.delete(`${API}/${id}`)
-      setContents((prev) => prev.filter((c) => c.id !== id))
+      await axios.delete(`${API}/${_id}`)
+      setContents((prev) => prev.filter((c) => c._id !== _id))
       alert("Entry deleted successfully!")
     } catch (err) {
       console.error("Error deleting entry:", err)
@@ -302,7 +302,7 @@ const PhotographyDiploma = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {contents.map((content) => (
                 <div
-                  key={content.id}
+                  key={content._id}
                   className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-shadow duration-200"
                 >
                   <h4 className="font-bold text-gray-800 text-lg mb-3">{content.title}</h4>
@@ -323,7 +323,7 @@ const PhotographyDiploma = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(content.id)}
+                      onClick={() => handleDelete(content._id)}
                       className="flex items-center gap-1 px-3 py-2 cursor-pointer bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors duration-200"
                     >
                       <Trash2 className="w-3 h-3" />

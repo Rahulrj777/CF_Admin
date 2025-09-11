@@ -134,11 +134,11 @@ const ActingDiploma = () => {
     }
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (_id) => {
     if (!window.confirm("Are you sure you want to delete this entry?")) return
     try {
-      await axios.delete(`${API}/${id}`)
-      setContents((prev) => prev.filter((c) => c.id !== id))
+      await axios.delete(`${API}/${_id}`)
+      setContents((prev) => prev.filter((c) => c._id !== _id))
     } catch (err) {
       console.error(err)
       alert("Delete failed")
@@ -324,7 +324,7 @@ const ActingDiploma = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {contents.map((c) => (
                 <div
-                  key={c.id}
+                  key={c._id}
                   className="bg-white rounded-xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow"
                 >
                   <h4 className="font-bold text-gray-800 text-lg mb-3">{c.title}</h4>
@@ -345,7 +345,7 @@ const ActingDiploma = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(c.id)}
+                      onClick={() => handleDelete(c._id)}
                       className="flex-1 flex items-center cursor-pointer justify-center gap-2 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
                     >
                       <Trash2 className="w-4 h-4" />
