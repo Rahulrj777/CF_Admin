@@ -75,7 +75,7 @@ const VideoGallery = () => {
         {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">📤 Upload New Video</h2>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex lg:flex-col flex-row gap-4">
             <input
               type="file"
               accept="video/*"
