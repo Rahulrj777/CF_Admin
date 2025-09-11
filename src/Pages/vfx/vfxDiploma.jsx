@@ -56,7 +56,7 @@ const VfxDiplomaAdmin = () => {
     if (!confirmDelete) return
 
     try {
-      await axios.delete(`${API_BASE}/vfxdiploma/images/${publicId}`)
+      await axios.delete(`${API_BASE}/vfxdiploma/images/${encodeURIComponent(publicId)}`)
       fetchDiploma()
       alert("Image deleted successfully ✅")
     } catch (err) {
