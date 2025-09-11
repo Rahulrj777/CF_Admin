@@ -48,12 +48,11 @@ const VirtualProductionMentor = () => {
       const res = await axios.post(
         `${API_BASE}/virtualproductionmentor/upload`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      fetchMentors();
+      // Add the new mentor directly
+      setMentors((prev) => [...prev, res.data.mentor]);
       setFile(null);
       setPreview(null);
       setDescription("");
@@ -72,7 +71,9 @@ const VirtualProductionMentor = () => {
     if (!confirmDelete) return;
 
     try {
-      const url = `${API_BASE}/virtualproductionmentor/${encodeURIComponent(publicId)}`;
+      const url = `${API_BASE}/virtualproductionmentor/${encodeURIComponent(
+        publicId
+      )}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);
