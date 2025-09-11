@@ -267,7 +267,7 @@ const EditingDiploma = () => {
                     </div>
                     <button
                       onClick={cancelEdit}
-                      className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
+                      className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium  cursor-pointer transition-colors"
                     >
                       Cancel
                     </button>
@@ -296,7 +296,7 @@ const EditingDiploma = () => {
                             />
                             <button
                               onClick={() => deleteSection(mi, si)}
-                              className="ml-3 p-2 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+                              className="ml-3 p-2 hover:bg-red-50 hover:text-red-600 rounded-lg cursor-pointer transition-colors"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -313,7 +313,7 @@ const EditingDiploma = () => {
                                 />
                                 <button
                                   onClick={() => deleteItem(mi, si, ii)}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-600 rounded-lg p-2"
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-red-50 hover:text-red-600 rounded-lg p-2"
                                 >
                                   <X className="h-4 w-4" />
                                 </button>
@@ -321,7 +321,7 @@ const EditingDiploma = () => {
                             ))}
                             <button
                               onClick={() => addItem(mi, si)}
-                              className="w-full py-2 border-2 border-dashed border-orange-300 hover:border-orange-400 hover:bg-orange-50 text-orange-700 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                              className="w-full py-2 border-2 border-dashed cursor-pointer border-orange-300 hover:border-orange-400 hover:bg-orange-50 text-orange-700 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                             >
                               <Plus className="h-4 w-4" />
                               Add Item
@@ -332,7 +332,7 @@ const EditingDiploma = () => {
 
                       <button
                         onClick={() => addSection(mi)}
-                        className="w-full py-3 border-2 border-dashed border-orange-300 hover:border-orange-400 hover:bg-orange-50 text-orange-700 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+                        className="w-full py-3 border-2 border-dashed cursor-pointer border-orange-300 hover:border-orange-400 hover:bg-orange-50 text-orange-700 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
                       >
                         <Plus className="h-4 w-4" />
                         Add Section
@@ -344,7 +344,7 @@ const EditingDiploma = () => {
                     {!editMode && (
                       <button
                         onClick={addMonth}
-                        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
+                        className="px-6 py-3 bg-gradient-to-r cursor-pointer from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
                         disabled={saving}
                       >
                         <Plus className="h-4 w-4" />
@@ -353,7 +353,7 @@ const EditingDiploma = () => {
                     )}
                     <button
                       onClick={saveTextContent}
-                      className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
+                      className="px-6 py-3 bg-gradient-to-r cursor-pointer from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
                       disabled={saving}
                     >
                       <Save className="h-4 w-4" />
@@ -364,7 +364,7 @@ const EditingDiploma = () => {
               ) : (
                 <button
                   onClick={() => setShowAddForm(true)}
-                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-gradient-to-r cursor-pointer from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
                 >
                   <Plus className="h-5 w-5" />
                   Add New Month
@@ -411,7 +411,7 @@ const EditingDiploma = () => {
                       </a>
                       <button
                         onClick={deleteSavedPdf}
-                        className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+                        className="flex-1 py-3 cursor-pointer bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
                       >
                         <Trash2 className="h-4 w-4" />
                         Delete PDF
@@ -437,14 +437,14 @@ const EditingDiploma = () => {
                           setPdf(null)
                           setFileKey((k) => k + 1)
                         }}
-                        className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                        className="p-2 cursor-pointer bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                       >
                         <X className="h-4 w-4" />
                       </button>
                     </div>
                     <button
                       onClick={savePdf}
-                      className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3 bg-gradient-to-r cursor-pointer from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
                       disabled={savingPdf}
                     >
                       <Upload className="h-4 w-4" />
@@ -510,7 +510,7 @@ const EditingDiploma = () => {
                   <div className="flex gap-3">
                     <button
                       onClick={() => startEditingMonth(mi)}
-                      className="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl font-semibold text-white transition-colors flex items-center gap-2"
+                      className="px-4 py-2 cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl font-semibold text-white transition-colors flex items-center gap-2"
                       disabled={editMode}
                     >
                       <Edit3 className="h-4 w-4" />
@@ -518,7 +518,7 @@ const EditingDiploma = () => {
                     </button>
                     <button
                       onClick={() => deleteSavedMonth(mi)}
-                      className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl font-semibold text-white transition-colors flex items-center gap-2"
+                      className="px-4 py-2 cursor-pointer bg-red-500 hover:bg-red-600 rounded-xl font-semibold text-white transition-colors flex items-center gap-2"
                       disabled={editMode}
                     >
                       <Trash2 className="h-4 w-4" />

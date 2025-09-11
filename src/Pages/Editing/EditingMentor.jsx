@@ -66,6 +66,11 @@ const EditingMentor = () => {
 
   // Delete mentor
   const handleDelete = async (publicId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PDF? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
+
     try {
       const url = `${API_BASE}/editingmentor/${encodeURIComponent(publicId)}`;
       console.log("Deleting mentor at:", url);
@@ -144,7 +149,7 @@ const EditingMentor = () => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-               <button
+              <button
                 onClick={() => handleDelete(mentor.publicId)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
