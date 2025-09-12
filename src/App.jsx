@@ -25,7 +25,7 @@ import HomePage from "./Pages/Home";
 // Home
 import HomeBanner from "./Pages/Home/HomeBanner";
 import HomeExclusive from "./Pages/Home/HomeExclusive";
-// import VideoPage from "./Pages/Home/VideoGallery";
+import VideoPage from "./Pages/Home/VideoGallery";
 import MentorPage from "./Pages/Home/HomeMentors";
 import HomeFilmography from "./Pages/Home/HomeFilmography";
 
@@ -111,11 +111,11 @@ const menu = [
       { title: "CF Exclusive", path: "/home/exclusive", icon: "🎞️" },
       { title: "Mentor", path: "/home/mentor", icon: <Users size={16} /> },
       { title: "Mentor's Filmography", path: "/home/filmography", icon: "🎬" },
-      // {
-      //   title: "Video Upload",
-      //   path: "/home/video-upload",
-      //   icon: <Video size={16} />,
-      // },
+      {
+        title: "Video Upload",
+        path: "/home/video-upload",
+        icon: <Video size={16} />,
+      },
     ],
   },
   {
@@ -522,7 +522,7 @@ function App() {
               {/* Home */}
               <Route path="/home/banner" element={<HomeBanner />} />
               <Route path="/home/exclusive" element={<HomeExclusive />} />
-              {/* <Route path="/home/video-upload" element={<VideoPage />} /> */}
+              <Route path="/home/video-upload" element={<VideoPage />} />
               <Route path="/home/mentor" element={<MentorPage />} />
               <Route path="/home/filmography" element={<HomeFilmography />} />
 
