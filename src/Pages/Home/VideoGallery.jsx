@@ -14,7 +14,7 @@ const VideoGalleryBanner = () => {
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(categories[0]); // Default category
+  const [category, setCategory] = useState(categories[0]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -85,22 +85,6 @@ const VideoGalleryBanner = () => {
           <p className="text-gray-600">Upload and manage up to 5 banner videos per category</p>
         </div>
 
-        {/* Category Selector */}
-        <div className="mb-8">
-          <label className="block text-gray-700 font-medium mb-2">Select Category:</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="border rounded-lg p-2 w-full max-w-sm"
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">📤 Upload New Banner Video</h2>
@@ -116,24 +100,39 @@ const VideoGalleryBanner = () => {
                 accept="video/*"
                 ref={fileInputRef}
                 onChange={(e) => setFile(e.target.files[0])}
-                className="border-2 border-dashed cursor-pointer border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+                className="w-full border-2 border-dashed cursor-pointer border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
               />
+
               <input
                 type="text"
                 placeholder="Enter video title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+                className="w-full border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
               />
+
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+
               <button
                 onClick={handleUpload}
                 disabled={!file || !title || uploading}
-                className="bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200 min-w-[120px]"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200"
               >
                 {uploading ? "Uploading..." : "Upload"}
               </button>
             </div>
           )}
+
           {file && (
             <p className="mt-2 text-sm text-gray-600">
               Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
