@@ -178,42 +178,35 @@ const VideoGalleryBanner = () => {
               <p className="text-gray-500">No videos uploaded yet</p>
             </div>
           ) : (
-            <div className="grid gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {videos.map((video) => (
                 <div
                   key={video._id}
                   className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-200"
                 >
-                  <div className="flex flex-col lg:flex-row gap-6">
-                    <div className="lg:w-80">
-                      <video
-                        controls
-                        className="w-full rounded-lg shadow-md"
-                        preload="metadata"
-                      >
-                        <source src={video.videoUrl} type="video/mp4" />
-                      </video>
-                    </div>
-                    <div className="flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                          {video.title || "Untitled Video"}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          📂 Category:{" "}
-                          <span className="font-medium">{video.category}</span>
-                        </p>
-                      </div>
-                      <div className="flex gap-3 mt-4">
-                        <button
-                          onClick={() => handleDelete(video._id)}
-                          className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
-                        >
-                          🗑️ Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  <video
+                    controls
+                    className="w-full rounded-lg shadow-md mb-4"
+                    preload="metadata"
+                  >
+                    <source src={video.videoUrl} type="video/mp4" />
+                  </video>
+
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                    {video.title || "Untitled Video"}
+                  </h3>
+
+                  <p className="text-sm text-gray-600">
+                    📂 Category:{" "}
+                    <span className="font-medium">{video.category}</span>
+                  </p>
+
+                  <button
+                    onClick={() => handleDelete(video._id)}
+                    className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                  >
+                    🗑️ Delete
+                  </button>
                 </div>
               ))}
             </div>
