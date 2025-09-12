@@ -18,6 +18,26 @@ const VideoGalleryBanner = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  const links = [
+    {
+      label: "Guest Lecture",
+      url: "/videos/guest-lecture",
+      category: "guest-lecture",
+    },
+    { label: "Highlights", url: "/videos/highlights", category: "highlights" },
+    {
+      label: "New Launches",
+      url: "/videos/new-launches",
+      category: "new-launches",
+    },
+    { label: "Review", url: "/videos/review", category: "review" },
+    {
+      label: "Student Works",
+      url: "/videos/student-works",
+      category: "student-works",
+    },
+  ];
+
   const fetchVideos = async () => {
     try {
       const res = await axios.get(`${API_BASE}/videogallerybanner/${category}`);
@@ -33,7 +53,9 @@ const VideoGalleryBanner = () => {
 
   const handleUpload = async () => {
     if (videos.length >= 5) {
-      return alert("Maximum 5 videos allowed for this category. Please delete one first.");
+      return alert(
+        "Maximum 5 videos allowed for this category. Please delete one first."
+      );
     }
     if (!file) return alert("Please select a video");
     if (!title.trim()) return alert("Please enter a title");
@@ -82,16 +104,21 @@ const VideoGalleryBanner = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             🎬 Video Gallery Banner
           </h1>
-          <p className="text-gray-600">Upload and manage up to 5 banner videos per category</p>
+          <p className="text-gray-600">
+            Upload and manage up to 5 banner videos per category
+          </p>
         </div>
 
         {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">📤 Upload New Banner Video</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            📤 Upload New Banner Video
+          </h2>
 
           {videos.length >= 5 ? (
             <p className="text-red-600 font-medium">
-              Maximum of 5 videos reached in this category. Delete one to upload a new video.
+              Maximum of 5 videos reached in this category. Delete one to upload
+              a new video.
             </p>
           ) : (
             <div className="flex flex-col gap-4">
@@ -114,11 +141,11 @@ const VideoGalleryBanner = () => {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+                className="w-full border rounded-md p-3"
               >
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                {links.map((link) => (
+                  <option key={link.category} value={link.category}>
+                    {link.label}
                   </option>
                 ))}
               </select>
@@ -173,7 +200,8 @@ const VideoGalleryBanner = () => {
                           {video.title || "Untitled Video"}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          📂 Category: <span className="font-medium">{video.category}</span>
+                          📂 Category:{" "}
+                          <span className="font-medium">{video.category}</span>
                         </p>
                       </div>
                       <div className="flex gap-3 mt-4">
