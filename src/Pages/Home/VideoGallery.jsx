@@ -17,6 +17,7 @@ const VideoGalleryBanner = () => {
   const [category, setCategory] = useState(categories[0]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const [description, setDescription] = useState("");
 
   const links = [
     { label: "Guest Lecture", category: "guest-lecture" },
@@ -42,16 +43,20 @@ const VideoGalleryBanner = () => {
   const handleUpload = async () => {
     const existing = videos.find((v) => v.category === category);
     if (existing) {
-      return alert(`A video for "${category}" already exists! Delete it first.`);
+      return alert(
+        `A video for "${category}" already exists! Delete it first.`
+      );
     }
     if (!file) return alert("Please select a video");
     if (!title.trim()) return alert("Please enter a title");
+    if (!description.trim()) return alert("Please enter a description");
 
     setUploading(true);
     const formData = new FormData();
     formData.append("video", file);
     formData.append("title", title);
     formData.append("category", category);
+    formData.append("description", description);
 
     try {
       await axios.post(`${API_BASE}/videogallerybanner/upload`, formData, {
@@ -61,6 +66,7 @@ const VideoGalleryBanner = () => {
       await fetchVideos();
       setFile(null);
       setTitle("");
+      setDescription("");
       if (fileInputRef.current) fileInputRef.current.value = "";
       alert("Video uploaded successfully!");
     } catch (err) {
@@ -92,6 +98,7 @@ const VideoGalleryBanner = () => {
         </h1>
 
         {/* Upload Section */}
+        {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
             📤 Upload New Banner Video
@@ -114,6 +121,14 @@ const VideoGalleryBanner = () => {
               className="w-full border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
             />
 
+            <input
+              type="text"
+              placeholder="Enter video description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+            />
+
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -125,14 +140,17 @@ const VideoGalleryBanner = () => {
                   value={link.category}
                   disabled={videos.some((v) => v.category === link.category)}
                 >
-                  {link.label} {videos.some((v) => v.category === link.category) ? "(Already Uploaded)" : ""}
+                  {link.label}{" "}
+                  {videos.some((v) => v.category === link.category)
+                    ? "(Already Uploaded)"
+                    : ""}
                 </option>
               ))}
             </select>
 
             <button
               onClick={handleUpload}
-              disabled={!file || !title || uploading}
+              disabled={!file || !title || !description || uploading}
               className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200"
             >
               {uploading ? "Uploading..." : "Upload"}
@@ -140,7 +158,8 @@ const VideoGalleryBanner = () => {
 
             {file && (
               <p className="mt-2 text-sm text-gray-600">
-                Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)}{" "}
+                MB)
               </p>
             )}
           </div>
@@ -174,6 +193,11 @@ const VideoGalleryBanner = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">
                   {video.title || "Untitled Video"}
                 </h3>
+
+                <p className="text-sm text-gray-600">
+                  📄 Description:{" "}
+                  <span className="font-medium">{video.description}</span>
+                </p>
 
                 <p className="text-sm text-gray-600">
                   📂 Category:{" "}
