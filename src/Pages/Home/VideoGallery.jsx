@@ -15,7 +15,6 @@ const VideoGalleryBanner = () => {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(categories[0]); // Default category
-  const [textLink, setTextLink] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -38,14 +37,12 @@ const VideoGalleryBanner = () => {
     }
     if (!file) return alert("Please select a video");
     if (!title.trim()) return alert("Please enter a title");
-    if (!textLink.trim()) return alert("Please enter a text link");
 
     setUploading(true);
     const formData = new FormData();
     formData.append("video", file);
     formData.append("title", title);
     formData.append("category", category);
-    formData.append("textLink", textLink);
 
     try {
       await axios.post(`${API_BASE}/videogallerybanner/upload`, formData, {
@@ -55,7 +52,6 @@ const VideoGalleryBanner = () => {
       await fetchVideos();
       setFile(null);
       setTitle("");
-      setTextLink("");
       if (fileInputRef.current) fileInputRef.current.value = "";
       alert("Video uploaded successfully!");
     } catch (err) {
@@ -129,16 +125,9 @@ const VideoGalleryBanner = () => {
                 onChange={(e) => setTitle(e.target.value)}
                 className="border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
               />
-              <input
-                type="text"
-                placeholder="Enter text link (e.g., /videos/guest-lecture)"
-                value={textLink}
-                onChange={(e) => setTextLink(e.target.value)}
-                className="border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
-              />
               <button
                 onClick={handleUpload}
-                disabled={!file || !title || !textLink || uploading}
+                disabled={!file || !title || uploading}
                 className="bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200 min-w-[120px]"
               >
                 {uploading ? "Uploading..." : "Upload"}
@@ -184,11 +173,11 @@ const VideoGalleryBanner = () => {
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
                           {video.title || "Untitled Video"}
                         </h3>
-                        <p className="text-blue-600 underline">
-                          Link: <a href={video.textLink}>{video.textLink}</a>
+                        <p className="text-sm text-gray-600">
+                          📂 Category: <span className="font-medium">{video.category}</span>
                         </p>
                       </div>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 mt-4">
                         <button
                           onClick={() => handleDelete(video._id)}
                           className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
