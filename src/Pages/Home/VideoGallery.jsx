@@ -203,7 +203,7 @@ const VideoGalleryBanner = () => {
 
                   <button
                     onClick={() => handleDelete(video._id)}
-                    className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                    className="bg-red-500 hover:bg-red-600 cursor-pointer mt-2 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
                   >
                     🗑️ Delete
                   </button>
