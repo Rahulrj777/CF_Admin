@@ -19,28 +19,16 @@ const VideoGalleryBanner = () => {
   const fileInputRef = useRef(null);
 
   const links = [
-    {
-      label: "Guest Lecture",
-      url: "/videos/guest-lecture",
-      category: "guest-lecture",
-    },
-    { label: "Highlights", url: "/videos/highlights", category: "highlights" },
-    {
-      label: "New Launches",
-      url: "/videos/new-launches",
-      category: "new-launches",
-    },
-    { label: "Review", url: "/videos/review", category: "review" },
-    {
-      label: "Student Works",
-      url: "/videos/student-works",
-      category: "student-works",
-    },
+    { label: "Guest Lecture", category: "guest-lecture" },
+    { label: "Highlights", category: "highlights" },
+    { label: "New Launches", category: "new-launches" },
+    { label: "Review", category: "review" },
+    { label: "Student Works", category: "student-works" },
   ];
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/videogallerybanner/${category}`);
+      const res = await axios.get(`${API_BASE}/videogallerybanner/all`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -49,13 +37,12 @@ const VideoGalleryBanner = () => {
 
   useEffect(() => {
     fetchVideos();
-  }, [category]);
+  }, []);
 
   const handleUpload = async () => {
-    if (videos.length >= 5) {
-      return alert(
-        "Maximum 5 videos allowed for this category. Please delete one first."
-      );
+    const existing = videos.find((v) => v.category === category);
+    if (existing) {
+      return alert(`A video for "${category}" already exists! Delete it first.`);
     }
     if (!file) return alert("Please select a video");
     if (!title.trim()) return alert("Please enter a title");
@@ -100,14 +87,9 @@ const VideoGalleryBanner = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            🎬 Video Gallery Banner
-          </h1>
-          <p className="text-gray-600">
-            Upload and manage up to 5 banner videos per category
-          </p>
-        </div>
+        <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">
+          🎬 Video Gallery Banner
+        </h1>
 
         {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
@@ -115,103 +97,99 @@ const VideoGalleryBanner = () => {
             📤 Upload New Banner Video
           </h2>
 
-          {videos.length >= 5 ? (
-            <p className="text-red-600 font-medium">
-              Maximum of 5 videos reached in this category. Delete one to upload
-              a new video.
-            </p>
-          ) : (
-            <div className="flex flex-col gap-4">
-              <input
-                type="file"
-                accept="video/*"
-                ref={fileInputRef}
-                onChange={(e) => setFile(e.target.files[0])}
-                className="w-full border-2 border-dashed cursor-pointer border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
-              />
+          <div className="flex flex-col gap-4">
+            <input
+              type="file"
+              accept="video/*"
+              ref={fileInputRef}
+              onChange={(e) => setFile(e.target.files[0])}
+              className="w-full border-2 border-dashed cursor-pointer border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+            />
 
-              <input
-                type="text"
-                placeholder="Enter video title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
-              />
+            <input
+              type="text"
+              placeholder="Enter video title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+            />
 
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full border rounded-md p-3"
-              >
-                {links.map((link) => (
-                  <option key={link.category} value={link.category}>
-                    {link.label}
-                  </option>
-                ))}
-              </select>
-
-              <button
-                onClick={handleUpload}
-                disabled={!file || !title || uploading}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200"
-              >
-                {uploading ? "Uploading..." : "Upload"}
-              </button>
-            </div>
-          )}
-
-          {file && (
-            <p className="mt-2 text-sm text-gray-600">
-              Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
-            </p>
-          )}
-        </div>
-
-        {/* Video List */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            📹 Uploaded Videos in "{category}" ({videos.length}/5)
-          </h2>
-          {videos.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-xl">
-              <div className="text-4xl mb-4">📹</div>
-              <p className="text-gray-500">No videos uploaded yet</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {videos.map((video) => (
-                <div
-                  key={video._id}
-                  className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-200"
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border rounded-md p-3"
+            >
+              {links.map((link) => (
+                <option
+                  key={link.category}
+                  value={link.category}
+                  disabled={videos.some((v) => v.category === link.category)}
                 >
-                  <video
-                    controls
-                    className="w-full rounded-lg shadow-md mb-4"
-                    preload="metadata"
-                  >
-                    <source src={video.videoUrl} type="video/mp4" />
-                  </video>
-
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                    {video.title || "Untitled Video"}
-                  </h3>
-
-                  <p className="text-sm text-gray-600">
-                    📂 Category:{" "}
-                    <span className="font-medium">{video.category}</span>
-                  </p>
-
-                  <button
-                    onClick={() => handleDelete(video._id)}
-                    className="bg-red-500 hover:bg-red-600 cursor-pointer mt-2 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
-                  >
-                    🗑️ Delete
-                  </button>
-                </div>
+                  {link.label} {videos.some((v) => v.category === link.category) ? "(Already Uploaded)" : ""}
+                </option>
               ))}
-            </div>
-          )}
+            </select>
+
+            <button
+              onClick={handleUpload}
+              disabled={!file || !title || uploading}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200"
+            >
+              {uploading ? "Uploading..." : "Upload"}
+            </button>
+
+            {file && (
+              <p className="mt-2 text-sm text-gray-600">
+                Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+              </p>
+            )}
+          </div>
         </div>
+
+        {/* All Videos */}
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          📹 All Uploaded Videos ({videos.length}/5)
+        </h2>
+
+        {videos.length === 0 ? (
+          <div className="text-center py-12 bg-gray-50 rounded-xl">
+            <div className="text-4xl mb-4">📹</div>
+            <p className="text-gray-500">No videos uploaded yet</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {videos.map((video) => (
+              <div
+                key={video._id}
+                className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-200"
+              >
+                <video
+                  controls
+                  className="w-full rounded-lg shadow-md mb-4"
+                  preload="metadata"
+                >
+                  <source src={video.videoUrl} type="video/mp4" />
+                </video>
+
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  {video.title || "Untitled Video"}
+                </h3>
+
+                <p className="text-sm text-gray-600">
+                  📂 Category:{" "}
+                  <span className="font-medium">{video.category}</span>
+                </p>
+
+                <button
+                  onClick={() => handleDelete(video._id)}
+                  className="bg-red-500 hover:bg-red-600 cursor-pointer mt-2 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
+                >
+                  🗑️ Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
