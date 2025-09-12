@@ -2,16 +2,26 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { API_BASE } from "../../Utils/Api.js";
 
+const categories = [
+  "guest-lecture",
+  "highlights",
+  "new-launches",
+  "review",
+  "student-works",
+];
+
 const VideoGalleryBanner = () => {
   const [videos, setVideos] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState(categories[0]); // Default category
+  const [textLink, setTextLink] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/videogallerybanner`);
+      const res = await axios.get(`${API_BASE}/videogallerybanner/${category}`);
       setVideos(res.data);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -20,19 +30,22 @@ const VideoGalleryBanner = () => {
 
   useEffect(() => {
     fetchVideos();
-  }, []);
+  }, [category]);
 
   const handleUpload = async () => {
     if (videos.length >= 5) {
-      return alert("Maximum 5 videos allowed for banner. Please delete one first.");
+      return alert("Maximum 5 videos allowed for this category. Please delete one first.");
     }
     if (!file) return alert("Please select a video");
     if (!title.trim()) return alert("Please enter a title");
+    if (!textLink.trim()) return alert("Please enter a text link");
 
     setUploading(true);
     const formData = new FormData();
     formData.append("video", file);
     formData.append("title", title);
+    formData.append("category", category);
+    formData.append("textLink", textLink);
 
     try {
       await axios.post(`${API_BASE}/videogallerybanner/upload`, formData, {
@@ -42,6 +55,7 @@ const VideoGalleryBanner = () => {
       await fetchVideos();
       setFile(null);
       setTitle("");
+      setTextLink("");
       if (fileInputRef.current) fileInputRef.current.value = "";
       alert("Video uploaded successfully!");
     } catch (err) {
@@ -72,40 +86,59 @@ const VideoGalleryBanner = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             🎬 Video Gallery Banner
           </h1>
-          <p className="text-gray-600">
-            Upload and manage up to 5 banner videos
-          </p>
+          <p className="text-gray-600">Upload and manage up to 5 banner videos per category</p>
+        </div>
+
+        {/* Category Selector */}
+        <div className="mb-8">
+          <label className="block text-gray-700 font-medium mb-2">Select Category:</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="border rounded-lg p-2 w-full max-w-sm"
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Upload Section */}
         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            📤 Upload New Banner Video
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">📤 Upload New Banner Video</h2>
 
           {videos.length >= 5 ? (
             <p className="text-red-600 font-medium">
-              Maximum of 5 videos reached. Delete a video to upload a new one.
+              Maximum of 5 videos reached in this category. Delete one to upload a new video.
             </p>
           ) : (
-            <div className="flex lg:flex-col flex-row gap-4">
+            <div className="flex flex-col gap-4">
               <input
                 type="file"
                 accept="video/*"
                 ref={fileInputRef}
                 onChange={(e) => setFile(e.target.files[0])}
-                className="flex-1 border-2 border-dashed cursor-pointer border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+                className="border-2 border-dashed cursor-pointer border-indigo-300 rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
               />
               <input
                 type="text"
                 placeholder="Enter video title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="flex-1 border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+                className="border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
+              />
+              <input
+                type="text"
+                placeholder="Enter text link (e.g., /videos/guest-lecture)"
+                value={textLink}
+                onChange={(e) => setTextLink(e.target.value)}
+                className="border rounded-lg p-4 bg-white focus:border-indigo-500 focus:outline-none"
               />
               <button
                 onClick={handleUpload}
-                disabled={!file || !title || uploading}
+                disabled={!file || !title || !textLink || uploading}
                 className="bg-indigo-600 hover:bg-indigo-700 cursor-pointer disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200 min-w-[120px]"
               >
                 {uploading ? "Uploading..." : "Upload"}
@@ -122,7 +155,7 @@ const VideoGalleryBanner = () => {
         {/* Video List */}
         <div>
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            📹 Uploaded Videos ({videos.length}/5)
+            📹 Uploaded Videos in "{category}" ({videos.length}/5)
           </h2>
           {videos.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-xl">
@@ -151,6 +184,9 @@ const VideoGalleryBanner = () => {
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
                           {video.title || "Untitled Video"}
                         </h3>
+                        <p className="text-blue-600 underline">
+                          Link: <a href={video.textLink}>{video.textLink}</a>
+                        </p>
                       </div>
                       <div className="flex gap-3">
                         <button
