@@ -15,7 +15,7 @@ const CfaDiploma = () => {
   const [isDeletingPdf, setIsDeletingPdf] = useState(false)
   const fileInputRef = useRef(null)
 
-  const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com"
+  const API_BASE = import.meta.env.VITE_API_BASE 
   const API = `${API_BASE}/cfadiploma`
 
   useEffect(() => {

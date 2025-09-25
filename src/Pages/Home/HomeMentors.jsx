@@ -7,7 +7,7 @@ const HomeMentor = () => {
   const [error, setError] = useState(null);
 
   const API_BASE =
-    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+    import.meta.env.VITE_API_BASE ;
 
   useEffect(() => {
     const fetchMentors = async () => {

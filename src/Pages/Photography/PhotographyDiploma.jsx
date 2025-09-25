@@ -13,7 +13,7 @@ const PhotographyDiploma = () => {
   const [isSavingContent, setIsSavingContent] = useState(false)
   const [isSavingPdf, setIsSavingPdf] = useState(false)
 
-  const API_BASE = import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com"
+  const API_BASE = import.meta.env.VITE_API_BASE 
   const API = `${API_BASE}/photographydiploma`
 
   useEffect(() => {

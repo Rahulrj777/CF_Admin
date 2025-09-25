@@ -17,7 +17,7 @@ export default function VirtualProductionDiploma() {
   const [loading, setLoading] = useState(false);
 
   const API_BASE =
-    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+    import.meta.env.VITE_API_BASE ;
   const API = `${API_BASE}/virtualproductiondiploma`;
 
   const links = [

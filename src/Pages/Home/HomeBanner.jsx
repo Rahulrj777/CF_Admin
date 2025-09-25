@@ -7,7 +7,7 @@ const HomeBanner = () => {
   const [error, setError] = useState(null);
 
   const API_BASE =
-    import.meta.env.VITE_API_BASE || "https://cf-server-tr24.onrender.com";
+    import.meta.env.VITE_API_BASE ;
 
   // ✅ Fetch existing banners on mount
   useEffect(() => {
