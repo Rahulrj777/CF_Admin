@@ -98,26 +98,6 @@ const DirectionDiplomaAdmin = () => {
     }
   };
 
-  const handleDownloadPdf = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE}/directiondiploma/pdf/download`
-      );
-      const { downloadUrl } = response.data;
-
-      // Create a temporary link element and trigger download
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = "Direction-Diploma.pdf";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (err) {
-      console.error("Download error:", err);
-      alert("Error downloading PDF!");
-    }
-  };
-
   // Delete PDF
   const handleDeletePdf = async () => {
     const confirmDelete = window.confirm(
