@@ -149,7 +149,7 @@ const DirectionDiplomaAdmin = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`${API_BASE}/cinematographydiploma/diploma/subtitle`, {
+      await axios.delete(`${API_BASE}/directiondiploma/subtitle`, {
         data: { semester, index: idx },
       });
 
