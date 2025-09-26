@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../../Utils/Api.js";
 
 export default function HomeExclusive() {
   const [titleLine, setTitleLine] = useState("");
   const [image, setImage] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
 
   const fetchItems = async () => {
     try {

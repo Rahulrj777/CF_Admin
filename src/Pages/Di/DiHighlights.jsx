@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../../Utils/Api.js";
 
 export default function DiHighlights() {
   const [titleLine, setTitleLine] = useState("");
   const [image, setImage] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
 
   // Fetch highlights from MongoDB/Cloudinary
   const fetchItems = async () => {
@@ -25,50 +23,56 @@ export default function DiHighlights() {
   }, []);
 
   // Handle new highlight upload
-// Upload highlight
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!image || !titleLine) {
-    alert("⚠️ Please provide both an image and a title.");
-    return;
-  }
+  // Upload highlight
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!image || !titleLine) {
+      alert("⚠️ Please provide both an image and a title.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("image", image);
-  formData.append("titleLine", titleLine);
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("titleLine", titleLine);
 
-  try {
-    setLoading(true);
-    const res = await axios.post(`${API_BASE}/dihighlights/upload`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${API_BASE}/dihighlights/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-    setImage(null);
-    setTitleLine("");
-    fetchItems(); // refresh the list
-    alert("✅ Highlight uploaded successfully!");
-  } catch (err) {
-    console.error("Upload failed:", err.response?.data || err.message);
-    alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
+      setImage(null);
+      setTitleLine("");
+      fetchItems(); // refresh the list
+      alert("✅ Highlight uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed:", err.response?.data || err.message);
+      alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-// Delete highlight with confirmation
-const handleDelete = async (_id) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this highlight?");
-  if (!confirmed) return;
+  // Delete highlight with confirmation
+  const handleDelete = async (_id) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this highlight?"
+    );
+    if (!confirmed) return;
 
-  try {
-    await axios.delete(`${API_BASE}/dihighlights/${_id}`);
-    fetchItems(); // refresh the list
-    alert("🗑️ Highlight deleted successfully!");
-  } catch (err) {
-    console.error("Delete failed:", err.response?.data || err.message);
-    alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+    try {
+      await axios.delete(`${API_BASE}/dihighlights/${_id}`);
+      fetchItems(); // refresh the list
+      alert("🗑️ Highlight deleted successfully!");
+    } catch (err) {
+      console.error("Delete failed:", err.response?.data || err.message);
+      alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">

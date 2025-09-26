@@ -1,163 +1,179 @@
-import { useState, useEffect, useRef } from "react"
-import axios from "axios"
-import { FileText, Upload, Eye, Trash2, Plus, Edit, Save, Loader2 } from "lucide-react"
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import {
+  FileText,
+  Upload,
+  Eye,
+  Trash2,
+  Plus,
+  Edit,
+  Save,
+  Loader2,
+} from "lucide-react";
+import { API_BASE } from "../../Utils/Api.js";
 
 const StageUnrealDiploma = () => {
-  const [contents, setContents] = useState([])
-  const [savedPdf, setSavedPdf] = useState("")
-  const [title, setTitle] = useState("")
-  const [children, setChildren] = useState([""])
-  const [editingId, setEditingId] = useState(null)
-  const [pdf, setPdf] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSavingContent, setIsSavingContent] = useState(false)
-  const [isSavingPdf, setIsSavingPdf] = useState(false)
-  const [isDeletingPdf, setIsDeletingPdf] = useState(false)
-  const fileInputRef = useRef(null)
+  const [contents, setContents] = useState([]);
+  const [savedPdf, setSavedPdf] = useState("");
+  const [title, setTitle] = useState("");
+  const [children, setChildren] = useState([""]);
+  const [editingId, setEditingId] = useState(null);
+  const [pdf, setPdf] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSavingContent, setIsSavingContent] = useState(false);
+  const [isSavingPdf, setIsSavingPdf] = useState(false);
+  const [isDeletingPdf, setIsDeletingPdf] = useState(false);
+  const fileInputRef = useRef(null);
 
-  const API_BASE = import.meta.env.VITE_API_BASE 
-  const API = `${API_BASE}/stageunrealdiploma`
+  const API = `${API_BASE}/stageunrealdiploma`;
 
   useEffect(() => {
-    fetchAll()
-  }, [])
+    fetchAll();
+  }, []);
 
   const fetchAll = async () => {
     try {
-      setIsLoading(true)
-      const res = await axios.get(API)
+      setIsLoading(true);
+      const res = await axios.get(API);
       const items = (res.data.items || []).map((item) => ({
         ...item,
         id: item._id,
-      }))
-      setContents(items)
-      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API}/pdf/view` : "")
+      }));
+      setContents(items);
+      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API}/pdf/view` : "");
     } catch (err) {
-      console.error("[fetchAll] error:", err)
+      console.error("[fetchAll] error:", err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleChildChange = (index, value) => {
-    const updated = [...children]
-    updated[index] = value
-    setChildren(updated)
-  }
+    const updated = [...children];
+    updated[index] = value;
+    setChildren(updated);
+  };
 
-  const addChild = () => setChildren([...children, ""])
+  const addChild = () => setChildren([...children, ""]);
   const removeChild = (index) => {
-    const updated = children.filter((_, i) => i !== index)
-    setChildren(updated.length ? updated : [""])
-  }
+    const updated = children.filter((_, i) => i !== index);
+    setChildren(updated.length ? updated : [""]);
+  };
 
   const handleSave = async () => {
     if (!title || children.some((c) => !c.trim())) {
-      alert("Title and all content fields are required")
-      return
+      alert("Title and all content fields are required");
+      return;
     }
 
-    if (!window.confirm(editingId ? "Update this entry?" : "Save this entry?")) return
+    if (!window.confirm(editingId ? "Update this entry?" : "Save this entry?"))
+      return;
 
     try {
-      setIsSavingContent(true)
+      setIsSavingContent(true);
       if (editingId) {
-        const res = await axios.put(`${API}/${editingId}`, { title, children })
-        setContents((prev) => prev.map((c) => (c.id === editingId ? { ...res.data, id: res.data._id } : c)))
+        const res = await axios.put(`${API}/${editingId}`, { title, children });
+        setContents((prev) =>
+          prev.map((c) =>
+            c.id === editingId ? { ...res.data, id: res.data._id } : c
+          )
+        );
       } else {
-        const res = await axios.post(API, { title, children })
-        setContents((prev) => [...prev, { ...res.data, id: res.data._id }])
+        const res = await axios.post(API, { title, children });
+        setContents((prev) => [...prev, { ...res.data, id: res.data._id }]);
       }
 
-      setTitle("")
-      setChildren([""])
-      setEditingId(null)
+      setTitle("");
+      setChildren([""]);
+      setEditingId(null);
     } catch (err) {
-      console.error(err)
-      alert("Error saving content")
+      console.error(err);
+      alert("Error saving content");
     } finally {
-      setIsSavingContent(false)
+      setIsSavingContent(false);
     }
-  }
+  };
 
   const handlePdfSelect = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
     if (file.type !== "application/pdf") {
-      alert("Only PDF files allowed")
-      e.target.value = ""
-      return
+      alert("Only PDF files allowed");
+      e.target.value = "";
+      return;
     }
-    setPdf(file)
-  }
+    setPdf(file);
+  };
 
   const savePdf = async () => {
-    if (!pdf) return alert("Please choose a PDF first.")
-    if (!window.confirm("Upload this PDF?")) return
+    if (!pdf) return alert("Please choose a PDF first.");
+    if (!window.confirm("Upload this PDF?")) return;
 
-    const formData = new FormData()
-    formData.append("pdf", pdf)
+    const formData = new FormData();
+    formData.append("pdf", pdf);
 
     try {
-      setIsSavingPdf(true)
+      setIsSavingPdf(true);
       await axios.post(`${API}/pdf`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
+      });
 
-      setSavedPdf(`${API}/pdf/view`)
-      setPdf(null)
-      if (fileInputRef.current) fileInputRef.current.value = ""
+      setSavedPdf(`${API}/pdf/view`);
+      setPdf(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
-      console.error(err)
-      alert("Error uploading PDF")
+      console.error(err);
+      alert("Error uploading PDF");
     } finally {
-      setIsSavingPdf(false)
+      setIsSavingPdf(false);
     }
-  }
+  };
 
   const deletePdf = async () => {
-    if (!window.confirm("Are you sure you want to delete the PDF?")) return
+    if (!window.confirm("Are you sure you want to delete the PDF?")) return;
 
     try {
-      setIsDeletingPdf(true)
-      await axios.delete(`${API}/pdf`)
-      setSavedPdf("")
-      setPdf(null)
-      if (fileInputRef.current) fileInputRef.current.value = ""
+      setIsDeletingPdf(true);
+      await axios.delete(`${API}/pdf`);
+      setSavedPdf("");
+      setPdf(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
-      console.error(err)
-      alert("Error deleting PDF")
+      console.error(err);
+      alert("Error deleting PDF");
     } finally {
-      setIsDeletingPdf(false)
+      setIsDeletingPdf(false);
     }
-  }
+  };
 
   const handleDelete = async (_id) => {
-    if (!window.confirm("Are you sure you want to delete this entry?")) return
+    if (!window.confirm("Are you sure you want to delete this entry?")) return;
     try {
-      await axios.delete(`${API}/${_id}`)
-      setContents((prev) => prev.filter((c) => c._id !== _id))
+      await axios.delete(`${API}/${_id}`);
+      setContents((prev) => prev.filter((c) => c._id !== _id));
     } catch (err) {
-      console.error(err)
-      alert("Delete failed")
+      console.error(err);
+      alert("Delete failed");
     }
-  }
+  };
 
   const handleEdit = (content) => {
-    setTitle(content.title)
-    setChildren(content.children || [""])
-    setEditingId(content.id)
-  }
+    setTitle(content.title);
+    setChildren(content.children || [""]);
+    setEditingId(content.id);
+  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="flex items-center gap-3 text-purple-600">
           <Loader2 className="w-8 h-8 animate-spin" />
-          <span className="text-lg font-medium">Loading Stage Unreal Diploma...</span>
+          <span className="text-lg font-medium">
+            Loading Stage Unreal Diploma...
+          </span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -168,7 +184,9 @@ const StageUnrealDiploma = () => {
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-800 bg-clip-text text-transparent mb-2">
             Stage Unreal Diploma Admin
           </h1>
-          <p className="text-gray-600 text-lg">Manage curriculum content and diploma PDF</p>
+          <p className="text-gray-600 text-lg">
+            Manage curriculum content and diploma PDF
+          </p>
         </div>
 
         {/* Two Column Grid */}
@@ -229,7 +247,11 @@ const StageUnrealDiploma = () => {
                   ) : (
                     <Save className="w-4 h-4" />
                   )}
-                  {isSavingContent ? "Saving..." : editingId ? "Update" : "Save"}
+                  {isSavingContent
+                    ? "Saving..."
+                    : editingId
+                    ? "Update"
+                    : "Save"}
                 </button>
               </div>
             </div>
@@ -248,7 +270,9 @@ const StageUnrealDiploma = () => {
               <div className="space-y-4">
                 <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
                   <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 mb-4">Upload diploma PDF (10MB)</p>
+                  <p className="text-gray-600 mb-4">
+                    Upload diploma PDF (10MB)
+                  </p>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -266,13 +290,19 @@ const StageUnrealDiploma = () => {
 
                 {pdf && (
                   <div className="bg-blue-50 p-4 rounded-xl">
-                    <p className="text-sm text-gray-600 mb-3">Selected: {pdf.name}</p>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Selected: {pdf.name}
+                    </p>
                     <button
                       onClick={savePdf}
                       disabled={isSavingPdf}
                       className="flex items-center cursor-pointer gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all disabled:opacity-50"
                     >
-                      {isSavingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                      {isSavingPdf ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
                       {isSavingPdf ? "Uploading..." : "Upload PDF"}
                     </button>
                   </div>
@@ -281,7 +311,9 @@ const StageUnrealDiploma = () => {
             ) : (
               <div className="bg-green-50 p-6 rounded-xl text-center">
                 <FileText className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                <p className="text-green-800 font-medium mb-4">PDF uploaded successfully!</p>
+                <p className="text-green-800 font-medium mb-4">
+                  PDF uploaded successfully!
+                </p>
                 <div className="flex gap-3 justify-center">
                   <a
                     href={savedPdf}
@@ -297,7 +329,11 @@ const StageUnrealDiploma = () => {
                     disabled={isDeletingPdf}
                     className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50"
                   >
-                    {isDeletingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    {isDeletingPdf ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
                     {isDeletingPdf ? "Deleting..." : "Delete"}
                   </button>
                 </div>
@@ -325,7 +361,9 @@ const StageUnrealDiploma = () => {
                   key={c._id}
                   className="bg-white rounded-xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow"
                 >
-                  <h4 className="font-bold text-gray-800 text-lg mb-3">{c.title}</h4>
+                  <h4 className="font-bold text-gray-800 text-lg mb-3">
+                    {c.title}
+                  </h4>
                   <ul className="space-y-1 mb-4 text-sm text-gray-600">
                     {c.children?.map((child, idx) => (
                       <li key={idx} className="flex items-start gap-2">
@@ -357,7 +395,7 @@ const StageUnrealDiploma = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default StageUnrealDiploma
+export default StageUnrealDiploma;

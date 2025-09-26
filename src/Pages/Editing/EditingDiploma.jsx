@@ -1,77 +1,96 @@
-import { useEffect, useState } from "react"
-import axios from "axios"
-import { FileText, Trash2, Plus, X, Upload, GraduationCap, Edit3, Calendar, BookOpen, Save } from "lucide-react"
-
-const API_BASE = import.meta.env.VITE_API_BASE
+import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  FileText,
+  Trash2,
+  Plus,
+  X,
+  Upload,
+  GraduationCap,
+  Edit3,
+  Calendar,
+  BookOpen,
+  Save,
+} from "lucide-react";
+import { API_BASE } from "../../Utils/Api.js";
 
 const EditingDiploma = () => {
-  const [months, setMonths] = useState([])
-  const [pdf, setPdf] = useState(null)
-  const [fileKey, setFileKey] = useState(0)
-  const [savedMonths, setSavedMonths] = useState([])
-  const [savedPdf, setSavedPdf] = useState("")
-  const [saving, setSaving] = useState(false)
-  const [savingPdf, setSavingPdf] = useState(false)
-  const [editMode, setEditMode] = useState(false)
-  const [editingIndex, setEditingIndex] = useState(-1)
-  const [showAddForm, setShowAddForm] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [months, setMonths] = useState([]);
+  const [pdf, setPdf] = useState(null);
+  const [fileKey, setFileKey] = useState(0);
+  const [savedMonths, setSavedMonths] = useState([]);
+  const [savedPdf, setSavedPdf] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [savingPdf, setSavingPdf] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(-1);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchDiplomaData = async () => {
     try {
-      setLoading(true)
-      const res = await axios.get(`${API_BASE}/editingdiploma`)
-      setSavedMonths(res.data.diploma || [])
-      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API_BASE}/editingdiploma/pdf/view` : "")
+      setLoading(true);
+      const res = await axios.get(`${API_BASE}/editingdiploma`);
+      setSavedMonths(res.data.diploma || []);
+      setSavedPdf(
+        res.data.diplomaPdf?.pdfName
+          ? `${API_BASE}/editingdiploma/pdf/view`
+          : ""
+      );
     } catch (err) {
-      console.error("Error fetching diploma data:", err)
+      console.error("Error fetching diploma data:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchDiplomaData()
-  }, [])
+    fetchDiplomaData();
+  }, []);
 
   const startEditingMonth = (index) => {
-    setEditMode(true)
-    setEditingIndex(index)
-    setMonths([{ ...savedMonths[index] }])
-    setShowAddForm(true)
-  }
+    setEditMode(true);
+    setEditingIndex(index);
+    setMonths([{ ...savedMonths[index] }]);
+    setShowAddForm(true);
+  };
 
   const cancelEdit = () => {
-    setEditMode(false)
-    setEditingIndex(-1)
-    setMonths([])
-    setShowAddForm(false)
-  }
+    setEditMode(false);
+    setEditingIndex(-1);
+    setMonths([]);
+    setShowAddForm(false);
+  };
 
   const deleteSavedMonth = async (index) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this month? This action cannot be undone.")
-    if (!confirmDelete) return
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this month? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
 
     try {
-      const updatedDiploma = savedMonths.filter((_, i) => i !== index)
-      const formData = new FormData()
-      formData.append("diploma", JSON.stringify(updatedDiploma))
+      const updatedDiploma = savedMonths.filter((_, i) => i !== index);
+      const formData = new FormData();
+      formData.append("diploma", JSON.stringify(updatedDiploma));
 
       await axios.post(`${API_BASE}/editingdiploma/save`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
+      });
 
-      setSavedMonths(updatedDiploma)
-      alert("Month deleted successfully ✅")
+      setSavedMonths(updatedDiploma);
+      alert("Month deleted successfully ✅");
     } catch (err) {
-      console.error("Error deleting month:", err)
-      alert("Error deleting month")
+      console.error("Error deleting month:", err);
+      alert("Error deleting month");
     }
-  }
+  };
 
-  const addMonth = () => setMonths((prev) => [...prev, { month: "", sections: [] }])
+  const addMonth = () =>
+    setMonths((prev) => [...prev, { month: "", sections: [] }]);
   const updateMonthTitle = (mi, value) =>
-    setMonths((prev) => prev.map((m, i) => (i === mi ? { ...m, month: value } : m)))
+    setMonths((prev) =>
+      prev.map((m, i) => (i === mi ? { ...m, month: value } : m))
+    );
 
   const addSection = (mi) =>
     setMonths((prev) =>
@@ -81,9 +100,9 @@ const EditingDiploma = () => {
               ...m,
               sections: [...m.sections, { name: "New Section", items: [] }],
             }
-          : m,
-      ),
-    )
+          : m
+      )
+    );
 
   const updateSectionName = (mi, si, value) =>
     setMonths((prev) =>
@@ -91,14 +110,20 @@ const EditingDiploma = () => {
         i === mi
           ? {
               ...m,
-              sections: m.sections.map((s, j) => (j === si ? { ...s, name: value } : s)),
+              sections: m.sections.map((s, j) =>
+                j === si ? { ...s, name: value } : s
+              ),
             }
-          : m,
-      ),
-    )
+          : m
+      )
+    );
 
   const deleteSection = (mi, si) =>
-    setMonths((prev) => prev.map((m, i) => (i === mi ? { ...m, sections: m.sections.filter((_, j) => j !== si) } : m)))
+    setMonths((prev) =>
+      prev.map((m, i) =>
+        i === mi ? { ...m, sections: m.sections.filter((_, j) => j !== si) } : m
+      )
+    );
 
   const addItem = (mi, si) =>
     setMonths((prev) =>
@@ -106,11 +131,15 @@ const EditingDiploma = () => {
         i === mi
           ? {
               ...m,
-              sections: m.sections.map((s, j) => (j === si ? { ...s, items: [...s.items, { title: "New Item" }] } : s)),
+              sections: m.sections.map((s, j) =>
+                j === si
+                  ? { ...s, items: [...s.items, { title: "New Item" }] }
+                  : s
+              ),
             }
-          : m,
-      ),
-    )
+          : m
+      )
+    );
 
   const updateItemTitle = (mi, si, ii, value) =>
     setMonths((prev) =>
@@ -122,14 +151,16 @@ const EditingDiploma = () => {
                 j === si
                   ? {
                       ...s,
-                      items: s.items.map((it, k) => (k === ii ? { ...it, title: value } : it)),
+                      items: s.items.map((it, k) =>
+                        k === ii ? { ...it, title: value } : it
+                      ),
                     }
-                  : s,
+                  : s
               ),
             }
-          : m,
-      ),
-    )
+          : m
+      )
+    );
 
   const deleteItem = (mi, si, ii) =>
     setMonths((prev) =>
@@ -137,93 +168,117 @@ const EditingDiploma = () => {
         i === mi
           ? {
               ...m,
-              sections: m.sections.map((s, j) => (j === si ? { ...s, items: s.items.filter((_, k) => k !== ii) } : s)),
+              sections: m.sections.map((s, j) =>
+                j === si
+                  ? { ...s, items: s.items.filter((_, k) => k !== ii) }
+                  : s
+              ),
             }
-          : m,
-      ),
-    )
+          : m
+      )
+    );
 
   const saveTextContent = async () => {
-    setSaving(true)
+    setSaving(true);
     try {
-      let updatedMonths
+      let updatedMonths;
       if (editMode && editingIndex >= 0) {
-        updatedMonths = [...savedMonths]
-        updatedMonths[editingIndex] = months[0]
+        updatedMonths = [...savedMonths];
+        updatedMonths[editingIndex] = months[0];
       } else {
-        updatedMonths = [...savedMonths, ...months]
+        updatedMonths = [...savedMonths, ...months];
       }
 
-      const formData = new FormData()
-      formData.append("diploma", JSON.stringify(updatedMonths))
+      const formData = new FormData();
+      formData.append("diploma", JSON.stringify(updatedMonths));
 
-      const res = await axios.post(`${API_BASE}/editingdiploma/save`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      const res = await axios.post(
+        `${API_BASE}/editingdiploma/save`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-      setSavedMonths(res.data.diploma || updatedMonths)
-      setMonths([])
-      setEditMode(false)
-      setEditingIndex(-1)
-      setShowAddForm(false)
+      setSavedMonths(res.data.diploma || updatedMonths);
+      setMonths([]);
+      setEditMode(false);
+      setEditingIndex(-1);
+      setShowAddForm(false);
 
-      alert(editMode ? "Month updated successfully ✅" : "Month saved successfully ✅")
+      alert(
+        editMode
+          ? "Month updated successfully ✅"
+          : "Month saved successfully ✅"
+      );
     } catch (err) {
-      console.error("Error saving diploma data:", err)
-      alert("Error saving data")
+      console.error("Error saving diploma data:", err);
+      alert("Error saving data");
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const savePdf = async () => {
-    if (!pdf) return
+    if (!pdf) return;
 
-    setSavingPdf(true)
+    setSavingPdf(true);
     try {
-      const formData = new FormData()
-      formData.append("diploma", JSON.stringify(savedMonths))
-      formData.append("diploma_pdf", pdf)
+      const formData = new FormData();
+      formData.append("diploma", JSON.stringify(savedMonths));
+      formData.append("diploma_pdf", pdf);
 
-      const res = await axios.post(`${API_BASE}/editingdiploma/save`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      const res = await axios.post(
+        `${API_BASE}/editingdiploma/save`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API_BASE}/editingdiploma/pdf/view` : "")
-      setPdf(null)
-      setFileKey((k) => k + 1)
-      alert("PDF uploaded successfully ✅")
+      setSavedPdf(
+        res.data.diplomaPdf?.pdfName
+          ? `${API_BASE}/editingdiploma/pdf/view`
+          : ""
+      );
+      setPdf(null);
+      setFileKey((k) => k + 1);
+      alert("PDF uploaded successfully ✅");
     } catch (err) {
-      console.error("Error saving PDF:", err)
-      alert("Error saving PDF")
+      console.error("Error saving PDF:", err);
+      alert("Error saving PDF");
     } finally {
-      setSavingPdf(false)
+      setSavingPdf(false);
     }
-  }
+  };
 
   const deleteSavedPdf = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this PDF? This action cannot be undone.")
-    if (!confirmDelete) return
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PDF? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
 
     try {
-      await axios.delete(`${API_BASE}/editingdiploma/pdf`)
-      setSavedPdf("")
-      alert("PDF deleted successfully ✅")
+      await axios.delete(`${API_BASE}/editingdiploma/pdf`);
+      setSavedPdf("");
+      alert("PDF deleted successfully ✅");
     } catch (err) {
-      console.error("Error deleting PDF:", err)
-      alert("Error deleting PDF")
+      console.error("Error deleting PDF:", err);
+      alert("Error deleting PDF");
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-lg font-semibold text-slate-600">Loading diploma data...</p>
+          <p className="text-lg font-semibold text-slate-600">
+            Loading diploma data...
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -251,8 +306,12 @@ const EditingDiploma = () => {
                   <Calendar className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white">Text Content Management</h3>
-                  <p className="text-orange-100">Manage curriculum months and sections</p>
+                  <h3 className="text-2xl font-bold text-white">
+                    Text Content Management
+                  </h3>
+                  <p className="text-orange-100">
+                    Manage curriculum months and sections
+                  </p>
                 </div>
               </div>
             </div>
@@ -263,7 +322,9 @@ const EditingDiploma = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Edit3 className="h-5 w-5" />
-                      <span className="font-semibold">Editing: {savedMonths[editingIndex]?.month || "New"}</span>
+                      <span className="font-semibold">
+                        Editing: {savedMonths[editingIndex]?.month || "New"}
+                      </span>
                     </div>
                     <button
                       onClick={cancelEdit}
@@ -287,12 +348,17 @@ const EditingDiploma = () => {
                       />
 
                       {month.sections.map((section, si) => (
-                        <div key={si} className="bg-gray-50 border-2 border-gray-200 rounded-xl p-4">
+                        <div
+                          key={si}
+                          className="bg-gray-50 border-2 border-gray-200 rounded-xl p-4"
+                        >
                           <div className="flex items-center justify-between mb-3">
                             <input
                               className="flex-1 bg-white border border-gray-200 focus:border-orange-400 rounded-lg px-3 py-2 font-semibold outline-none transition-colors"
                               value={section.name}
-                              onChange={(e) => updateSectionName(mi, si, e.target.value)}
+                              onChange={(e) =>
+                                updateSectionName(mi, si, e.target.value)
+                              }
                             />
                             <button
                               onClick={() => deleteSection(mi, si)}
@@ -304,12 +370,17 @@ const EditingDiploma = () => {
 
                           <div className="space-y-2 ml-4">
                             {section.items.map((item, ii) => (
-                              <div key={ii} className="flex items-center gap-2 group">
+                              <div
+                                key={ii}
+                                className="flex items-center gap-2 group"
+                              >
                                 <input
                                   className="flex-1 border border-gray-200 focus:border-orange-400 rounded-lg px-3 py-2 outline-none transition-colors"
                                   placeholder="Item Title"
                                   value={item.title || ""}
-                                  onChange={(e) => updateItemTitle(mi, si, ii, e.target.value)}
+                                  onChange={(e) =>
+                                    updateItemTitle(mi, si, ii, e.target.value)
+                                  }
                                 />
                                 <button
                                   onClick={() => deleteItem(mi, si, ii)}
@@ -380,7 +451,9 @@ const EditingDiploma = () => {
                   <FileText className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white">PDF Document</h3>
+                  <h3 className="text-2xl font-bold text-white">
+                    PDF Document
+                  </h3>
                   <p className="text-blue-100">Upload and manage diploma PDF</p>
                 </div>
               </div>
@@ -395,8 +468,12 @@ const EditingDiploma = () => {
                         <FileText className="h-6 w-6 text-green-600" />
                       </div>
                       <div>
-                        <p className="font-bold text-green-800 text-lg">PDF Document Available</p>
-                        <p className="text-sm text-green-600">Your diploma PDF is ready to view</p>
+                        <p className="font-bold text-green-800 text-lg">
+                          PDF Document Available
+                        </p>
+                        <p className="text-sm text-green-600">
+                          Your diploma PDF is ready to view
+                        </p>
                       </div>
                     </div>
                     <div className="flex gap-3">
@@ -428,14 +505,18 @@ const EditingDiploma = () => {
                           <FileText className="h-5 w-5 text-blue-600" />
                         </div>
                         <div>
-                          <p className="font-semibold text-blue-800">{pdf.name}</p>
-                          <p className="text-sm text-blue-600">Ready to upload</p>
+                          <p className="font-semibold text-blue-800">
+                            {pdf.name}
+                          </p>
+                          <p className="text-sm text-blue-600">
+                            Ready to upload
+                          </p>
                         </div>
                       </div>
                       <button
                         onClick={() => {
-                          setPdf(null)
-                          setFileKey((k) => k + 1)
+                          setPdf(null);
+                          setFileKey((k) => k + 1);
                         }}
                         className="p-2 cursor-pointer bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                       >
@@ -459,8 +540,12 @@ const EditingDiploma = () => {
                       <div className="p-4 bg-blue-100 rounded-2xl mb-4">
                         <Upload className="w-10 h-10 text-blue-600" />
                       </div>
-                      <p className="mb-2 text-lg font-semibold text-blue-800">Click to upload PDF</p>
-                      <p className="text-sm text-blue-600 font-medium">PDF files only (max 10MB)</p>
+                      <p className="mb-2 text-lg font-semibold text-blue-800">
+                        Click to upload PDF
+                      </p>
+                      <p className="text-sm text-blue-600 font-medium">
+                        PDF files only (max 10MB)
+                      </p>
                     </div>
                     <input
                       key={fileKey}
@@ -483,7 +568,9 @@ const EditingDiploma = () => {
             <h2 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-3">
               Current Curriculum
             </h2>
-            <p className="text-slate-600 text-lg">Review and manage saved months</p>
+            <p className="text-slate-600 text-lg">
+              Review and manage saved months
+            </p>
           </div>
 
           {savedMonths.length === 0 && (
@@ -491,8 +578,12 @@ const EditingDiploma = () => {
               <div className="p-4 bg-gray-100 rounded-2xl inline-block mb-4">
                 <Calendar className="h-12 w-12 text-gray-400" />
               </div>
-              <p className="text-xl text-gray-500 italic">No saved months yet</p>
-              <p className="text-gray-400">Add your first month to get started</p>
+              <p className="text-xl text-gray-500 italic">
+                No saved months yet
+              </p>
+              <p className="text-gray-400">
+                Add your first month to get started
+              </p>
             </div>
           )}
 
@@ -505,7 +596,9 @@ const EditingDiploma = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Calendar className="h-6 w-6 text-white" />
-                    <h3 className="text-2xl font-bold text-white">{month.month}</h3>
+                    <h3 className="text-2xl font-bold text-white">
+                      {month.month}
+                    </h3>
                   </div>
                   <div className="flex gap-3">
                     <button
@@ -535,11 +628,16 @@ const EditingDiploma = () => {
                   >
                     <div className="flex items-center gap-2 mb-3">
                       <BookOpen className="h-5 w-5 text-indigo-600" />
-                      <h4 className="text-lg font-semibold text-indigo-800">{section.name}</h4>
+                      <h4 className="text-lg font-semibold text-indigo-800">
+                        {section.name}
+                      </h4>
                     </div>
                     <ul className="ml-7 space-y-1">
                       {section.items.map((item, ii) => (
-                        <li key={ii} className="text-indigo-700 flex items-center gap-2">
+                        <li
+                          key={ii}
+                          className="text-indigo-700 flex items-center gap-2"
+                        >
                           <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
                           {item.title}
                         </li>
@@ -553,7 +651,7 @@ const EditingDiploma = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EditingDiploma
+export default EditingDiploma;

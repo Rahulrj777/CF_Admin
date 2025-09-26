@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../../Utils/Api.js";
 
 export default function CinematographyHighlights() {
   const [titleLine, setTitleLine] = useState("");
   const [image, setImage] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
 
   // Fetch highlights from MongoDB/Cloudinary
   const fetchItems = async () => {
@@ -25,54 +23,56 @@ export default function CinematographyHighlights() {
   }, []);
 
   // Handle new highlight upload
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!image || !titleLine.trim()) {
-    alert("⚠️ Image and title are required.");
-    return;
-  }
+    if (!image || !titleLine.trim()) {
+      alert("⚠️ Image and title are required.");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  const formData = new FormData();
-  formData.append("image", image);
-  formData.append("titleLine", titleLine);
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("titleLine", titleLine);
 
-  try {
-    await axios.post(
-      `${API_BASE}/cinematographyhighlights/upload`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
+    try {
+      await axios.post(
+        `${API_BASE}/cinematographyhighlights/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setImage(null);
+      setTitleLine("");
+      fetchItems();
+      alert("✅ Highlight uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("❌ Upload failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (_id) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this highlight?"
     );
+    if (!confirmed) return;
 
-    setImage(null);
-    setTitleLine("");
-    fetchItems();
-    alert("✅ Highlight uploaded successfully!");
-  } catch (err) {
-    console.error("Upload failed:", err);
-    alert("❌ Upload failed. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
-const handleDelete = async (_id) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this highlight?");
-  if (!confirmed) return;
-
-  try {
-    await axios.delete(`${API_BASE}/cinematographyhighlights/${_id}`);
-    fetchItems();
-    alert("🗑️ Highlight deleted successfully");
-  } catch (err) {
-    console.error("Delete failed:", err);
-    alert("❌ Delete failed. Please try again.");
-  }
-};
+    try {
+      await axios.delete(`${API_BASE}/cinematographyhighlights/${_id}`);
+      fetchItems();
+      alert("🗑️ Highlight deleted successfully");
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("❌ Delete failed. Please try again.");
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">

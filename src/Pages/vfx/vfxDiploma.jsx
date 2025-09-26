@@ -1,113 +1,130 @@
-import { useEffect, useState } from "react"
-import axios from "axios"
-import { FileText, Trash2, X, Upload, GraduationCap, ImageIcon, Camera } from "lucide-react"
-
-const API_BASE = import.meta.env.VITE_API_BASE
+import { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  FileText,
+  Trash2,
+  X,
+  Upload,
+  GraduationCap,
+  ImageIcon,
+  Camera,
+} from "lucide-react";
+import { API_BASE } from "../../Utils/Api.js";
 
 const VfxDiplomaAdmin = () => {
-  const [images, setImages] = useState([])
-  const [pdf, setPdf] = useState(null)
-  const [savedPdf, setSavedPdf] = useState("")
-  const [fileImage, setFileImage] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [fileKey, setFileKey] = useState(0)
-  const [savingImage, setSavingImage] = useState(false)
-  const [savingPdf, setSavingPdf] = useState(false)
+  const [images, setImages] = useState([]);
+  const [pdf, setPdf] = useState(null);
+  const [savedPdf, setSavedPdf] = useState("");
+  const [fileImage, setFileImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [fileKey, setFileKey] = useState(0);
+  const [savingImage, setSavingImage] = useState(false);
+  const [savingPdf, setSavingPdf] = useState(false);
 
   const fetchDiploma = async () => {
     try {
-      setLoading(true)
-      const res = await axios.get(`${API_BASE}/vfxdiploma`)
-      setImages(res.data.images || [])
-      setSavedPdf(res.data.diplomaPdf?.pdfName ? `${API_BASE}/vfxdiploma/pdf/view` : "")
+      setLoading(true);
+      const res = await axios.get(`${API_BASE}/vfxdiploma`);
+      setImages(res.data.images || []);
+      setSavedPdf(
+        res.data.diplomaPdf?.pdfName ? `${API_BASE}/vfxdiploma/pdf/view` : ""
+      );
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchDiploma()
-  }, [])
+    fetchDiploma();
+  }, []);
 
   // ---------------- Image ----------------
   const uploadImage = async () => {
-    if (!fileImage) return
-    setSavingImage(true)
+    if (!fileImage) return;
+    setSavingImage(true);
     try {
-      const formData = new FormData()
-      formData.append("image", fileImage)
-      await axios.post(`${API_BASE}/vfxdiploma/images`, formData)
-      setFileImage(null)
-      setFileKey((k) => k + 1)
-      fetchDiploma()
-      alert("Image uploaded successfully ✅")
+      const formData = new FormData();
+      formData.append("image", fileImage);
+      await axios.post(`${API_BASE}/vfxdiploma/images`, formData);
+      setFileImage(null);
+      setFileKey((k) => k + 1);
+      fetchDiploma();
+      alert("Image uploaded successfully ✅");
     } catch (err) {
-      console.error("Error uploading image:", err)
-      alert("Error uploading image")
+      console.error("Error uploading image:", err);
+      alert("Error uploading image");
     } finally {
-      setSavingImage(false)
+      setSavingImage(false);
     }
-  }
+  };
 
   const deleteImage = async (publicId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this image? This action cannot be undone.")
-    if (!confirmDelete) return
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this image? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
 
     try {
-      await axios.delete(`${API_BASE}/vfxdiploma/images/${encodeURIComponent(publicId)}`)
-      fetchDiploma()
-      alert("Image deleted successfully ✅")
+      await axios.delete(
+        `${API_BASE}/vfxdiploma/images/${encodeURIComponent(publicId)}`
+      );
+      fetchDiploma();
+      alert("Image deleted successfully ✅");
     } catch (err) {
-      console.error("Error deleting image:", err)
-      alert("Error deleting image")
+      console.error("Error deleting image:", err);
+      alert("Error deleting image");
     }
-  }
+  };
 
   // ---------------- PDF ----------------
   const uploadPdf = async () => {
-    if (!pdf) return
-    setSavingPdf(true)
+    if (!pdf) return;
+    setSavingPdf(true);
     try {
-      const formData = new FormData()
-      formData.append("pdf", pdf)
-      await axios.post(`${API_BASE}/vfxdiploma/pdf`, formData)
-      setPdf(null)
-      setFileKey((k) => k + 1)
-      fetchDiploma()
-      alert("PDF uploaded successfully ✅")
+      const formData = new FormData();
+      formData.append("pdf", pdf);
+      await axios.post(`${API_BASE}/vfxdiploma/pdf`, formData);
+      setPdf(null);
+      setFileKey((k) => k + 1);
+      fetchDiploma();
+      alert("PDF uploaded successfully ✅");
     } catch (err) {
-      console.error("Error uploading PDF:", err)
-      alert("Error uploading PDF")
+      console.error("Error uploading PDF:", err);
+      alert("Error uploading PDF");
     } finally {
-      setSavingPdf(false)
+      setSavingPdf(false);
     }
-  }
+  };
 
   const deletePdf = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this PDF? This action cannot be undone.")
-    if (!confirmDelete) return
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PDF? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
 
     try {
-      await axios.delete(`${API_BASE}/vfxdiploma/pdf`)
-      fetchDiploma()
-      alert("PDF deleted successfully ✅")
+      await axios.delete(`${API_BASE}/vfxdiploma/pdf`);
+      fetchDiploma();
+      alert("PDF deleted successfully ✅");
     } catch (err) {
-      console.error("Error deleting PDF:", err)
-      alert("Error deleting PDF")
+      console.error("Error deleting PDF:", err);
+      alert("Error deleting PDF");
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-lg font-semibold text-slate-600">Loading diploma data...</p>
+          <p className="text-lg font-semibold text-slate-600">
+            Loading diploma data...
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -136,8 +153,12 @@ const VfxDiplomaAdmin = () => {
                   <Camera className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white">Image Gallery</h3>
-                  <p className="text-orange-100">Upload and manage VFX images</p>
+                  <h3 className="text-2xl font-bold text-white">
+                    Image Gallery
+                  </h3>
+                  <p className="text-orange-100">
+                    Upload and manage VFX images
+                  </p>
                 </div>
               </div>
             </div>
@@ -152,14 +173,18 @@ const VfxDiplomaAdmin = () => {
                           <ImageIcon className="h-5 w-5 text-blue-600" />
                         </div>
                         <div>
-                          <p className="font-semibold text-blue-800">{fileImage.name}</p>
-                          <p className="text-sm text-blue-600">Ready to upload</p>
+                          <p className="font-semibold text-blue-800">
+                            {fileImage.name}
+                          </p>
+                          <p className="text-sm text-blue-600">
+                            Ready to upload
+                          </p>
                         </div>
                       </div>
                       <button
                         onClick={() => {
-                          setFileImage(null)
-                          setFileKey((k) => k + 1)
+                          setFileImage(null);
+                          setFileKey((k) => k + 1);
                         }}
                         className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                       >
@@ -183,14 +208,20 @@ const VfxDiplomaAdmin = () => {
                       <div className="p-4 bg-orange-100 rounded-2xl mb-4">
                         <Upload className="w-10 h-10 text-orange-600" />
                       </div>
-                      <p className="mb-2 text-lg font-semibold text-orange-800">Click to upload image</p>
-                      <p className="text-sm text-orange-600 font-medium">JPG, PNG, GIF files (max 10MB)</p>
+                      <p className="mb-2 text-lg font-semibold text-orange-800">
+                        Click to upload image
+                      </p>
+                      <p className="text-sm text-orange-600 font-medium">
+                        JPG, PNG, GIF files (max 10MB)
+                      </p>
                     </div>
                     <input
                       key={fileKey}
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setFileImage(e.target.files?.[0] || null)}
+                      onChange={(e) =>
+                        setFileImage(e.target.files?.[0] || null)
+                      }
                       className="hidden"
                     />
                   </label>
@@ -234,7 +265,9 @@ const VfxDiplomaAdmin = () => {
                   <FileText className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white">PDF Document</h3>
+                  <h3 className="text-2xl font-bold text-white">
+                    PDF Document
+                  </h3>
                   <p className="text-blue-100">Upload and manage diploma PDF</p>
                 </div>
               </div>
@@ -249,8 +282,12 @@ const VfxDiplomaAdmin = () => {
                         <FileText className="h-6 w-6 text-green-600" />
                       </div>
                       <div>
-                        <p className="font-bold text-green-800 text-lg">PDF Document Available</p>
-                        <p className="text-sm text-green-600">Your diploma PDF is ready to view</p>
+                        <p className="font-bold text-green-800 text-lg">
+                          PDF Document Available
+                        </p>
+                        <p className="text-sm text-green-600">
+                          Your diploma PDF is ready to view
+                        </p>
                       </div>
                     </div>
                     <div className="flex gap-3">
@@ -282,14 +319,18 @@ const VfxDiplomaAdmin = () => {
                           <FileText className="h-5 w-5 text-blue-600" />
                         </div>
                         <div>
-                          <p className="font-semibold text-blue-800">{pdf.name}</p>
-                          <p className="text-sm text-blue-600">Ready to upload</p>
+                          <p className="font-semibold text-blue-800">
+                            {pdf.name}
+                          </p>
+                          <p className="text-sm text-blue-600">
+                            Ready to upload
+                          </p>
                         </div>
                       </div>
                       <button
                         onClick={() => {
-                          setPdf(null)
-                          setFileKey((k) => k + 1)
+                          setPdf(null);
+                          setFileKey((k) => k + 1);
                         }}
                         className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                       >
@@ -313,8 +354,12 @@ const VfxDiplomaAdmin = () => {
                       <div className="p-4 bg-blue-100 rounded-2xl mb-4">
                         <Upload className="w-10 h-10 text-blue-600" />
                       </div>
-                      <p className="mb-2 text-lg font-semibold text-blue-800">Click to upload PDF</p>
-                      <p className="text-sm text-blue-600 font-medium">PDF files only (max 10MB)</p>
+                      <p className="mb-2 text-lg font-semibold text-blue-800">
+                        Click to upload PDF
+                      </p>
+                      <p className="text-sm text-blue-600 font-medium">
+                        PDF files only (max 10MB)
+                      </p>
                     </div>
                     <input
                       key={fileKey}
@@ -331,7 +376,7 @@ const VfxDiplomaAdmin = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default VfxDiplomaAdmin
+export default VfxDiplomaAdmin;

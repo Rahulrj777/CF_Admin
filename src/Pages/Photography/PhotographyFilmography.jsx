@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const PhotographyFilmography = () => {
   const [file, setFile] = useState(null);
   const [items, setItems] = useState([]);
-  const [message, setMessage] = useState(""); // add this at the top
 
   useEffect(() => {
     axios
@@ -21,49 +19,53 @@ const PhotographyFilmography = () => {
       });
   }, []);
 
-const handleUpload = async (e) => {
-  e.preventDefault();
-  if (!file) {
-    alert("⚠️ Please select a file to upload.");
-    return;
-  }
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      alert("⚠️ Please select a file to upload.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("image", file);
+    const formData = new FormData();
+    formData.append("image", file);
 
-  try {
-    const res = await axios.post(
-      `${API_BASE}/photographyfilmography/upload`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
+    try {
+      const res = await axios.post(
+        `${API_BASE}/photographyfilmography/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setItems([...items, res.data.item]);
+      setFile(null);
+      alert("✅ Item uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
+    }
+  };
+
+  const handleDelete = async (publicId) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this item?"
     );
-    setItems([...items, res.data.item]);
-    setFile(null);
-    alert("✅ Item uploaded successfully!");
-  } catch (err) {
-    console.error("Upload failed", err);
-    alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+    if (!confirmed) return;
 
-const handleDelete = async (publicId) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this item?");
-  if (!confirmed) return;
+    try {
+      const url = `${API_BASE}/photographyfilmography/${encodeURIComponent(
+        publicId
+      )}`;
+      console.log("Deleting item at:", url);
 
-  try {
-    const url = `${API_BASE}/photographyfilmography/${encodeURIComponent(publicId)}`;
-    console.log("Deleting item at:", url);
-
-    await axios.delete(url);
-    setItems((prev) => prev.filter((item) => item.publicId !== publicId));
-    alert("🗑️ Item deleted successfully");
-  } catch (err) {
-    console.error("Delete failed:", err.response?.data || err.message);
-    alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+      await axios.delete(url);
+      setItems((prev) => prev.filter((item) => item.publicId !== publicId));
+      alert("🗑️ Item deleted successfully");
+    } catch (err) {
+      console.error("Delete failed:", err.response?.data || err.message);
+      alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">

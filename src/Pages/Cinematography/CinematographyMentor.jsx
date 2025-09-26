@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const CinematographyMentor = () => {
   const [file, setFile] = useState(null);
@@ -34,49 +33,49 @@ const CinematographyMentor = () => {
   };
 
   // Upload image + paragraph
-const handleUpload = async () => {
-  if (!file || !description.trim()) {
-    alert("⚠️ Please provide both an image and a description.");
-    return;
-  }
+  const handleUpload = async () => {
+    if (!file || !description.trim()) {
+      alert("⚠️ Please provide both an image and a description.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("description", description);
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("description", description);
 
-  try {
-    await axios.post(
-      `${API_BASE}/cinematographymentor/upload`,
-      formData,
-      {
+    try {
+      await axios.post(`${API_BASE}/cinematographymentor/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      }
+      });
+
+      fetchMentors();
+      setFile(null);
+      setPreview(null);
+      setDescription("");
+      alert("✅ Mentor uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed:", err.response?.data || err.message);
+      alert("❌ Upload failed. Please try again.");
+    }
+  };
+
+  const handleDelete = async (publicId) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this mentor?"
     );
+    if (!confirmed) return;
 
-    fetchMentors();
-    setFile(null);
-    setPreview(null);
-    setDescription("");
-    alert("✅ Mentor uploaded successfully!");
-  } catch (err) {
-    console.error("Upload failed:", err.response?.data || err.message);
-    alert("❌ Upload failed. Please try again.");
-  }
-};
-
-const handleDelete = async (publicId) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this mentor?");
-  if (!confirmed) return;
-
-  try {
-    await axios.delete(`${API_BASE}/cinematographymentor/${encodeURIComponent(publicId)}`);
-    setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
-    alert("🗑️ Mentor deleted successfully");
-  } catch (err) {
-    console.error("Delete failed:", err.response?.data || err.message);
-    alert("❌ Delete failed. Please try again.");
-  }
-};
+    try {
+      await axios.delete(
+        `${API_BASE}/cinematographymentor/${encodeURIComponent(publicId)}`
+      );
+      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+      alert("🗑️ Mentor deleted successfully");
+    } catch (err) {
+      console.error("Delete failed:", err.response?.data || err.message);
+      alert("❌ Delete failed. Please try again.");
+    }
+  };
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
@@ -143,7 +142,7 @@ const handleDelete = async (publicId) => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-               <button
+              <button
                 onClick={() => handleDelete(mentor.publicId)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >

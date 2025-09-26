@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FileText, Trash2, Plus, X, Upload, GraduationCap } from "lucide-react";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const CinematographyDiplomaAdmin = () => {
   const [semester1, setSemester1] = useState([""]);

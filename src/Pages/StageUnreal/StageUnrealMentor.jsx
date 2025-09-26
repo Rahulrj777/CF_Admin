@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const StageUnrealMentor = () => {
   const [file, setFile] = useState(null);
@@ -72,7 +71,9 @@ const StageUnrealMentor = () => {
     if (!confirmDelete) return;
 
     try {
-      const url = `${API_BASE}/stageunrealmentor/${encodeURIComponent(publicId)}`;
+      const url = `${API_BASE}/stageunrealmentor/${encodeURIComponent(
+        publicId
+      )}`;
       console.log("Deleting mentor at:", url);
 
       await axios.delete(url);

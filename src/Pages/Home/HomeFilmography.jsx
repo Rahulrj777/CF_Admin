@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
+import { API_BASE } from "../../Utils/Api.js";
 
 const HomeFilmography = () => {
   const [filmographys, setFilmographys] = useState([]);
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
-
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
 
   // ✅ Fetch existing filmographys on mount
   const fetchFilmographys = async () => {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const VirtualProductionMentor = () => {
   const [file, setFile] = useState(null);

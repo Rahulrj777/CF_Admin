@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
+import { API_BASE } from "../../Utils/Api.js";
 
 const EditingBanner = () => {
   const [banners, setBanners] = useState([]);
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
-
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
 
   // Fetch banners on mount
   useEffect(() => {
@@ -63,7 +61,7 @@ const EditingBanner = () => {
       "❓ Are you sure you want to delete this banner?"
     );
     if (!confirmed) return;
-    
+
     try {
       const res = await fetch(`${API_BASE}/editingbanner/${id}`, {
         method: "DELETE",

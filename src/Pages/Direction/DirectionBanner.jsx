@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
+import { API_BASE } from "../../Utils/Api.js";
 
 const DirectionBanner = () => {
   const [banners, setBanners] = useState([]);
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
-
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
 
   // Fetch banners on mount
   useEffect(() => {
@@ -25,58 +23,60 @@ const DirectionBanner = () => {
   }, [API_BASE]);
 
   // Upload new banner
-const handleUpload = async (e) => {
-  e.preventDefault();
-  if (!image) return;
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!image) return;
 
-  setUploading(true);
+    setUploading(true);
 
-  const formData = new FormData();
-  formData.append("image", image);
+    const formData = new FormData();
+    formData.append("image", image);
 
-  try {
-    const res = await fetch(`${API_BASE}/directionbanner/upload`, {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
+    try {
+      const res = await fetch(`${API_BASE}/directionbanner/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
 
-    if (data.error) {
-      setError(data.error);
-    } else {
-      setBanners((prev) => [...prev, data]);
-      alert("✅ Banner uploaded successfully!");
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setBanners((prev) => [...prev, data]);
+        alert("✅ Banner uploaded successfully!");
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      setError(err.message);
+    } finally {
+      setUploading(false);
     }
-  } catch (err) {
-    console.error("Upload error:", err);
-    setError(err.message);
-  } finally {
-    setUploading(false);
-  }
-};
+  };
 
-const handleDelete = async (id) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this banner?");
-  
-  if (!confirmed) return;
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this banner?"
+    );
 
-  try {
-    const res = await fetch(`${API_BASE}/directionbanner/${id}`, {
-      method: "DELETE",
-    });
-    const data = await res.json();
+    if (!confirmed) return;
 
-    if (data.success) {
-      setBanners((prev) => prev.filter((b) => b._id !== id));
-      alert("🗑️ Banner deleted successfully.");
-    } else {
-      setError(data.error || "Failed to delete banner");
+    try {
+      const res = await fetch(`${API_BASE}/directionbanner/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setBanners((prev) => prev.filter((b) => b._id !== id));
+        alert("🗑️ Banner deleted successfully.");
+      } else {
+        setError(data.error || "Failed to delete banner");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      setError("Error deleting banner");
     }
-  } catch (err) {
-    console.error("Delete error:", err);
-    setError("Error deleting banner");
-  }
-};
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">

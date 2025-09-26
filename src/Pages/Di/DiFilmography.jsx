@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const DiFilmography = () => {
   const [file, setFile] = useState(null);
@@ -21,86 +20,92 @@ const DiFilmography = () => {
       });
   }, []);
 
-// Upload filmography
-const handleUpload = async (e) => {
-  e.preventDefault();
-  if (!file) {
-    alert("⚠️ Please select an image to upload.");
-    return;
-  }
+  // Upload filmography
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      alert("⚠️ Please select an image to upload.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("image", file);
+    const formData = new FormData();
+    formData.append("image", file);
 
-  try {
-    const res = await axios.post(`${API_BASE}/difilmography/upload`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      const res = await axios.post(
+        `${API_BASE}/difilmography/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-    setItems([...items, res.data.item]);
-    setFile(null);
-    alert("✅ Filmography uploaded successfully!");
-  } catch (err) {
-    console.error("Upload failed", err);
-    alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+      setItems([...items, res.data.item]);
+      setFile(null);
+      alert("✅ Filmography uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
+    }
+  };
 
-// Delete filmography with confirmation
-const handleDelete = async (publicId) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this filmography?");
-  if (!confirmed) return;
+  // Delete filmography with confirmation
+  const handleDelete = async (publicId) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this filmography?"
+    );
+    if (!confirmed) return;
 
-  try {
-    const url = `${API_BASE}/difilmography/${encodeURIComponent(publicId)}`;
-    await axios.delete(url);
+    try {
+      const url = `${API_BASE}/difilmography/${encodeURIComponent(publicId)}`;
+      await axios.delete(url);
 
-    setItems((prev) => prev.filter((item) => item.publicId !== publicId));
-    alert("🗑️ Filmography deleted successfully!");
-  } catch (err) {
-    console.error("Delete failed:", err.response?.data || err.message);
-    alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+      setItems((prev) => prev.filter((item) => item.publicId !== publicId));
+      alert("🗑️ Filmography deleted successfully!");
+    } catch (err) {
+      console.error("Delete failed:", err.response?.data || err.message);
+      alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
+    }
+  };
 
   return (
-<div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">
-  <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-    🎬 Upload Filmography
-  </h2>
+    <div className="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+        🎬 Upload Filmography
+      </h2>
 
-  {/* Upload Form */}
-  <form
-    onSubmit={handleUpload}
-    className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-4"
-  >
-    <label className="block font-medium mb-2">
-      Select Filmography Image:
-    </label>
-    <div className="flex flex-col md:flex-row items-center gap-4">
-      <input
-        type="file"
-        onChange={(e) => setFile(e.target.files[0])}
-        className="flex-1 border-2 border-dashed border-gray-300 rounded p-3 cursor-pointer"
-      />
-      <button
-        type="submit"
-        className="w-full cursor-pointer md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-semibold transition"
+      {/* Upload Form */}
+      <form
+        onSubmit={handleUpload}
+        className="bg-gray-50 p-6 rounded-lg shadow mb-10 space-y-4"
       >
-        🚀 Upload
-      </button>
-    </div>
-  </form>
+        <label className="block font-medium mb-2">
+          Select Filmography Image:
+        </label>
+        <div className="flex flex-col md:flex-row items-center gap-4">
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="flex-1 border-2 border-dashed border-gray-300 rounded p-3 cursor-pointer"
+          />
+          <button
+            type="submit"
+            className="w-full cursor-pointer md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-semibold transition"
+          >
+            🚀 Upload
+          </button>
+        </div>
+      </form>
 
-  {/* Items Grid */}
-  <h3 className="text-xl font-semibold mb-6 text-gray-800 text-center">
-    📂 Existing Filmography
-  </h3>
-  {items.length === 0 ? (
-    <p className="text-gray-500 text-center">
-      No filmography uploaded yet.
-    </p>
-  ) : (
+      {/* Items Grid */}
+      <h3 className="text-xl font-semibold mb-6 text-gray-800 text-center">
+        📂 Existing Filmography
+      </h3>
+      {items.length === 0 ? (
+        <p className="text-gray-500 text-center">
+          No filmography uploaded yet.
+        </p>
+      ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {items.map((item) => (
             <div
@@ -121,9 +126,8 @@ const handleDelete = async (publicId) => {
             </div>
           ))}
         </div>
-  )}
-</div>
-
+      )}
+    </div>
   );
 };
 

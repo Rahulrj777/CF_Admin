@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const PhotographyMentor = () => {
   const [file, setFile] = useState(null);
@@ -34,48 +33,52 @@ const PhotographyMentor = () => {
   };
 
   // Upload image + paragraph
-const handleUpload = async () => {
-  if (!file || !description.trim()) {
-    alert("⚠️ Please provide both an image and a description.");
-    return;
-  }
+  const handleUpload = async () => {
+    if (!file || !description.trim()) {
+      alert("⚠️ Please provide both an image and a description.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("description", description);
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("description", description);
 
-  try {
-    await axios.post(`${API_BASE}/photographymentor/upload`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+      await axios.post(`${API_BASE}/photographymentor/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    fetchMentors();
-    setFile(null);
-    setPreview(null);
-    setDescription("");
-    alert("✅ Mentor uploaded successfully!");
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+      fetchMentors();
+      setFile(null);
+      setPreview(null);
+      setDescription("");
+      alert("✅ Mentor uploaded successfully!");
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      alert(`❌ Upload failed: ${err.response?.data?.error || err.message}`);
+    }
+  };
 
-const handleDelete = async (publicId) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this mentor?");
-  if (!confirmed) return;
+  const handleDelete = async (publicId) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this mentor?"
+    );
+    if (!confirmed) return;
 
-  try {
-    const url = `${API_BASE}/photographymentor/${encodeURIComponent(publicId)}`;
-    console.log("Deleting mentor at:", url);
+    try {
+      const url = `${API_BASE}/photographymentor/${encodeURIComponent(
+        publicId
+      )}`;
+      console.log("Deleting mentor at:", url);
 
-    await axios.delete(url);
-    setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
-    alert("🗑️ Mentor deleted successfully");
-  } catch (err) {
-    console.error("Delete failed:", err.response?.data || err.message);
-    alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
-  }
-};
+      await axios.delete(url);
+      setMentors((prev) => prev.filter((m) => m.publicId !== publicId));
+      alert("🗑️ Mentor deleted successfully");
+    } catch (err) {
+      console.error("Delete failed:", err.response?.data || err.message);
+      alert(`❌ Delete failed: ${err.response?.data?.error || err.message}`);
+    }
+  };
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">
@@ -142,7 +145,7 @@ const handleDelete = async (publicId) => {
                 className="w-32 h-32 object-cover object-top mx-auto rounded-lg border shadow-sm"
               />
               <p className="mt-4 text-sm text-gray-700">{mentor.description}</p>
-               <button
+              <button
                 onClick={() => handleDelete(mentor.publicId)}
                 className="absolute top-2 right-2 cursor-pointer bg-red-500 text-white px-3 py-2 rounded opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >

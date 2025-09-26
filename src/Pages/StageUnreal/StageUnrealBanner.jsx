@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
+import { API_BASE } from "../../Utils/Api.js";
 
 const StageUnrealBanner = () => {
   const [banners, setBanners] = useState([]);
   const [video, setVideo] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
-
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
 
   // ✅ Fetch banners on mount
   useEffect(() => {
@@ -25,67 +23,69 @@ const StageUnrealBanner = () => {
   }, [API_BASE]);
 
   // ✅ Upload new banner
-const handleUpload = async (e) => {
-  e.preventDefault();
+  const handleUpload = async (e) => {
+    e.preventDefault();
 
-  if (!video) {
-    alert("⚠️ Please select a video before uploading.");
-    return;
-  }
-
-  setUploading(true);
-  setError(null);
-
-  const formData = new FormData();
-  formData.append("video", video);
-
-  try {
-    const res = await fetch(`${API_BASE}/stageunrealbanner/upload`, {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
-
-    if (data.error) {
-      setError(data.error);
-      alert(`❌ Upload failed: ${data.error}`);
-    } else {
-      setBanners((prev) => [...prev, data]);
-      setVideo(null);
-      alert("✅ Video banner uploaded successfully!");
+    if (!video) {
+      alert("⚠️ Please select a video before uploading.");
+      return;
     }
-  } catch (err) {
-    console.error("Upload error:", err);
-    setError("Error uploading video");
-    alert(`❌ Upload failed: ${err.message}`);
-  } finally {
-    setUploading(false);
-  }
-};
 
-const handleDelete = async (id) => {
-  const confirmed = window.confirm("❓ Are you sure you want to delete this video banner?");
-  if (!confirmed) return;
+    setUploading(true);
+    setError(null);
 
-  try {
-    const res = await fetch(`${API_BASE}/stageunrealbanner/${id}`, {
-      method: "DELETE",
-    });
-    const data = await res.json();
+    const formData = new FormData();
+    formData.append("video", video);
 
-    if (data.success) {
-      setBanners((prev) => prev.filter((b) => b._id !== id));
-      alert("🗑️ Video banner deleted successfully!");
-    } else {
-      setError(data.error || "Failed to delete video");
-      alert(`❌ Delete failed: ${data.error || "Unknown error"}`);
+    try {
+      const res = await fetch(`${API_BASE}/stageunrealbanner/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        setError(data.error);
+        alert(`❌ Upload failed: ${data.error}`);
+      } else {
+        setBanners((prev) => [...prev, data]);
+        setVideo(null);
+        alert("✅ Video banner uploaded successfully!");
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      setError("Error uploading video");
+      alert(`❌ Upload failed: ${err.message}`);
+    } finally {
+      setUploading(false);
     }
-  } catch (err) {
-    console.error("Delete error:", err);
-    setError("Error deleting video");
-    alert(`❌ Delete failed: ${err.message}`);
-  }
-};
+  };
+
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "❓ Are you sure you want to delete this video banner?"
+    );
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/stageunrealbanner/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setBanners((prev) => prev.filter((b) => b._id !== id));
+        alert("🗑️ Video banner deleted successfully!");
+      } else {
+        setError(data.error || "Failed to delete video");
+        alert(`❌ Delete failed: ${data.error || "Unknown error"}`);
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      setError("Error deleting video");
+      alert(`❌ Delete failed: ${err.message}`);
+    }
+  };
 
   return (
     <div className="p-8 max-w-5xl mx-auto bg-white rounded-2xl shadow-lg">

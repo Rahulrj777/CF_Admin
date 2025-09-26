@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from "../../Utils/Api.js";
 
 const VfxMentor = () => {
   const [file, setFile] = useState(null);
@@ -45,13 +44,9 @@ const VfxMentor = () => {
     formData.append("description", description);
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/vfxmentor/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const res = await axios.post(`${API_BASE}/vfxmentor/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       fetchMentors();
       setFile(null);

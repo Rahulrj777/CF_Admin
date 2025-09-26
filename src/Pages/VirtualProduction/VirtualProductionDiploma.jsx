@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { API_BASE } from "../../Utils/Api.js";
 
 export default function VirtualProductionDiploma() {
   const [list, setList] = useState([]);
@@ -16,8 +17,6 @@ export default function VirtualProductionDiploma() {
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API_BASE =
-    import.meta.env.VITE_API_BASE ;
   const API = `${API_BASE}/virtualproductiondiploma`;
 
   const links = [
