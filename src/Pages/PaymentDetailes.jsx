@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { API_BASE } from "../Utils/Api";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const PaymentDetails = () => {
   const [payments, setPayments] = useState([]);
@@ -13,7 +11,10 @@ const PaymentDetails = () => {
     fetch(`${API_BASE}/payment/`)
       .then((res) => res.json())
       .then((data) => setPayments(data))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to fetch payments!");
+      });
   };
 
   useEffect(() => {
@@ -25,11 +26,11 @@ const PaymentDetails = () => {
     if (window.confirm("Are you sure you want to delete this record?")) {
       try {
         await fetch(`${API_BASE}/payment/${id}`, { method: "DELETE" });
-        toast.success("Payment deleted successfully!");
+        alert("Payment deleted successfully!");
         fetchPayments();
       } catch (err) {
         console.error(err);
-        toast.error("Failed to delete payment!");
+        alert("Failed to delete payment!");
       }
     }
   };
@@ -48,18 +49,17 @@ const PaymentDetails = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ client: formData }),
       });
-      toast.success("Payment edited successfully!");
+      alert("Payment edited successfully!");
       setEditingPayment(null);
       fetchPayments();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save changes!");
+      alert("Failed to save changes!");
     }
   };
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <ToastContainer />
       <h1 className="text-3xl font-bold mb-6 text-center">Payment Details</h1>
 
       <div className="overflow-x-auto">
