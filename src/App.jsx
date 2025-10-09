@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  NavLink,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import {
   Video,
   Users,
@@ -395,7 +389,6 @@ function App() {
   const [openMenus, setOpenMenus] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const navigate = useNavigate(); // ✅ important
 
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn") === "true") {
@@ -507,37 +500,27 @@ function App() {
             >
               <Menu size={20} />
             </button>
-
             <h1 className="text-lg font-semibold">Admin Panel</h1>
-
-            <div className="flex items-center space-x-2">
-              {/* Payment Details Button */}
-              <button
-                onClick={() => navigate("/payment")}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-              >
-                Payment Details
-              </button>
-
-              {/* Logout Button */}
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-3 py-1 text-sm rounded hover:bg-red-700 transition"
-              >
-                Logout
-              </button>
-            </div>
+            <Link to="/payment">
+              <span className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                Payment
+              </span>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-3 py-1 text-sm rounded hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
           </div>
 
           <div className="p-6 pt-18 lg:pt-5">
-            <div className="hidden lg:flex justify-end mb-4 space-x-2">
-              <button
-                onClick={() => navigate("/payment")}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-              >
-                Payment Details
-              </button>
-
+            <div className="hidden lg:flex justify-end mb-4">
+              <Link to="/payment">
+                <span className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                  Payment
+                </span>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
@@ -548,7 +531,6 @@ function App() {
 
             <Routes>
               <Route path="/" element={<HomeBanner />} />
-
               <Route path="/payment" element={<PaymentDetailes />} />
 
               {/* Home */}
