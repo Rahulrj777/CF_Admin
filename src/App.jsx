@@ -22,6 +22,9 @@ import { useState, useEffect } from "react";
 // Login page (expects to call onLogin() on successful auth)
 import HomePage from "./Pages/Home";
 
+//payment
+import PaymentDetailes from "./Pages/PaymentDetailes.jsx";
+
 // Home
 import HomeBanner from "./Pages/Home/HomeBanner";
 import HomeExclusive from "./Pages/Home/HomeExclusive";
@@ -497,17 +500,39 @@ function App() {
             >
               <Menu size={20} />
             </button>
+
             <h1 className="text-lg font-semibold">Admin Panel</h1>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-3 py-1 text-sm rounded hover:bg-red-700 transition"
-            >
-              Logout
-            </button>
+
+            <div className="flex items-center space-x-2">
+              {/* Payment Details Button */}
+              <button
+                onClick={() => navigate("/payment")} // use react-router navigate
+                className="bg-blue-600 text-white px-3 py-1 text-sm rounded hover:bg-blue-700 transition"
+              >
+                Payment Details
+              </button>
+
+              {/* Logout Button */}
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-3 py-1 text-sm rounded hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           <div className="p-6 pt-18 lg:pt-5">
-            <div className="hidden lg:flex justify-end mb-4">
+            <div className="hidden lg:flex justify-end mb-4 space-x-2">
+              {/* Payment Details Button */}
+              <button
+                onClick={() => navigate("/payment")} // navigate to Payment page
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              >
+                Payment Details
+              </button>
+
+              {/* Logout Button */}
               <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
@@ -518,6 +543,8 @@ function App() {
 
             <Routes>
               <Route path="/" element={<HomeBanner />} />
+
+              <Route path="/payment" element={<PaymentDetailes />} />
 
               {/* Home */}
               <Route path="/home/banner" element={<HomeBanner />} />
