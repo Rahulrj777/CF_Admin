@@ -501,11 +501,11 @@ function App() {
               <Menu size={20} />
             </button>
             <h1 className="text-lg font-semibold">Admin Panel</h1>
-            <Link to="/payment">
+            <NavLink to="/payment">
               <span className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
                 Payment
               </span>
-            </Link>
+            </NavLink>
             <button
               onClick={handleLogout}
               className="bg-red-600 text-white px-3 py-1 text-sm rounded hover:bg-red-700 transition"
@@ -516,11 +516,11 @@ function App() {
 
           <div className="p-6 pt-18 lg:pt-5">
             <div className="hidden lg:flex justify-end mb-4">
-              <Link to="/payment">
+              <NavLink to="/payment">
                 <span className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
                   Payment
                 </span>
-              </Link>
+              </NavLink>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
