@@ -515,15 +515,18 @@ function App() {
           </div>
 
           <div className="p-6 pt-18 lg:pt-5">
-            <div className="hidden lg:flex justify-end mb-4">
+            <div className="hidden lg:flex justify-end items-center gap-4 mb-4">
+              {/* Payment Button */}
               <NavLink to="/payment">
-                <span className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                <button className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200">
                   Payment
-                </span>
+                </button>
               </NavLink>
+
+              {/* Logout Button */}
               <button
                 onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                className="bg-red-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors duration-200"
               >
                 Logout
               </button>
