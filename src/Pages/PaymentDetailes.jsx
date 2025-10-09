@@ -71,7 +71,7 @@ const PaymentDetails = () => {
                 <div><strong>Course:</strong> {p.client.courses.join(", ")}</div>
                 <div><strong>Phone:</strong> {p.client.phone}</div>
               </div>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 items-center">
                 <button
                   onClick={() => setEditingPayment(p._id)}
                   className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
