@@ -25,7 +25,6 @@ const PaymentDetailes = () => {
             <th className="border px-4 py-2">Date</th>
           </tr>
         </thead>
-        // PaymentDetailes.jsx
         <tbody>
           {payments.map((p, idx) => (
             <tr key={idx}>
