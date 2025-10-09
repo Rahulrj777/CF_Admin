@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_BASE } from "../Utils/Api";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 const PaymentDetails = () => {
   const [payments, setPayments] = useState([]);
@@ -84,7 +85,7 @@ const PaymentDetails = () => {
                   Delete
                 </button>
                 <div className="text-xl ml-2 cursor-pointer" onClick={() => toggleExpand(p._id, p)}>
-                  {expandedId === p._id ? "▲" : "▼"}
+                  {expandedId === p._id ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
               </div>
             </div>
