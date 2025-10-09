@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
 import {
   Video,
   Users,
@@ -389,6 +395,7 @@ function App() {
   const [openMenus, setOpenMenus] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const navigate = useNavigate(); // ✅ important
 
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn") === "true") {
@@ -506,8 +513,8 @@ function App() {
             <div className="flex items-center space-x-2">
               {/* Payment Details Button */}
               <button
-                onClick={() => navigate("/payment")} // use react-router navigate
-                className="bg-blue-600 text-white px-3 py-1 text-sm rounded hover:bg-blue-700 transition"
+                onClick={() => navigate("/payment")}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
               >
                 Payment Details
               </button>
@@ -524,15 +531,13 @@ function App() {
 
           <div className="p-6 pt-18 lg:pt-5">
             <div className="hidden lg:flex justify-end mb-4 space-x-2">
-              {/* Payment Details Button */}
               <button
-                onClick={() => navigate("/payment")} // navigate to Payment page
+                onClick={() => navigate("/payment")}
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
               >
                 Payment Details
               </button>
 
-              {/* Logout Button */}
               <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
