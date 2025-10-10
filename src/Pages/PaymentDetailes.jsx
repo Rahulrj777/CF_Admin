@@ -66,7 +66,7 @@ const PaymentDetails = () => {
           <div key={p._id} className="border rounded shadow-sm">
             {/* Top row */}
             <div className="flex justify-between items-center bg-gray-100 p-4 cursor-pointer">
-              <div className="flex space-x-4" onClick={() => toggleExpand(p._id, p)}>
+              <div className="grid grid-cols-3 space-x-4" onClick={() => toggleExpand(p._id, p)}>
                 <div><strong>Name:</strong> {p.client.name}</div>
                 <div><strong>Course:</strong> {p.client.courses.join(", ")}</div>
                 <div><strong>Phone:</strong> {p.client.phone}</div>
