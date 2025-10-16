@@ -12,7 +12,9 @@ export default function AdminPanel() {
     setFaqs(data);
   };
 
-  useEffect(() => { fetchFaqs(); }, []);
+  useEffect(() => {
+    fetchFaqs();
+  }, []);
 
   const handleSubmit = async () => {
     await fetch(`${API_BASE}/faqs/`, {
@@ -39,6 +41,18 @@ export default function AdminPanel() {
         placeholder="Answer"
         value={form.answer}
         onChange={(e) => setForm({ ...form, answer: e.target.value })}
+        className="border p-2 m-2 w-full"
+      />
+      <input
+        type="text"
+        placeholder="Enter keywords separated by commas"
+        value={form.keywords}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            keywords: e.target.value.split(",").map((k) => k.trim()),
+          })
+        }
         className="border p-2 m-2 w-full"
       />
       <button
