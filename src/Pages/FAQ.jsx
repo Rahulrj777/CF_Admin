@@ -1,12 +1,13 @@
 // AdminPanel.jsx
 import { useState, useEffect } from "react";
+import { API_BASE } from "../Utils/Api";
 
 export default function AdminPanel() {
   const [faqs, setFaqs] = useState([]);
   const [form, setForm] = useState({ question: "", answer: "" });
 
   const fetchFaqs = async () => {
-    const res = await fetch("http://localhost:5000/api/faqs");
+    const res = await fetch(`${API_BASE}/faqs/`);
     const data = await res.json();
     setFaqs(data);
   };
@@ -14,7 +15,7 @@ export default function AdminPanel() {
   useEffect(() => { fetchFaqs(); }, []);
 
   const handleSubmit = async () => {
-    await fetch("http://localhost:5000/faqs", {
+    await fetch(`${API_BASE}/faqs/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
