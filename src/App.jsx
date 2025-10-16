@@ -24,6 +24,7 @@ import HomePage from "./Pages/Home";
 
 //payment
 import PaymentDetailes from "./Pages/PaymentDetailes.jsx";
+import FAQ from "./Pages/FAQ.jsx";
 
 // Home
 import HomeBanner from "./Pages/Home/HomeBanner";
@@ -501,6 +502,11 @@ function App() {
               <Menu size={20} />
             </button>
             <h1 className="text-lg font-semibold">Admin Panel</h1>
+            <NavLink to="/faq">
+              <span className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                FAQ
+              </span>
+            </NavLink>
             <NavLink to="/payment">
               <span className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
                 Payment
@@ -516,6 +522,12 @@ function App() {
 
           <div className="p-6 pt-18 lg:pt-5">
             <div className="hidden lg:flex justify-end items-center gap-4 mb-4">
+              {/* Faq Button */}
+              <NavLink to="/faq">
+                <button className="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 cursor-pointer">
+                  FAQ
+                </button>
+              </NavLink>
               {/* Payment Button */}
               <NavLink to="/payment">
                 <button className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200 cursor-pointer">
@@ -535,6 +547,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomeBanner />} />
               <Route path="/payment" element={<PaymentDetailes />} />
+              <Route path="/faq" element={<FAQ />} />
 
               {/* Home */}
               <Route path="/home/banner" element={<HomeBanner />} />
